@@ -3,3 +3,7 @@
   email = mpriscella@gmail.com
 [color]
   ui = true
+[push]
+  default = current
+[alias]
+  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
