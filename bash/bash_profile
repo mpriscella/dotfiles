@@ -1,15 +1,23 @@
+# If ~/.bin exists, then add it to the PATH variable
 if [ -d "$HOME/bin" ] ; then
   PATH=$PATH:$HOME/.bin
 fi
 
-# if mac
-alias ls='ls -1G'
-# if ubuntu
-# alias ls='ls -1 --color'
+platform=$(uname)
+
+# If platform is a mac
+if ["$platform" = "Darwin"]
+then
+  alias ls='ls -1G'
+# If platform is a linux machine
+elif ["$platform" = "Linux"]
+then
+  alias ls='ls -1 --color'
+fi
 
 alias ll='ls -al'
 
 ## Prompt
 
 #USERNAME=
-PS1="\h [\W]"
+#PS1="\h [\W]"
