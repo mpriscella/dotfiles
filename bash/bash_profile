@@ -1,0 +1,15 @@
+if [ -d "$HOME/bin" ] ; then
+  PATH=$PATH:$HOME/.bin
+fi
+
+# if mac
+alias ls='ls -1G'
+# if ubuntu
+# alias ls='ls -1 --color'
+
+alias ll='ls -al'
+
+## Prompt
+
+#USERNAME=
+PS1="\h [\W]"

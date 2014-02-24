@@ -1,0 +1,20 @@
+Host priscella.thrillist.com
+  HostName priscella.thrillist.com
+  User thrillist
+  IdentityFile ~/.ssh/mpriscella
+
+Host sriracha.thrillist.com
+  HostName sriracha.thrillist.com
+  User thrillist
+  IdentityFile ~/.ssh/mpriscella
+
+Host oculus.thrillist.com
+  HostName oculus.thrillist.com
+  User mpriscella
+  IdentityFile ~/.ssh/mpriscella
+
+Host mpriscella.com
+  HostName mpriscella.com
+  User mpriscella
+  IdentityFile ~/.ssh/mpriscella
+
