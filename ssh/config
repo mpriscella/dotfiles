@@ -1,20 +1,24 @@
-Host priscella.thrillist.com
+Host priscella
   HostName priscella.thrillist.com
   User thrillist
-  IdentityFile ~/.ssh/mpriscella
+  IdentityFile ~/.ssh/thrillist
 
-Host sriracha.thrillist.com
+Host sriracha
   HostName sriracha.thrillist.com
   User thrillist
-  IdentityFile ~/.ssh/mpriscella
+  IdentityFile ~/.ssh/thrillist
 
-Host oculus.thrillist.com
+Host oculus
   HostName oculus.thrillist.com
   User mpriscella
-  IdentityFile ~/.ssh/mpriscella
+  IdentityFile ~/.ssh/thrillist
+
+Host artemis-dev
+  HostName artemis-dev.thrillist.com
+  User thrillist
+  IdentityFile ~/.ssh/thrillist
 
 Host mpriscella.com
   HostName mpriscella.com
   User mpriscella
   IdentityFile ~/.ssh/mpriscella
-
