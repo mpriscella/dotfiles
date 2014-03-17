@@ -16,6 +16,10 @@ then
 fi
 
 alias ll='ls -al'
+alias tattach='tmux attach -t'
+alias tlist='tmux list-sessions'
+alias tnew='tmux new -s'
+alias tkill='tmux kill-session -t'
 
 ## Prompt
 
