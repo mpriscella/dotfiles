@@ -3,6 +3,10 @@ if [ -d "$HOME/bin" ] ; then
   PATH=$PATH:$HOME/.bin
 fi
 
+if [ -f ~/.git-completion.bash ]; then
+  . ~/.git-completion.bash
+fi
+
 platform=$(uname)
 
 # If platform is a mac
