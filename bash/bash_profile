@@ -3,6 +3,10 @@ if [ -d "$HOME/bin" ] ; then
   PATH=$PATH:$HOME/.bin
 fi
 
+if [ -f ~/.git-completion.bash ]; then
+  . ~/.git-completion.bash
+fi
+
 platform=$(uname)
 
 # If platform is a mac
@@ -16,6 +20,10 @@ then
 fi
 
 alias ll='ls -al'
+alias tattach='tmux attach -t'
+alias tlist='tmux list-sessions'
+alias tnew='tmux new -s'
+alias tkill='tmux kill-session -t'
 
 ## Prompt
 
