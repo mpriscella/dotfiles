@@ -1,3 +1,0 @@
-[submodule "vim/minimum-awesome"]
-	path = vim/minimum-awesome
-	url = git@github.com:timthrillist/minimum-awesome.git
