@@ -8,6 +8,14 @@
 [alias]
   lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
   g = grep --break --heading --line-number
+  df = diff
+  co = checkout
+  pom = pull origin master
+  f = fetch
+  s = stash
+  sp = stash pop
+  b = branch
+  br = branch -r
 [grep]
   extendRegexp = true
   lineNumber = true
