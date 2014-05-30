@@ -2,10 +2,6 @@ execute pathogen#infect()
 
 set nocompatible
 
-if filereadable(expand("~/.vimrc.before"))
-  source ~/.vimrc.before
-endif
-
 set number
 set backspace=indent,eol,start
 set history=1000
@@ -29,12 +25,6 @@ set noswapfile
 set nobackup
 set nowb
 
-"if has('persistent_undo')
-"  silent !mkdir ~/.vim/backups > /dev/null 2>&1
-"  set undodir=~/.vim/backups
-"  set undofile
-"endif
-
 set autoindent
 set smartindent
 set smarttab
@@ -42,9 +32,6 @@ set shiftwidth=2
 set softtabstop=2
 set tabstop=2
 set expandtab
-
-"filetype plugin on
-"filetype indent on
 
 set list listchars=tab:\ \ ,trail:·
 
@@ -71,6 +58,3 @@ set wildignore+=*.png,*.jpg,*.gif
 set scrolloff=8
 set sidescrolloff=15
 set sidescroll=1
-
-" ================ Custom Settings ========================
-"so ~/.yadr/vim/settings.vim
