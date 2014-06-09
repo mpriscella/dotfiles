@@ -17,3 +17,8 @@ alias l='ls -1'
 alias ll='ls -al'
 alias ios='open /Applications/Xcode.app/Contents/Applications/iPhone\ Simulator.app'
 
+alias tn='tmux new -s'
+alias tl='tmux list-sessions'
+alias ta='tmux attach -t'
+alias tk='tmux kill-session -t'
+
