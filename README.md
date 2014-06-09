@@ -1,6 +1,6 @@
 Dotfiles
 --------
-Managed by homesick
+Managed by [homesick](https://github.com/technicalpickles/homesick).
 
 To update font cache, run `fc-cache -vf ~/.fonts`
 
