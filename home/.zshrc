@@ -9,7 +9,7 @@ plugins=(git, brew, pip, vagrant)
 
 source $ZSH/oh-my-zsh.sh
 
-export PATH="/Users/mpriscella/.rvm/gems/ruby-2.1.1/bin:/Users/mpriscella/.rvm/gems/ruby-2.1.1@global/bin:/Users/mpriscella/.rvm/rubies/ruby-2.1.1/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/mpriscella/.rvm/bin"
+export PATH="/Users/mpriscella/.rvm/gems/ruby-2.1.1/bin:/Users/mpriscella/.rvm/gems/ruby-2.1.1@global/bin:/Users/mpriscella/.rvm/rubies/ruby-2.1.1/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/mpriscella/.rvm/bin:/Users/mpriscella/.bin"
 export EDITOR='vim'
 
 # Aliases #
