@@ -1,7 +1,7 @@
 export ZSH=$HOME/.oh-my-zsh
 export ENV='mpriscella'
 
-ZSH_THEME="robbyrussell"
+ZSH_THEME="mpriscella"
 DISABLE_AUTO_TITLE=true
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 
