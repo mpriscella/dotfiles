@@ -18,9 +18,22 @@ Bundle 'kien/ctrlp.vim'
 " NERDTree
 Plugin 'scrooloose/nerdtree'
 let mapleader = ","
-nmap <leader>1 :NERDTreeToggle<cr>
+nmap <leader>b :NERDTreeToggle<cr>
 nmap <leader>t :tabnew<cr>
 nmap <leader>w :tabclose<cr>
+
+" Tabs "
+nmap <leader>n :tabn<cr>
+nmap <leader>p :tabp<cr>
+nmap <leader>1 1gt<cr>
+nmap <leader>2 2gt<cr>
+nmap <leader>3 3gt<cr>
+nmap <leader>4 4gt<cr>
+nmap <leader>5 5gt<cr>
+nmap <leader>6 6gt<cr>
+nmap <leader>7 7gt<cr>
+nmap <leader>8 8gt<cr>
+nmap <leader>9 9gt<cr>
 
 Bundle 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
@@ -70,7 +83,7 @@ set hidden
 
 syntax on
 
-let mapleader=","
+" let mapleader=","
 
 if filereadable(expand("~/.vim/vundles.vim"))
   source ~/.vim/vundles.vim
