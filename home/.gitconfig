@@ -10,6 +10,7 @@
   g = grep --break --heading --line-number
   df = diff
   co = checkout
+  chb = checkout -b
   pom = pull origin master
   f = fetch
   s = stash

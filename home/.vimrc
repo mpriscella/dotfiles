@@ -1,21 +1,27 @@
 set nocompatible
+syntax on
 filetype off
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
 
+" Vundle "
 Plugin 'gmarik/Vundle.vim'
 
-" Syntax Bundles
+" Syntax Bundles "
 Bundle 'derekwyatt/vim-scala'
 Bundle 'vim-ruby/vim-ruby'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'chase/vim-ansible-yaml'
 Bundle 'kien/ctrlp.vim'
+Bundle 'cakebaker/scss-syntax.vim'
 
-" NERDTree
+" Syntax Mapping "
+" Drupal "
+au BufNewFile,BufRead *.module set filetype=php
+au BufNewFile,BufRead *.inc set filetype=php
+
+" NERDTree "
 Plugin 'scrooloose/nerdtree'
 let mapleader = ","
 nmap <leader>b :NERDTreeToggle<cr>
@@ -35,6 +41,7 @@ nmap <leader>7 7gt<cr>
 nmap <leader>8 8gt<cr>
 nmap <leader>9 9gt<cr>
 
+" Other Bundles "
 Bundle 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
 Plugin 'git://git.wincent.com/command-t.git'
@@ -44,13 +51,7 @@ Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 call vundle#end()
 filetype plugin indent on
 
-" Brief help
-" :PluginList          - list configured plugins
-" :PluginInstall(!)    - install (update) plugins
-" :PluginSearch(!) foo - search (or refresh cache first) for foo
-" :PluginClean(!)      - confirm (or auto-approve) removal of unused plugins
-
-" Powerline Stuff
+" Powerline Stuff "
 set guifont=Sauce\ Code\ Powerline:h15
 let g:Powerline_symbols = 'fancy'
 set encoding=utf-8
@@ -60,7 +61,7 @@ set term=xterm-256color
 set termencoding=utf-8
 set laststatus=2
 
-" Cursor changes shape on INSERT
+" Cursor changes shape on INSERT "
 " iTerm2 - OSX
 let &t_SI = "\<Esc>]50;CursorShape=1\x7"
 let &t_EI = "\<Esc>]50;CursorShape=0\x7"
@@ -81,13 +82,9 @@ set autoread
 set mouse=a
 set hidden
 
-syntax on
-
-" let mapleader=","
-
-if filereadable(expand("~/.vim/vundles.vim"))
-  source ~/.vim/vundles.vim
-endif
+" if filereadable(expand("~/.vim/vundles.vim"))
+"   source ~/.vim/vundles.vim
+" endif
 
 set noswapfile
 set nobackup
