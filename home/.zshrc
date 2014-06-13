@@ -10,7 +10,7 @@ plugins=(git, brew, pip, vagrant)
 source $ZSH/oh-my-zsh.sh
 
 if [[ -a ~/.zshrc.local ]]; then
-  source .zshrc.local
+  source ~/.zshrc.local
 fi
 
 export PATH="$HOME/.rvm/gems/ruby-2.1.1/bin:$HOME/.rvm/gems/ruby-2.1.1@global/bin:$HOME/.rvm/rubies/ruby-2.1.1/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:$HOME/.rvm/bin:$HOME/.bin"
