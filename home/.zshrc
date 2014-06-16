@@ -4,6 +4,8 @@ export ENV='mpriscella'
 ZSH_THEME="mpriscella"
 DISABLE_AUTO_TITLE=true
 DISABLE_UNTRACKED_FILES_DIRTY="true"
+DISABLE_AUTO_UPDATE="true"
+
 
 plugins=(git, brew, pip, vagrant)
 
