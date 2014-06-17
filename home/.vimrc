@@ -44,9 +44,16 @@ nmap <leader>9 9gt<cr>
 " Other Bundles "
 Bundle 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-surround'
 Plugin 'git://git.wincent.com/command-t.git'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Plugin 'scrooloose/syntastic'
+Plugin 'marcweber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+Plugin 'garbas/vim-snipmate'
+Plugin 'honza/vim-snippets'
+Plugin 'sjl/gundo.vim'
 
 call vundle#end()
 filetype plugin indent on
@@ -61,6 +68,7 @@ set term=xterm-256color
 set termencoding=utf-8
 set laststatus=2
 
+hi Visual ctermbg=LightGreen
 " Cursor changes shape on INSERT "
 " iTerm2 - OSX
 let &t_SI = "\<Esc>]50;CursorShape=1\x7"
