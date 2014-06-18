@@ -23,6 +23,7 @@ Bundle 'cakebaker/scss-syntax.vim'
 " Drupal "
 au BufNewFile,BufRead *.module set filetype=php
 au BufNewFile,BufRead *.inc set filetype=php
+au BufNewFile,BufRead *.install set filetype=php
 
 " NERDTree "
 Plugin 'scrooloose/nerdtree'
