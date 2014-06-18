@@ -57,6 +57,9 @@ Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
 Plugin 'sjl/gundo.vim'
+Plugin 'gcmt/taboo.vim'
+
+let g:taboo_tab_format = '%N| %f%m'
 
 call vundle#end()
 filetype plugin indent on
