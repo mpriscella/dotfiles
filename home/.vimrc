@@ -1,6 +1,9 @@
 set nocompatible
 syntax on
 filetype off
+set novisualbell
+set noerrorbells
+set incsearch
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
