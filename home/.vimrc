@@ -24,6 +24,7 @@ Bundle 'cakebaker/scss-syntax.vim'
 au BufNewFile,BufRead *.module set filetype=php
 au BufNewFile,BufRead *.inc set filetype=php
 au BufNewFile,BufRead *.install set filetype=php
+autocmd FileType php autocmd BufWritePre <buffer> :%s/\s\+$//e
 
 " NERDTree "
 Plugin 'scrooloose/nerdtree'
@@ -59,6 +60,8 @@ Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
 Plugin 'sjl/gundo.vim'
 Plugin 'gcmt/taboo.vim'
+Plugin 'duff/vim-scratch'
+Plugin 'mhinz/vim-startify'
 
 let g:taboo_tab_format = ' %N| %f%m|'
 
