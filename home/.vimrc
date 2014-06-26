@@ -16,7 +16,6 @@ Bundle 'derekwyatt/vim-scala'
 Bundle 'vim-ruby/vim-ruby'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'chase/vim-ansible-yaml'
-Bundle 'kien/ctrlp.vim'
 Bundle 'cakebaker/scss-syntax.vim'
 
 " Syntax Mapping "
@@ -47,6 +46,7 @@ nmap <leader>8 8gt<cr>
 nmap <leader>9 9gt<cr>
 
 " Other Bundles "
+Bundle 'kien/ctrlp.vim'
 Bundle 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
@@ -59,11 +59,13 @@ Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
 Plugin 'sjl/gundo.vim'
-Plugin 'gcmt/taboo.vim'
-Plugin 'duff/vim-scratch'
 Plugin 'mhinz/vim-startify'
 
+Plugin 'gcmt/taboo.vim'
 let g:taboo_tab_format = ' %N| %f%m|'
+
+Plugin 'duff/vim-scratch'
+nmap <leader>s :Scratch<cr>
 
 call vundle#end()
 filetype plugin indent on
@@ -99,10 +101,6 @@ set visualbell
 set autoread
 set mouse=a
 set hidden
-
-" if filereadable(expand("~/.vim/vundles.vim"))
-"   source ~/.vim/vundles.vim
-" endif
 
 set noswapfile
 set nobackup
@@ -149,3 +147,4 @@ match rightMargin /.\%>80v/
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
+
