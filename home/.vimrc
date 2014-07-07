@@ -17,6 +17,7 @@ Bundle 'vim-ruby/vim-ruby'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'chase/vim-ansible-yaml'
 Bundle 'cakebaker/scss-syntax.vim'
+Bundle 'fatih/vim-go'
 
 " Syntax Mapping "
 " Drupal "
@@ -83,13 +84,16 @@ set laststatus=2
 hi Visual ctermbg=LightGreen
 " Cursor changes shape on INSERT "
 " iTerm2 - OSX
-let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 
-" iTerm 2 - OSX - Tmux
-" Should wrap in conditional
-" let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-" let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+let tmux=$TMUX
+
+if exists(tmux)
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+endif
 
 set number
 set backspace=indent,eol,start

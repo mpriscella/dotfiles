@@ -1,7 +1,8 @@
 export ZSH=$HOME/.oh-my-zsh
 export ENV='mpriscella'
 
-ZSH_THEME="mpriscella"
+# ZSH_THEME="mpriscella"
+ZSH_THEME="robbyrussell"
 DISABLE_AUTO_TITLE=true
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 DISABLE_AUTO_UPDATE="true"
@@ -11,7 +12,7 @@ plugins=(git, brew, pip, vagrant)
 
 source $ZSH/oh-my-zsh.sh
 
-export PATH="$HOME/.rvm/gems/ruby-2.1.1/bin:$HOME/.rvm/gems/ruby-2.1.1@global/bin:$HOME/.rvm/rubies/ruby-2.1.1/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:$HOME/.rvm/bin:$HOME/.bin"
+export PATH="$HOME/.rvm/gems/ruby-2.1.1/bin:$HOME/.rvm/gems/ruby-2.1.1@global/bin:$HOME/.rvm/rubies/ruby-2.1.1/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.rvm/bin:$HOME/.bin"
 export EDITOR='vim'
 
 # Aliases #
