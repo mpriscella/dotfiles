@@ -1,5 +1,11 @@
+" Color Scheme
+syntax enable
+set background=dark
+colorscheme molokai
+let g:molokai_original = 1
+let g:rehash256 = 1
+
 set nocompatible
-syntax on
 filetype off
 set novisualbell
 set noerrorbells
@@ -8,32 +14,37 @@ set incsearch
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-" Vundle "
+" Vundle
 Plugin 'gmarik/Vundle.vim'
 
-" Syntax Bundles "
+" Syntax Bundles
 Bundle 'derekwyatt/vim-scala'
 Bundle 'vim-ruby/vim-ruby'
-Bundle 'plasticboy/vim-markdown'
 Bundle 'chase/vim-ansible-yaml'
 Bundle 'cakebaker/scss-syntax.vim'
 Bundle 'fatih/vim-go'
+Plugin 'ap/vim-css-color'
 
-" Syntax Mapping "
-" Drupal "
+" Syntax Mapping
+" Drupal
 au BufNewFile,BufRead *.module set filetype=php
 au BufNewFile,BufRead *.inc set filetype=php
 au BufNewFile,BufRead *.install set filetype=php
 autocmd FileType php autocmd BufWritePre <buffer> :%s/\s\+$//e
 
-" NERDTree "
-Plugin 'scrooloose/nerdtree'
+" Markdown
+au BufNewFile,BufRead *.markdown set textwidth=80 formatoptions+=t
+
+" NERDTree
 let mapleader = ","
-nmap <leader>b :NERDTreeToggle<cr>
 nmap <leader>t :tabnew<cr>
 nmap <leader>w :tabclose<cr>
 
-" Tabs "
+" Tagbar
+Bundle 'majutsushi/tagbar'
+nmap gotag :TagbarToggle<cr>
+
+" Tabs
 nmap <leader>n :tabn<cr>
 nmap <leader>p :tabp<cr>
 nmap <leader>1 1gt<cr>
@@ -46,12 +57,11 @@ nmap <leader>7 7gt<cr>
 nmap <leader>8 8gt<cr>
 nmap <leader>9 9gt<cr>
 
-" Other Bundles "
+" Other Bundles
 Bundle 'kien/ctrlp.vim'
 Bundle 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
-Plugin 'git://git.wincent.com/command-t.git'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plugin 'scrooloose/syntastic'
@@ -63,7 +73,7 @@ Plugin 'sjl/gundo.vim'
 Plugin 'mhinz/vim-startify'
 
 Plugin 'gcmt/taboo.vim'
-let g:taboo_tab_format = ' %N| %f%m|'
+let g:taboo_tab_format = '[%N| %f%m]'
 
 Plugin 'duff/vim-scratch'
 nmap <leader>s :Scratch<cr>
@@ -71,7 +81,7 @@ nmap <leader>s :Scratch<cr>
 call vundle#end()
 filetype plugin indent on
 
-" Powerline Stuff "
+" Powerline Stuff
 set guifont=Sauce\ Code\ Powerline:h15
 let g:Powerline_symbols = 'fancy'
 set encoding=utf-8
@@ -82,7 +92,7 @@ set termencoding=utf-8
 set laststatus=2
 
 hi Visual ctermbg=LightGreen
-" Cursor changes shape on INSERT "
+" Cursor changes shape on INSERT
 " iTerm2 - OSX
 
 let tmux=$TMUX
@@ -96,6 +106,7 @@ else
 endif
 
 set number
+set relativenumber
 set backspace=indent,eol,start
 set history=1000
 set showcmd
@@ -103,7 +114,6 @@ set showmode
 set gcr=a:blinkon0
 set visualbell
 set autoread
-set mouse=a
 set hidden
 
 set noswapfile
@@ -145,8 +155,11 @@ set scrolloff=8
 set sidescrolloff=15
 set sidescroll=1
 
-highlight rightMargin ctermfg=lightred
-match rightMargin /.\%>80v/
+:command NewView vsp | bufnr('%')
+
+" Conque Term
+Plugin 'rosenfeld/conque-term'
+:command Bash ConqueTerm bash
 
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
