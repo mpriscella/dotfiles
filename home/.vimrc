@@ -10,6 +10,8 @@ filetype off
 set novisualbell
 set noerrorbells
 set incsearch
+set splitright
+set splitbelow
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -154,8 +156,6 @@ set wildignore+=*.png,*.jpg,*.gif
 set scrolloff=8
 set sidescrolloff=15
 set sidescroll=1
-
-:command NewView vsp | bufnr('%')
 
 " Conque Term
 Plugin 'rosenfeld/conque-term'

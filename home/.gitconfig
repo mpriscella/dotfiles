@@ -20,3 +20,5 @@
 [grep]
   extendRegexp = true
   lineNumber = true
+[include]
+  path = .gitconfig.local
