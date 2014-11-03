@@ -15,7 +15,4 @@ $ git submodule init
 $ git submodule update
 ````
 
-
-You can overwrite/ add environment specific options the vim configuration by entering config options in `.vimrc.local`
-
-You can overwrite/ add environment specific options the zshrc configuration by entering config options in `.zshrc.local`
+You can overwrite/ add environment specifc variables to the vim, zshrc, and git configurations by creating a new file with the same name as the config file and appending `.local` to the filename. For example, if I wanted to modify my `.vimrc` on a specific machine, I would create and edit the file `.vimrc.local`.
