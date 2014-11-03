@@ -10,8 +10,13 @@ filetype off
 set novisualbell
 set noerrorbells
 set incsearch
+
+" Splitting settings
 set splitright
 set splitbelow
+
+" Folding Settings
+set foldmethod=indent
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
