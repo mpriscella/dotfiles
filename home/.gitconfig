@@ -15,6 +15,7 @@
   f = fetch
   s = stash
   sp = stash pop
+  sa = stash apply
   b = branch
   br = branch -r
 [grep]
