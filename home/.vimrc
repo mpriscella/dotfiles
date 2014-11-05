@@ -79,6 +79,10 @@ Plugin 'honza/vim-snippets'
 Plugin 'sjl/gundo.vim'
 Plugin 'mhinz/vim-startify'
 
+if filereadable(expand('~/todo.txt'))
+  let g:startify_bookmarks = [ '~/todo.txt' ]
+endif
+
 Plugin 'gcmt/taboo.vim'
 let g:taboo_tab_format = '[%N| %f%m]'
 
