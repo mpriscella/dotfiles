@@ -30,7 +30,8 @@ Bundle 'vim-ruby/vim-ruby'
 Bundle 'chase/vim-ansible-yaml'
 Bundle 'cakebaker/scss-syntax.vim'
 Bundle 'fatih/vim-go'
-Plugin 'ap/vim-css-color'
+"Plugin 'ap/vim-css-color'
+Plugin 'gorodinskiy/vim-coloresque'
 
 " Syntax Mapping
 " Drupal
