@@ -18,6 +18,7 @@ set splitbelow
 " Folding Settings
 set foldmethod=indent
 
+" Vundle
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
@@ -30,7 +31,6 @@ Bundle 'vim-ruby/vim-ruby'
 Bundle 'chase/vim-ansible-yaml'
 Bundle 'cakebaker/scss-syntax.vim'
 Bundle 'fatih/vim-go'
-"Plugin 'ap/vim-css-color'
 Plugin 'gorodinskiy/vim-coloresque'
 
 " Syntax Mapping
@@ -71,29 +71,33 @@ Bundle 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plugin 'scrooloose/syntastic'
 Plugin 'marcweber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
 Plugin 'sjl/gundo.vim'
-Plugin 'mhinz/vim-startify'
 
+" Startify
+Plugin 'mhinz/vim-startify'
 if filereadable(expand('~/todo.txt'))
   let g:startify_bookmarks = [ '~/todo.txt' ]
 endif
 
+" Taboo
 Plugin 'gcmt/taboo.vim'
 let g:taboo_tab_format = '[%N| %f%m]'
 
+" Scratch
 Plugin 'duff/vim-scratch'
 nmap <leader>s :Scratch<cr>
 
 call vundle#end()
+
 filetype plugin indent on
 
-" Powerline Stuff
+" Powerline
+Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 set guifont=Sauce\ Code\ Powerline:h15
 let g:Powerline_symbols = 'fancy'
 set encoding=utf-8
@@ -107,8 +111,8 @@ hi Visual ctermbg=LightGreen
 " Cursor changes shape on INSERT
 " iTerm2 - OSX
 
+" See if there's a better way to do this
 let tmux=$TMUX
-
 if exists(tmux)
   let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
   let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
@@ -171,6 +175,7 @@ set sidescroll=1
 Plugin 'rosenfeld/conque-term'
 :command Bash ConqueTerm bash
 
+" Local Vimrc
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
