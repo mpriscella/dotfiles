@@ -18,6 +18,7 @@
   sa = stash apply
   b = branch
   br = branch -r
+  su = "!git branch --set-upstream-to=origin/$1 $1"
 [grep]
   extendRegexp = true
   lineNumber = true
