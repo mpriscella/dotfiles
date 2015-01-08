@@ -80,6 +80,8 @@ Plug 'honza/vim-snippets'
 Plug 'sjl/gundo.vim'
 Plug 'mhinz/vim-startify'
 
+" Startify
+Plug 'mhinz/vim-startify'
 if filereadable(expand('~/todo.txt'))
   let g:startify_bookmarks = [ '~/todo.txt' ]
 endif
@@ -105,7 +107,6 @@ hi Visual ctermbg=LightGreen
 " Cursor changes shape on INSERT
 " iTerm2 - OSX
 let tmux=$TMUX
-
 if exists(tmux)
   let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
   let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
@@ -168,6 +169,7 @@ set sidescroll=1
 Plug 'rosenfeld/conque-term'
 :command Bash ConqueTerm bash
 
+" Local Vimrc
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
