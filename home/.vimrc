@@ -18,20 +18,20 @@ set splitbelow
 " Folding Settings
 set foldmethod=indent
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+" Load plug
+if empty(glob("~/.vim/autoload/plug.vim"))
+  execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
+endif
 
-" Vundle
-Plugin 'gmarik/Vundle.vim'
+call plug#begin('~/.vim/plugged')
 
 " Syntax Bundles
-Bundle 'derekwyatt/vim-scala'
-Bundle 'vim-ruby/vim-ruby'
-Bundle 'chase/vim-ansible-yaml'
-Bundle 'cakebaker/scss-syntax.vim'
-Bundle 'fatih/vim-go'
-"Plugin 'ap/vim-css-color'
-Plugin 'gorodinskiy/vim-coloresque'
+Plug 'derekwyatt/vim-scala'
+Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
+Plug 'chase/vim-ansible-yaml', {'for': 'yaml'}
+Plug 'cakebaker/scss-syntax.vim', {'for': 'scss'}
+Plug 'fatih/vim-go', {'for': 'go'}
+Plug 'gorodinskiy/vim-coloresque', {'for': ['css', 'scss', 'html']}
 
 " Syntax Mapping
 " Drupal
@@ -49,7 +49,7 @@ nmap <leader>t :tabnew<cr>
 nmap <leader>w :tabclose<cr>
 
 " Tagbar
-Bundle 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar'
 nmap gotag :TagbarToggle<cr>
 
 " Tabs
@@ -66,32 +66,29 @@ nmap <leader>8 8gt<cr>
 nmap <leader>9 9gt<cr>
 
 " Other Bundles
-Bundle 'kien/ctrlp.vim'
-Bundle 'tpope/vim-commentary'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-surround'
-Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
-Plugin 'scrooloose/syntastic'
-Plugin 'marcweber/vim-addon-mw-utils'
-Plugin 'tomtom/tlib_vim'
-Plugin 'garbas/vim-snipmate'
-Plugin 'honza/vim-snippets'
-Plugin 'sjl/gundo.vim'
-Plugin 'mhinz/vim-startify'
+Plug 'kien/ctrlp.vim'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
+Plug 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Plug 'scrooloose/syntastic'
+Plug 'marcweber/vim-addon-mw-utils'
+Plug 'tomtom/tlib_vim'
+Plug 'garbas/vim-snipmate'
+Plug 'honza/vim-snippets'
+Plug 'sjl/gundo.vim'
+Plug 'mhinz/vim-startify'
 
 if filereadable(expand('~/todo.txt'))
   let g:startify_bookmarks = [ '~/todo.txt' ]
 endif
 
-Plugin 'gcmt/taboo.vim'
+Plug 'gcmt/taboo.vim'
 let g:taboo_tab_format = '[%N| %f%m]'
 
-Plugin 'duff/vim-scratch'
+Plug 'duff/vim-scratch'
 nmap <leader>s :Scratch<cr>
-
-call vundle#end()
-filetype plugin indent on
 
 " Powerline Stuff
 set guifont=Sauce\ Code\ Powerline:h15
@@ -104,9 +101,9 @@ set termencoding=utf-8
 set laststatus=2
 
 hi Visual ctermbg=LightGreen
+
 " Cursor changes shape on INSERT
 " iTerm2 - OSX
-
 let tmux=$TMUX
 
 if exists(tmux)
@@ -168,10 +165,10 @@ set sidescrolloff=15
 set sidescroll=1
 
 " Conque Term
-Plugin 'rosenfeld/conque-term'
+Plug 'rosenfeld/conque-term'
 :command Bash ConqueTerm bash
 
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
-
+call plug#end()
