@@ -1,0 +1,4 @@
+-type-set=info=.info
+-type-set=module=.module
+-type-set=install=.install
+-type-set=sass=.scss

@@ -1,3 +1,11 @@
+" Create ~/.vim/autoload directory
+silent !mkdir ~/.vim/autoload > /dev/null 2>&1
+
+" Load plug
+if empty(glob("~/.vim/autoload/plug.vim"))
+  execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
+endif
+
 " Color Scheme
 syntax enable
 set background=dark
@@ -17,11 +25,6 @@ set splitbelow
 
 " Folding Settings
 set foldmethod=indent
-
-" Load plug
-if empty(glob("~/.vim/autoload/plug.vim"))
-  execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
-endif
 
 call plug#begin('~/.vim/plugged')
 
@@ -75,10 +78,16 @@ Plug 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plug 'scrooloose/syntastic'
 Plug 'marcweber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
-Plug 'garbas/vim-snipmate'
-Plug 'honza/vim-snippets'
+" Plug 'garbas/vim-snipmate'
+" Plug 'honza/vim-snippets'
 Plug 'sjl/gundo.vim'
 Plug 'mhinz/vim-startify'
+
+Plug 'Raimondi/delimitMate'
+let delimitMate_matchpairs = "(:),[:],{:}"
+
+Plug 'ervandew/supertab'
+Plug 'mattn/emmet-vim'
 
 " Startify
 Plug 'mhinz/vim-startify'

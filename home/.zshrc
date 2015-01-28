@@ -12,6 +12,14 @@ fi
 
 # Customize to your needs...
 
+if [[ -a ~/.zaliases ]]; then
+  source ~/.zaliases
+fi
+
+if [[ -a ~/.zaliases.local ]]; then
+  source ~/.zaliases.local
+fi
+
 if [[ -a ~/.zshrc.local ]]; then
   source ~/.zshrc.local
 fi
