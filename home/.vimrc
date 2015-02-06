@@ -1,5 +1,7 @@
 " Create ~/.vim/autoload directory
-silent !mkdir ~/.vim/autoload > /dev/null 2>&1
+if empty(glob("~/.vim/autoload"))
+  silent !mkdir ~/.vim/autoload > /dev/null 2>&1
+endif
 
 " Load plug
 if empty(glob("~/.vim/autoload/plug.vim"))
@@ -69,6 +71,7 @@ nmap <leader>8 8gt<cr>
 nmap <leader>9 9gt<cr>
 
 " Other Bundles
+Plug 'Valloric/YouCompleteMe'
 Plug 'kien/ctrlp.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
@@ -78,8 +81,12 @@ Plug 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plug 'scrooloose/syntastic'
 Plug 'marcweber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
-" Plug 'garbas/vim-snipmate'
-" Plug 'honza/vim-snippets'
+Plug 'Sirver/ultisnips'
+
+Plug 'honza/vim-snippets'
+let g:UltiSnipsExpandTrigger = "<c-j>"
+let g:UltiSnipsEditSplit = "vertical"
+
 Plug 'sjl/gundo.vim'
 Plug 'mhinz/vim-startify'
 
@@ -91,8 +98,8 @@ Plug 'mattn/emmet-vim'
 
 " Startify
 Plug 'mhinz/vim-startify'
-if filereadable(expand('~/todo.txt'))
-  let g:startify_bookmarks = [ '~/todo.txt' ]
+if filereadable(expand('todo.txt'))
+  let g:startify_bookmarks = [ 'todo.txt' ]
 endif
 
 Plug 'gcmt/taboo.vim'
