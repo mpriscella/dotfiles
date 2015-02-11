@@ -9,12 +9,21 @@ if empty(glob("~/.vim/autoload/plug.vim"))
 endif
 
 " Color Scheme
-syntax enable
 set background=dark
-colorscheme molokai
-let g:molokai_original = 1
-let g:rehash256 = 1
+try
+  colorscheme molokai
+  let g:molokai_original = 1
+  let g:rehash256 = 1
+catch
+endtry
 
+" Column 80
+if (exists('+colorcolumn'))
+  set colorcolumn=80
+  highlight ColorColumn ctermbg=9
+endif
+
+syntax enable
 set nocompatible
 filetype off
 set novisualbell
@@ -31,6 +40,7 @@ set foldmethod=indent
 call plug#begin('~/.vim/plugged')
 
 " Syntax Bundles
+Plug 'airblade/vim-gitgutter'
 Plug 'derekwyatt/vim-scala'
 Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
 Plug 'chase/vim-ansible-yaml', {'for': 'yaml'}
@@ -131,9 +141,12 @@ else
   let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 
-set number
-set relativenumber
-set backspace=indent,eol,start
+try
+  set relativenumber
+catch
+  set number
+endtry
+set backspace=2
 set history=1000
 set showcmd
 set showmode
@@ -189,4 +202,5 @@ Plug 'rosenfeld/conque-term'
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
+
 call plug#end()
