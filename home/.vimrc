@@ -81,7 +81,9 @@ nmap <leader>8 8gt<cr>
 nmap <leader>9 9gt<cr>
 
 " Other Bundles
-Plug 'Valloric/YouCompleteMe'
+if v:version >= 703
+  "Plug 'Valloric/YouCompleteMe'
+endif
 Plug 'kien/ctrlp.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
@@ -179,16 +181,13 @@ set nofoldenable
 
 set wildmode=list:longest
 set wildmenu
-set wildignore=*.o,*.obj,*~
 set wildignore+=*vim/backups*
 set wildignore+=*sass-cache*
 set wildignore+=*DS_Store*
-set wildignore+=vendor/rails/**
-set wildignore+=vendor/cache/**
-set wildignore+=*.gem
 set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
+set wildignore+=.*
 
 set scrolloff=8
 set sidescrolloff=15
