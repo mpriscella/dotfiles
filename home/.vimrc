@@ -8,6 +8,11 @@ if empty(glob("~/.vim/autoload/plug.vim"))
   execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
 endif
 
+" Auto download colorscheme
+if empty(glob("~/.vim/colors/molokai.vim"))
+  execute '!curl -fLo ~/.vim/colors/molokai.vim https://raw.githubusercontent.com/tomasr/molokai/master/colors/molokai.vim'
+endif
+
 " Color Scheme
 set background=dark
 try
@@ -51,6 +56,7 @@ Plug 'gorodinskiy/vim-coloresque', {'for': ['css', 'scss', 'html']}
 " Syntax Mapping
 " Drupal
 au BufNewFile,BufRead *.module set filetype=php
+au BufNewFile,BufRead *.yml set filetype=yaml
 au BufNewFile,BufRead *.inc set filetype=php
 au BufNewFile,BufRead *.install set filetype=php
 autocmd FileType php autocmd BufWritePre <buffer> :%s/\s\+$//e
@@ -58,7 +64,6 @@ autocmd FileType php autocmd BufWritePre <buffer> :%s/\s\+$//e
 " Markdown
 au BufNewFile,BufRead *.markdown set textwidth=80 formatoptions+=t
 
-" NERDTree
 let mapleader = ","
 nmap <leader>t :tabnew<cr>
 nmap <leader>w :tabclose<cr>
@@ -82,7 +87,7 @@ nmap <leader>9 9gt<cr>
 
 " Other Bundles
 if v:version >= 703
-  "Plug 'Valloric/YouCompleteMe'
+  Plug 'Valloric/YouCompleteMe'
 endif
 Plug 'kien/ctrlp.vim'
 Plug 'tpope/vim-commentary'
@@ -101,6 +106,7 @@ let g:UltiSnipsEditSplit = "vertical"
 
 Plug 'sjl/gundo.vim'
 Plug 'mhinz/vim-startify'
+let g:startify_session_persistence = 1
 
 Plug 'Raimondi/delimitMate'
 let delimitMate_matchpairs = "(:),[:],{:}"
@@ -192,6 +198,19 @@ set wildignore+=.*
 set scrolloff=8
 set sidescrolloff=15
 set sidescroll=1
+
+inoremap jk <Esc>
+
+noremap <c-j> <c-w>j
+noremap <c-k> <c-w>k
+noremap <c-l> <c-w>l
+noremap <c-h> <c-w>h
+
+autocmd InsertLeave *
+  \   if exists('v:this_session') && filewritable(v:this_session)
+  \ |   call startify#session_write(fnameescape(v:this_session))
+  \ | endif
+autocmd InsertLeave * if expand('%') != '' | update | endif
 
 " Conque Term
 Plug 'rosenfeld/conque-term'
