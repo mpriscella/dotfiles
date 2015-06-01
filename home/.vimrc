@@ -15,17 +15,17 @@ endif
 
 " Color Scheme
 set background=dark
-try
-  colorscheme molokai
-  let g:molokai_original = 1
-  let g:rehash256 = 1
-catch
-endtry
+" try
+"   colorscheme molokai
+"   let g:molokai_original = 1
+"   let g:rehash256 = 1
+" catch
+" endtry
 
 " Column 80
 if (exists('+colorcolumn'))
   set colorcolumn=80
-  highlight ColorColumn ctermbg=9
+  highlight ColorColumn ctermbg=8
 endif
 
 syntax enable
@@ -86,9 +86,9 @@ nmap <leader>8 8gt<cr>
 nmap <leader>9 9gt<cr>
 
 " Other Bundles
-if v:version >= 703
-  Plug 'Valloric/YouCompleteMe'
-endif
+" if v:version >= 703
+"   Plug 'Valloric/YouCompleteMe'
+" endif
 Plug 'kien/ctrlp.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
