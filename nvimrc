@@ -1,0 +1,234 @@
+" Create ~/.vim/autoload directory
+if empty(glob("~/.nvim/autoload"))
+  silent !mkdir ~/.nvim/autoload > /dev/null 2>&1
+endif
+
+" Create ~/.vim/colors directory
+if empty(glob("~/.nvim/colors"))
+  silent !mkdir ~/.nvim/colors > /dev/null 2>&1
+endif
+
+" Load plug
+if empty(glob("~/.nvim/autoload/plug.vim"))
+  execute '!curl -fLo ~/.nvim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
+endif
+
+" Auto download colorscheme
+if empty(glob("~/.nvim/colors/molokai.vim"))
+  execute '!curl -fLo ~/.nvim/colors/molokai.vim https://raw.githubusercontent.com/tomasr/molokai/master/colors/molokai.vim'
+endif
+
+" Color Scheme
+colorscheme molokai
+
+" Column 80
+if (exists('+colorcolumn'))
+  set colorcolumn=80
+  highlight ColorColumn ctermbg=9
+endif
+
+syntax enable
+set nocompatible
+filetype off
+set novisualbell
+set noerrorbells
+set incsearch
+
+" Splitting settings
+set splitright
+set splitbelow
+
+" Folding Settings
+set foldmethod=indent
+
+call plug#begin('~/.nvim/plugged')
+
+" Syntax Bundles
+Plug 'airblade/vim-gitgutter'
+Plug 'derekwyatt/vim-scala'
+Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
+"Plug 'chase/vim-ansible-yaml', {'for': 'yaml'}
+Plug 'cakebaker/scss-syntax.vim', {'for': 'scss'}
+Plug 'fatih/vim-go', {'for': 'go'}
+Plug 'gorodinskiy/vim-coloresque', {'for': ['css', 'scss', 'html']}
+
+" Syntax Mapping
+" Drupal
+au BufNewFile,BufRead *.module set filetype=php
+" au BufNewFile,BufRead *.yml set filetype=yaml
+au BufNewFile,BufRead *.inc set filetype=php
+au BufNewFile,BufRead *.install set filetype=php
+autocmd FileType php autocmd BufWritePre <buffer> :%s/\s\+$//e
+
+let mapleader = ","
+nmap <leader>t :tabnew<cr>
+nmap <leader>w :tabclose<cr>
+
+" Tagbar
+Plug 'majutsushi/tagbar'
+nmap gotag :TagbarToggle<cr>
+
+" Tabs
+nmap <leader>n :tabn<cr>
+nmap <leader>p :tabp<cr>
+nmap <leader>1 1gt<cr>
+nmap <leader>2 2gt<cr>
+nmap <leader>3 3gt<cr>
+nmap <leader>4 4gt<cr>
+nmap <leader>5 5gt<cr>
+nmap <leader>6 6gt<cr>
+nmap <leader>7 7gt<cr>
+nmap <leader>8 8gt<cr>
+nmap <leader>9 9gt<cr>
+
+nmap <leader>m1 :tabm 0<cr>
+nmap <leader>m2 :tabm 1<cr>
+nmap <leader>m3 :tabm 2<cr>
+nmap <leader>m4 :tabm 3<cr>
+nmap <leader>m5 :tabm 4<cr>
+nmap <leader>m6 :tabm 5<cr>
+nmap <leader>m7 :tabm 6<cr>
+nmap <leader>m8 :tabm 7<cr>
+nmap <leader>m9 :tabm 8<cr>
+
+" Other Bundles
+" if v:version >= 703
+"   Plug 'Valloric/YouCompleteMe'
+" endif
+Plug 'kien/ctrlp.vim'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
+Plug 'Lokaltog/powerline', {'rtp': 'powerline/bindings/nvim/'}
+Plug 'scrooloose/syntastic'
+Plug 'marcweber/vim-addon-mw-utils'
+Plug 'tomtom/tlib_vim'
+Plug 'rking/ag.vim'
+" Plug 'Sirver/ultisnips'
+
+Plug 'honza/vim-snippets'
+let g:UltiSnipsExpandTrigger = "<c-j>"
+let g:UltiSnipsEditSplit = "vertical"
+
+Plug 'sjl/gundo.vim'
+Plug 'mhinz/vim-startify'
+let g:startify_session_persistence = 1
+
+Plug 'Raimondi/delimitMate'
+let delimitMate_matchpairs = "(:),[:],{:}"
+
+Plug 'ervandew/supertab'
+Plug 'mattn/emmet-vim'
+
+" Startify
+Plug 'mhinz/vim-startify'
+if filereadable(expand('todo.txt'))
+  let g:startify_bookmarks = [ 'todo.txt' ]
+endif
+
+Plug 'gcmt/taboo.vim'
+let g:taboo_tab_format = '[%N| %f%m]'
+
+Plug 'duff/vim-scratch'
+nmap <leader>s :Scratch<cr>
+
+" Powerline Stuff
+set guifont=Sauce\ Code\ Powerline:h15
+let g:Powerline_symbols = 'fancy'
+set encoding=utf-8
+set t_Co=256
+set fillchars+=stl:\ ,stlnc:\
+" set term=xterm-256color
+set termencoding=utf-8
+set laststatus=2
+
+hi Visual ctermbg=LightGreen
+
+" Cursor changes shape on INSERT
+" iTerm2 - OSX
+let tmux=$TMUX
+if exists(tmux)
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+endif
+
+try
+  set relativenumber
+endtry
+set number
+set backspace=2
+set history=1000
+set showcmd
+set showmode
+set gcr=a:blinkon0
+set visualbell
+set autoread
+set hidden
+
+set noswapfile
+set nobackup
+set nowb
+
+set autoindent
+set smartindent
+set smarttab
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
+set expandtab
+set ignorecase
+
+set list listchars=tab:\ \ ,trail:·
+
+set nowrap
+set linebreak
+
+set foldmethod=indent
+set foldnestmax=3
+set nofoldenable
+
+set wildmode=list:longest
+set wildmenu
+set wildignore+=*vim/backups*
+set wildignore+=*sass-cache*
+set wildignore+=*DS_Store*
+set wildignore+=log/**
+set wildignore+=tmp/**
+set wildignore+=*.png,*.jpg,*.gif
+set wildignore+=.*
+
+set scrolloff=8
+set sidescrolloff=15
+set sidescroll=1
+
+inoremap jk <Esc>
+
+noremap <c-j> <c-w>j
+noremap <c-k> <c-w>k
+noremap <c-l> <c-w>l
+noremap <c-h> <c-w>h
+
+tnoremap <c-j><c-k> <c-\><c-n>
+
+autocmd InsertLeave *
+  \   if exists('v:this_session') && filewritable(v:this_session)
+  \ |   call startify#session_write(fnameescape(v:this_session))
+  \ | endif
+
+" Local Vimrc
+if filereadable(expand("~/.nvimrc.local"))
+  source ~/.nvimrc.local
+endif
+
+call plug#end()
+
+function UpdatePlugScript()
+  execute '!rm ~/.nvim/autoload/plug.vim'
+  execute '!curl -fLo ~/.nvim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
+endfunction
+
+:command UpdatePlug call UpdatePlugScript()
