@@ -1,13 +1,13 @@
 if test -f ~/.config/fish/aliases.fish
-  source ~/.config/fish/aliases.fish
+  . ~/.config/fish/aliases.fish
 end
 
 if test -f ~/.config/fish/local.fish
-  source ~/.config/fish/local.fish
+  . ~/.config/fish/local.fish
 end
 
 function reload
-  source ~/.config/fish/config.fish
+  . ~/.config/fish/config.fish
 end
 
 function notify
