@@ -19,6 +19,7 @@
   b = branch
   br = branch -r
   su = "!git branch --set-upstream-to=origin/$1 $1"
+  edit = "!nvim `git ls-files -m` -p"
 [grep]
   extendRegexp = true
   lineNumber = true

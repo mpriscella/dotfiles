@@ -24,7 +24,7 @@ if test -n "$TMUX"
   set -x TERM xterm-256color
 end
 
-function fish_prompt --description 'Write out the prompt'
+function fish_prompt
    if not set -q __fish_prompt_normal
      set -g __fish_prompt_normal (set_color normal)
    end
@@ -33,7 +33,7 @@ function fish_prompt --description 'Write out the prompt'
      set -g __fish_prompt_cwd (set_color $fish_color_cwd)
    end
 
-   echo -n -s "$__fish_prompt_cwd" (prompt_pwd) (set_color blue) (__fish_git_prompt) (set_color normal) "$__fish_prompt_normal" ' > '
+   echo -n -s "$__fish_prompt_cwd" (prompt_pwd) (set_color blue) (__fish_git_prompt) "$__fish_prompt_normal" ' $ '
 end
 
 function fish_greeting
