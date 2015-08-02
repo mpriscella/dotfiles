@@ -95,7 +95,8 @@ nmap <leader>m9 :tabm 8<cr>
 " if v:version >= 703
 "   Plug 'Valloric/YouCompleteMe'
 " endif
-Plug 'kien/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -123,8 +124,8 @@ Plug 'mattn/emmet-vim'
 
 " Startify
 Plug 'mhinz/vim-startify'
-if filereadable(expand('todo.txt'))
-  let g:startify_bookmarks = [ 'todo.txt' ]
+if filereadable(expand('~/todo.txt'))
+  let g:startify_bookmarks = [ '~/todo.txt' ]
 endif
 
 Plug 'gcmt/taboo.vim'

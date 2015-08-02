@@ -89,7 +89,7 @@ nmap <leader>9 9gt<cr>
 " if v:version >= 703
 "   Plug 'Valloric/YouCompleteMe'
 " endif
-Plug 'kien/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
