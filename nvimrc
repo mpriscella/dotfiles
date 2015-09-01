@@ -33,6 +33,7 @@ filetype off
 set novisualbell
 set noerrorbells
 set incsearch
+set mouse=n
 
 " Splitting settings
 set splitright
@@ -92,21 +93,17 @@ nmap <leader>m8 :tabm 7<cr>
 nmap <leader>m9 :tabm 8<cr>
 
 " Other Bundles
-" if v:version >= 703
-"   Plug 'Valloric/YouCompleteMe'
-" endif
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
-Plug 'Lokaltog/powerline', {'rtp': 'powerline/bindings/nvim/'}
+Plug 'itchyny/lightline.vim'
 Plug 'scrooloose/syntastic'
 Plug 'marcweber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
 Plug 'rking/ag.vim'
-" Plug 'Sirver/ultisnips'
 
 Plug 'honza/vim-snippets'
 let g:UltiSnipsExpandTrigger = "<c-j>"
@@ -130,6 +127,8 @@ endif
 
 Plug 'gcmt/taboo.vim'
 let g:taboo_tab_format = '[%N| %f%m]'
+let g:taboo_renamed_tab_format = '[%N| %l]'
+nmap <leader>r :TabooRename 
 
 Plug 'duff/vim-scratch'
 nmap <leader>s :Scratch<cr>
@@ -140,22 +139,10 @@ let g:Powerline_symbols = 'fancy'
 set encoding=utf-8
 set t_Co=256
 set fillchars+=stl:\ ,stlnc:\
-" set term=xterm-256color
 set termencoding=utf-8
 set laststatus=2
 
 hi Visual ctermbg=LightGreen
-
-" Cursor changes shape on INSERT
-" iTerm2 - OSX
-let tmux=$TMUX
-if exists(tmux)
-  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-else
-  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-endif
 
 try
   set relativenumber
