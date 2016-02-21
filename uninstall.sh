@@ -7,7 +7,7 @@ rm ~/.config/fish/gus_dont_be_lines
 
 rm ~/.ackrc
 rm ~/.vimrc
-rm ~/.nvimrc
+rm ~/.config/nvim/init.vim
 rm ~/.tmux.conf
 rm ~/.gitconfig
 rm -rf ~/.bin

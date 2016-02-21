@@ -25,4 +25,3 @@
   lineNumber = true
 [include]
   path = .gitconfig.local
-

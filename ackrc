@@ -1,4 +1,4 @@
--type-set=info=.info
--type-set=module=.module
--type-set=install=.install
--type-set=sass=.scss
+--type-set=info:ext:info
+--type-set=php:ext:php,module,inc
+--type-set=install:ext:install
+--type-set=sass:ext:scss
