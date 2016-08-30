@@ -22,10 +22,10 @@ call plug#begin('~/.config/nvim/plugged')
 
 " Syntax Plugins
 " Plug 'pangloss/vim-javascript'
-Plug 'flowtype/vim-flow'
-Plug 'mxw/vim-jsx'
+Plug 'flowtype/vim-flow', {'for': ['javascript', 'javascript.jsx']}
+Plug 'mxw/vim-jsx', {'for': 'javascript.jsx'}
 Plug 'airblade/vim-gitgutter'
-Plug 'derekwyatt/vim-scala'
+Plug 'derekwyatt/vim-scala', {'for': 'scala'}
 Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
 Plug 'cakebaker/scss-syntax.vim', {'for': 'scss'}
 Plug 'fatih/vim-go', {'for': 'go'}
