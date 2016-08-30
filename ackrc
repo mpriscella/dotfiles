@@ -2,3 +2,7 @@
 --type-set=php:ext:php,module,inc
 --type-set=install:ext:install
 --type-set=sass:ext:scss
+--type-set=react:ext:jsx
+--type-set=js:ext:js,jsx
+--pager=less -R
+--ignore-case

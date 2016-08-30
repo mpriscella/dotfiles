@@ -2,7 +2,8 @@
 
 # TODO
 #  - Why isn't tmux.conf getting copied over?
-#  - Test out printf's for shell, see if it needs a new line or not.
+#  - Uninstall functionality
+#  - Instead of copying bin over to ~/.bin, symlink all files in bin to ~/.bin
 
 shell="fish"
 guerrilla=false
@@ -10,7 +11,7 @@ force=false
 supported_shells=(fish bash)
 
 declare -A map
-mkdir -p $HOME/.config/mpriscella
+mkdir -p $HOME/.config/backup
 
 function usage {
   echo "Usage:"
@@ -21,7 +22,7 @@ function usage {
   echo " "
   echo "Options:"
   echo "  -h --help                      Display Usage."
-  echo "  -g --guerrilla                  Install barebone dotfiles."
+  echo "  -g --guerrilla                 Install barebone dotfiles."
   echo "  -f --force                     Overwrite files."
   echo "  -s <shell>, --shell=<shell>    Set shell (bash and fish are supported. fish is default)."
   exit 1
@@ -74,16 +75,20 @@ function install {
 }
 
 function uninstall {
-  files=(~/.config/mpriscella/*)
+  files=(~/.config/backup/*)
 }
 
 function copy_file {
-  mv $HOME/$2 $HOME/.config/mpriscella/"$1".bkup
+  mv $HOME/$2 $HOME/.config/backup/"$1".bkup
   ln -sf $PWD/$1 $HOME/$2
 }
 
 while :; do
   case $1 in
+    -g|--guerrilla)
+        guerrilla=true
+        shell="bash"
+      ;;
     -s|--shell)
       if [ -n "$2" ]; then
         shell=$2
@@ -103,10 +108,6 @@ while :; do
         printf 'ERROR: "--shell" requires a non-empty option argument.' >&2
         usage
       ;;
-    -g|--guerrilla)
-        guerrilla=true
-        shell="bash"
-      ;;
     -f|--force)
         force=true
       ;;
@@ -114,9 +115,8 @@ while :; do
         uninstall
       ;;
     *)
+        install
       break
   esac
   shift
 done
-
-

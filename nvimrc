@@ -21,6 +21,9 @@ endif
 call plug#begin('~/.config/nvim/plugged')
 
 " Syntax Plugins
+" Plug 'pangloss/vim-javascript'
+Plug 'flowtype/vim-flow'
+Plug 'mxw/vim-jsx'
 Plug 'airblade/vim-gitgutter'
 Plug 'derekwyatt/vim-scala'
 Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
@@ -54,17 +57,22 @@ Plug 'marcweber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
 Plug 'rking/ag.vim'
 
-Plug 'honza/vim-snippets'
-let g:UltiSnipsExpandTrigger = "<c-j>"
-let g:UltiSnipsEditSplit = "vertical"
+" Plug 'honza/vim-snippets'
+Plug 'sirver/ultisnips'
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+" let g:UltiSnipsEditSplit = "vertical"
 
 Plug 'sjl/gundo.vim'
 
 Plug 'Raimondi/delimitMate'
 let delimitMate_matchpairs = "(:),[:],{:}"
 
-Plug 'ervandew/supertab'
+" Plug 'ervandew/supertab'
 Plug 'mattn/emmet-vim'
+
+Plug 'moll/vim-node'
 
 Plug 'gcmt/taboo.vim'
 let g:taboo_tab_format = '[%N| %f%m]'
@@ -98,6 +106,15 @@ syntax enable
 set nocompatible
 set incsearch
 set mouse=h
+
+" Enabling Omnitype
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
+
+" Search mappings: These will make it so that going to the next item in a
+" search will center on the line it's found in.
+nnoremap n nzzzv
+nnoremap N Nzzzv
 
 " Splitting settings
 set splitright
@@ -202,3 +219,5 @@ autocmd VimEnter *
   \ |   FZF
 
 inoremap <c-s> <c-o>:Update<CR><CR>
+
+" let g:deoplete#enable_at_startup = 1
