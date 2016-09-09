@@ -21,9 +21,9 @@ endif
 call plug#begin('~/.config/nvim/plugged')
 
 " Syntax Plugins
-" Plug 'pangloss/vim-javascript'
-Plug 'flowtype/vim-flow', {'for': ['javascript', 'javascript.jsx']}
-Plug 'mxw/vim-jsx', {'for': 'javascript.jsx'}
+Plug 'pangloss/vim-javascript'
+" Plug 'flowtype/vim-flow', {'for': ['javascript', 'javascript.jsx']}
+Plug 'mxw/vim-jsx', {'for': ['javascript.jsx', 'javascript']}
 Plug 'airblade/vim-gitgutter'
 Plug 'derekwyatt/vim-scala', {'for': 'scala'}
 Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
@@ -91,7 +91,11 @@ au BufNewFile,BufRead *.yml set filetype=yaml
 au BufNewFile,BufRead *.inc set filetype=php
 au BufNewFile,BufRead *.install set filetype=php
 autocmd FileType php autocmd BufWritePre <buffer> :%s/\s\+$//e
+
+au BufNewFile,BufRead *.js set filetype=javascript.jsx
 autocmd FileType javascript setlocal ts=4 sts=4 sw=4
+autocmd FileType javascript.jsx setlocal ts=4 sts=4 sw=4
+
 
 " Color Scheme
 colorscheme molokai
