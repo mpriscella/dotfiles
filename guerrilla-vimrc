@@ -1,3 +1,5 @@
+set encoding=utf-8
+
 syntax enable
 
 filetype plugin on
@@ -7,7 +9,36 @@ set splitright
 set splitbelow
 set nocompatible
 set incsearch
-set mouse=h
+
+set laststatus=2
+set statusline=
+
+if executable('git')
+  function! GitBranch()
+    return system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
+  endfunction
+
+  function! StatuslineGit()
+    let l:branchname = GitBranch()
+    return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
+  endfunction
+
+  set statusline+=%#PmenuSel#
+  set statusline+=%{StatuslineGit()}
+  set statusline+=%#LineNr#
+endif
+
+set statusline+=\ %t
+set statusline+=\ %h
+set statusline+=%m
+set statusline+=%r
+set statusline+=%=
+set statusline+=%y
+set statusline+=‹‹%l:%c››
+
+if has('mouse')
+  set mouse=h
+endif
 
 try
   set relativenumber
@@ -22,7 +53,7 @@ set visualbell
 set autoread
 set hidden
 
-" Backup Files
+" Backup Files.
 set noswapfile
 set nobackup
 set nowb
@@ -40,31 +71,29 @@ set list listchars=tab:\ \ ,trail:·
 set nowrap
 set linebreak
 
-" Folds
-set foldmethod=indent
-set foldnestmax=3
-set nofoldenable
+" Folds.
+if has('foldmethod')
+  set foldmethod=indent
+  set foldnestmax=3
+  set nofoldenable
+endif
 
-" Scroll
+" Scroll.
 set scrolloff=5
 set sidescrolloff=15
 set sidescroll=1
 
-au BufNewFile,BufRead *.module set filetype=php
-au BufNewFile,BufRead *.yml set filetype=yaml
-au BufNewFile,BufRead *.inc set filetype=php
-au BufNewFile,BufRead *.install set filetype=php
-autocmd FileType php autocmd BufWritePre <buffer> :%s/\s\+$//e
-autocmd FileType javascript setlocal ts=4 sts=4 sw=4
-
+" Shortcuts for moving around splits.
 noremap <c-j> <c-w>j
 noremap <c-k> <c-w>k
 noremap <c-l> <c-w>l
 noremap <c-h> <c-w>h
 
+nmap <c-p> :e.<cr>
+
 let mapleader = ","
 
-" Tabs
+" Tabs.
 nmap <leader>t :tabnew<cr>
 nmap <leader>w :tabclose<cr>
 nmap <leader>n :tabn<cr>
@@ -89,3 +118,17 @@ nmap <leader>m6 :tabm 5<cr>
 nmap <leader>m7 :tabm 6<cr>
 nmap <leader>m8 :tabm 7<cr>
 nmap <leader>m9 :tabm 8<cr>
+
+autocmd BufWritePost *vimrc :source ~/.vimrc
+
+" Automatically remove trailing whitespace from files.
+autocmd BufWritePre * :%s/\s\+$//e
+
+" Drupal.
+au BufNewFile,BufRead *.module set filetype=php
+au BufNewFile,BufRead *.yml set filetype=yaml
+au BufNewFile,BufRead *.inc set filetype=php
+au BufNewFile,BufRead *.install set filetype=php
+
+" Javascript.
+" autocmd FileType javascript setlocal ts=2 sts=2 sw=2

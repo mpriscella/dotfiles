@@ -6,22 +6,14 @@ if test -f ~/.config/fish/local.fish
   . ~/.config/fish/local.fish
 end
 
-function reload
-  . ~/.config/fish/config.fish
-end
-
-function notify
-  if hash terminal-notifier 2>/dev/null
-    terminal-notifier -title "Terminal" -message "$1" -activate "com.googlecode.iterm2" -sound "Glass"
-  else
-    echo "'notify' requires terminal-notifier. Please run"
-    echo "    brew install terminal-notifier"
-    echo "to install"
-  end
-end
-
 if test -n "$TMUX"
   set -x TERM xterm-256color
+end
+
+test -e {$HOME}/.iterm2_shell_integration.fish ; and source {$HOME}/.iterm2_shell_integration.fish
+
+function reload
+  . ~/.config/fish/config.fish
 end
 
 function fish_prompt

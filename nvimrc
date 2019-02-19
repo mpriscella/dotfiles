@@ -3,26 +3,18 @@ if empty(glob("~/.config/nvim/autoload"))
   silent !mkdir ~/.config/nvim/autoload > /dev/null 2>&1
 endif
 
-" Create ~/.vim/colors directory
-if empty(glob("~/.config/nvim/colors"))
-  silent !mkdir ~/.config/nvim/colors > /dev/null 2>&1
-endif
-
 " Load plug
 if empty(glob("~/.config/nvim/autoload/plug.vim"))
   execute '!curl -fLo ~/.config/nvim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
 endif
 
-" Auto download colorscheme
-if empty(glob("~/.config/nvim/colors/molokai.vim"))
-  execute '!curl -fLo ~/.config/nvim/colors/molokai.vim https://raw.githubusercontent.com/tomasr/molokai/master/colors/molokai.vim'
-endif
-
 call plug#begin('~/.config/nvim/plugged')
+
+" Clipboard
+set clipboard+=unnamedplus
 
 " Syntax Plugins
 Plug 'pangloss/vim-javascript'
-" Plug 'flowtype/vim-flow', {'for': ['javascript', 'javascript.jsx']}
 Plug 'mxw/vim-jsx', {'for': ['javascript.jsx', 'javascript']}
 Plug 'airblade/vim-gitgutter'
 Plug 'derekwyatt/vim-scala', {'for': 'scala'}
@@ -35,6 +27,7 @@ let g:dash_map = {
   \ 'php' : ['drupal', 'php', 'foundation'],
   \ 'yaml' : 'ansible'
   \ }
+Plug 'evidens/vim-twig'
 
 " Tagbar
 Plug 'majutsushi/tagbar'
@@ -43,13 +36,14 @@ nmap tt :TagbarToggle<cr>
 " Other Bundles
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-nmap <c-p> :FZF<cr>
+Plug 'junegunn/fzf.vim'
+nmap <c-p> :Files<cr>
+nmap <c-j> :Tags<cr>
 
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
-Plug 'itchyny/lightline.vim'
 Plug 'scrooloose/syntastic'
 let g:syntastic_php_phpcs_args="--standard=Drupal"
 
@@ -57,19 +51,11 @@ Plug 'marcweber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
 Plug 'rking/ag.vim'
 
-" Plug 'honza/vim-snippets'
-Plug 'sirver/ultisnips'
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
-" let g:UltiSnipsEditSplit = "vertical"
-
 Plug 'sjl/gundo.vim'
 
 Plug 'Raimondi/delimitMate'
 let delimitMate_matchpairs = "(:),[:],{:}"
 
-" Plug 'ervandew/supertab'
 Plug 'mattn/emmet-vim'
 
 Plug 'moll/vim-node'
@@ -77,16 +63,15 @@ Plug 'moll/vim-node'
 Plug 'gcmt/taboo.vim'
 let g:taboo_tab_format = '[%N| %f%m]'
 let g:taboo_renamed_tab_format = '[%N| %l]'
-nmap <leader>r :TabooRename
 
 Plug 'duff/vim-scratch'
-nmap <leader>s :Scratch<cr>
 
 call plug#end()
 
 " Syntax Mapping
 " Drupal
 au BufNewFile,BufRead *.module set filetype=php
+au BufNewFile,BufRead *.theme set filetype=php
 au BufNewFile,BufRead *.yml set filetype=yaml
 au BufNewFile,BufRead *.inc set filetype=php
 au BufNewFile,BufRead *.install set filetype=php
@@ -96,14 +81,10 @@ au BufNewFile,BufRead *.js set filetype=javascript.jsx
 autocmd FileType javascript setlocal ts=4 sts=4 sw=4
 autocmd FileType javascript.jsx setlocal ts=4 sts=4 sw=4
 
-
-" Color Scheme
-colorscheme molokai
-
 " Column 80
 if (exists('+colorcolumn'))
   set colorcolumn=80
-  highlight ColorColumn ctermbg=9
+  highlight ColorColumn ctermbg=59
 endif
 
 syntax enable
@@ -123,7 +104,6 @@ nnoremap N Nzzzv
 " Splitting settings
 set splitright
 set splitbelow
-
 
 let mapleader = ","
 nmap <leader>t :tabnew<cr>
@@ -153,7 +133,9 @@ nmap <leader>m8 :tabm 7<cr>
 nmap <leader>m9 :tabm 8<cr>
 
 hi Visual guifg=#99ff33
-" hi Visual ctermbg=LightGreen
+
+nmap <leader>r :TabooRename
+nmap <leader>s :Scratch<cr>
 
 try
   set relativenumber
@@ -209,19 +191,6 @@ if filereadable(expand("~/.config/nvim/nvimrc.local"))
   source ~/.config/nvim/nvimrc.local
 endif
 
-function UpdatePlugScript()
-  execute '!rm ~/.config/nvim/autoload/plug.vim'
-  execute '!curl -fLo ~/.config/nvim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
-endfunction
-
-:command UpdatePlug call UpdatePlugScript()
-
-" If no command line arguments
-autocmd VimEnter *
-  \   if filewritable(expand('%')) == 0 && argc() == 0
-  \ |   e ~/todo.txt
-  \ |   FZF
+:imap <c-u> <esc>gUiwi
 
 inoremap <c-s> <c-o>:Update<CR><CR>
-
-" let g:deoplete#enable_at_startup = 1
