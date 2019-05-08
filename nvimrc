@@ -1,19 +1,19 @@
-" Create ~/.vim/autoload directory
+" Create ~/.vim/autoload directory.
 if empty(glob("~/.config/nvim/autoload"))
   silent !mkdir ~/.config/nvim/autoload > /dev/null 2>&1
 endif
 
-" Load plug
+" Load plug.
 if empty(glob("~/.config/nvim/autoload/plug.vim"))
   execute '!curl -fLo ~/.config/nvim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
 endif
 
 call plug#begin('~/.config/nvim/plugged')
 
-" Clipboard
+" Clipboard.
 set clipboard+=unnamedplus
 
-" Syntax Plugins
+" Syntax Plugins.
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx', {'for': ['javascript.jsx', 'javascript']}
 Plug 'airblade/vim-gitgutter'
@@ -23,23 +23,25 @@ Plug 'cakebaker/scss-syntax.vim', {'for': 'scss'}
 Plug 'fatih/vim-go', {'for': 'go'}
 Plug 'gorodinskiy/vim-coloresque', {'for': ['css', 'scss', 'html']}
 Plug 'rizzatti/dash.vim'
+Plug 'fgsch/vim-varnish'
 let g:dash_map = {
   \ 'php' : ['drupal', 'php', 'foundation'],
   \ 'yaml' : 'ansible'
   \ }
 Plug 'evidens/vim-twig'
 
-" Tagbar
+" Tagbar.
 Plug 'majutsushi/tagbar'
 nmap tt :TagbarToggle<cr>
 
-" Other Bundles
+" Other Bundles.
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 nmap <c-p> :Files<cr>
 nmap <c-j> :Tags<cr>
 
+Plug 'dhruvasagar/vim-table-mode'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -68,8 +70,8 @@ Plug 'duff/vim-scratch'
 
 call plug#end()
 
-" Syntax Mapping
-" Drupal
+" Syntax Mapping.
+" Drupal.
 au BufNewFile,BufRead *.module set filetype=php
 au BufNewFile,BufRead *.theme set filetype=php
 au BufNewFile,BufRead *.yml set filetype=yaml
@@ -81,7 +83,7 @@ au BufNewFile,BufRead *.js set filetype=javascript.jsx
 autocmd FileType javascript setlocal ts=4 sts=4 sw=4
 autocmd FileType javascript.jsx setlocal ts=4 sts=4 sw=4
 
-" Column 80
+" Column 80.
 if (exists('+colorcolumn'))
   set colorcolumn=80
   highlight ColorColumn ctermbg=59
@@ -92,7 +94,7 @@ set nocompatible
 set incsearch
 set mouse=h
 
-" Enabling Omnitype
+" Enabling Omnitype.
 filetype plugin on
 set omnifunc=syntaxcomplete#Complete
 
@@ -101,7 +103,7 @@ set omnifunc=syntaxcomplete#Complete
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
-" Splitting settings
+" Splitting settings.
 set splitright
 set splitbelow
 
@@ -109,7 +111,7 @@ let mapleader = ","
 nmap <leader>t :tabnew<cr>
 nmap <leader>w :tabclose<cr>
 
-" Tabs
+" Tabs.
 nmap <leader>n :tabn<cr>
 nmap <leader>p :tabp<cr>
 nmap <leader>1 1gt<cr>
@@ -150,7 +152,7 @@ set visualbell
 set autoread
 set hidden
 
-" Backup Files
+" Backup Files.
 set noswapfile
 set nobackup
 set nowb
@@ -168,13 +170,13 @@ set list listchars=tab:\ \ ,trail:·
 set nowrap
 set linebreak
 
-" Folds
+" Folds.
 set foldmethod=syntax
 set foldnestmax=3
 set nofoldenable
 let php_fold=1
 
-" Scroll
+" Scroll.
 set scrolloff=5
 set sidescrolloff=15
 set sidescroll=1
@@ -186,7 +188,7 @@ noremap <c-h> <c-w>h
 
 tnoremap ,, <c-\><c-n>
 
-" Local Vimrc
+" Local Vimrc.
 if filereadable(expand("~/.config/nvim/nvimrc.local"))
   source ~/.config/nvim/nvimrc.local
 endif
