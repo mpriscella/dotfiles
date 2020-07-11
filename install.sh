@@ -13,6 +13,7 @@ case $OS in
     apk add bash curl git ncurses perl vim zsh
     ;;
   "Ubuntu")
+  "Debian GNU/Linux")
     apt-get update
     apt-get install -y curl git locales tar vim zsh
 
