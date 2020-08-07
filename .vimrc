@@ -78,7 +78,7 @@ else
 endif
 
 " Clipboard.
-set clipboard+=unnamedplus
+set clipboard=unnamed
 
 scriptencoding utf-8
 set encoding=utf-8

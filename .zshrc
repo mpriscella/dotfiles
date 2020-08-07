@@ -43,7 +43,7 @@ export PATH=$HOME/.bin:$PATH
 
 # Only include docker specific configurations if shell is not running on a
 # docker container.
-if [[ -f /proc/1/sched && $(cat /proc/1/sched | head -n 1 | grep init) ]]; then
+if [[ ! -f /proc/1/sched || $(cat /proc/1/sched | head -n 1 | grep init) ]]; then
   source ~/.docker.aliases.zshrc
 fi
 
