@@ -32,10 +32,17 @@ alias hurl="curl -sLD - -o /dev/null"
 alias lr='ranger'
 alias reload='source ~/.zshrc'
 alias ttfb='curl -o /dev/null -H "Cache-Control: no-cache" -s -w "Connect: %{time_connect} TTFB: %{time_starttransfer} Total time: %{time_total} \n"'
+alias vi='vim'
 
 # Enable colored output for default commands.
 alias grep='grep --color=auto '
-alias ls='ls -G'
+
+# Need to see if this works or if we need to use ls --color=auto
+if ls -G > /dev/null 2>&1 ; then
+  alias ls='ls -G'
+else
+  alias ls='ls --color=auto'
+fi
 
 export PATH=$HOME/.bin:$PATH
 
@@ -100,5 +107,11 @@ export TERM=xterm-256color
 ############################### Load Local zshrc ###############################
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+
+function sops_install {
+  tag_name=$(curl -s https://api.github.com/repos/mozilla/sops/releases/latest | jq -r .tag_name)
+  curl -L https://github.com/mozilla/sops/releases/download/$tag_name/sops-$tag_name.linux -o /usr/local/bin/sops
+  chmod +x /usr/local/bin/sops
+}
 
 zplug load
