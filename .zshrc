@@ -105,14 +105,21 @@ fi
 
 export TERM=xterm-256color
 
-############################### Load Local zshrc ###############################
+################################### Functions ##################################
 
-[ -f ~/.zshrc.local ] && source ~/.zshrc.local
-
+#######################################
+# Install latest release of sops.
+# Arguments:
+#   None
+#######################################
 function sops_install {
   tag_name=$(curl -s https://api.github.com/repos/mozilla/sops/releases/latest | jq -r .tag_name)
   curl -L https://github.com/mozilla/sops/releases/download/$tag_name/sops-$tag_name.linux -o /usr/local/bin/sops
   chmod +x /usr/local/bin/sops
 }
+
+############################### Load Local zshrc ###############################
+
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 zplug load
