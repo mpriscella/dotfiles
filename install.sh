@@ -12,7 +12,7 @@ case $OS in
     yum install -y git jq tar util-linux-user vim zsh
     ;;
   "Alpine Linux")
-    export LC_ALL en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
     apk add bash curl git jq ncurses perl vim zsh
     ;;
   "Debian GNU/Linux")
