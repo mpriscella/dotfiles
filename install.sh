@@ -41,5 +41,5 @@ ln -s $(pwd)/.tmux.conf ~/.tmux.conf
 ln -s $(pwd)/.vimrc ~/.vimrc
 ln -s $(pwd)/.zshrc ~/.zshrc
 
-zsh -c "source ~/.zshrc; zplug install"
+zsh -c "export LC_ALL=en_US.UTF-8; source ~/.zshrc; zplug install"
 vim +PlugInstall +qall
