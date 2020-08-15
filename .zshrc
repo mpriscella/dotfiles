@@ -1,6 +1,7 @@
 ############## zplug (https://github.com/zplug/zplug) integration #############
 
 export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 # If zplug isn't installed, clone it.
 if [[ ! -d ~/.zplug ]];then
