@@ -9,7 +9,7 @@ export COMPOSE_DOCKER_CLI_BUILD=1
 
 alias alpine='docker run -it --rm --name alpine -v $(pwd):$MNT_DIR -w $MNT_DIR alpine sh'
 alias awscli='docker run -it --rm --name awscli -v $HOME/.aws:/ansible/.aws -v $(pwd):$MNT_DIR -w $MNT_DIR groupninemedia/awscli bash'
-alias composer='docker run -it --rm --name composer -v $(pwd):$MNT_DIR -w $MNT_DIR composer --ignore-platform-reqs'
+alias composer='docker run -it --rm --name composer -v $(pwd):$MNT_DIR -w $MNT_DIR composer:1.10.12 --ignore-platform-reqs'
 alias amazonlinux='docker run -it --rm --name linux -v $(pwd)/:$MNT_DIR -w $MNT_DIR amazonlinux sh'
 alias halyard='docker run -p 8084:8084 -p 9000:9000 --name halyard --rm -v ~/.hal:/home/spinnaker/.hal -d gcr.io/spinnaker-marketplace/halyard:stable'
 alias k6='docker run loadimpact/k6'

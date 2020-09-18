@@ -101,6 +101,11 @@ then
   source <(skaffold completion zsh)
 fi
 
+if (( $+commands[gh] ))
+then
+  source <(gh completion --shell zsh)
+fi
+
 ##################################### tmux #####################################
 
 export TERM=xterm-256color

@@ -14,7 +14,7 @@ docker run -v $(pwd):/home/workspace -w /home/workspace --entrypoint="/bin/sh" u
 status=$?
 
 if [ $status -eq 1 ]; then
-  echo "Debian image failed"
+  echo "Ubuntu image failed"
   exit 1
 fi
 
@@ -23,7 +23,7 @@ docker run -v $(pwd):/home/workspace -w /home/workspace --entrypoint="/bin/sh" a
 status=$?
 
 if [ $status -eq 1 ]; then
-  echo "Debian image failed"
+  echo "Alpine image failed"
   exit 1
 fi
 
@@ -32,6 +32,6 @@ docker run -v $(pwd):/home/workspace -w /home/workspace --entrypoint="/bin/sh" a
 status=$?
 
 if [ $status -eq 1 ]; then
-  echo "Debian image failed"
+  echo "AmazonLinux image failed"
   exit 1
 fi
