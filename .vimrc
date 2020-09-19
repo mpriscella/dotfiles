@@ -21,34 +21,28 @@ if executable("git")
   Plug 'mxw/vim-jsx', {'for': ['javascript.jsx', 'javascript']}
   Plug 'airblade/vim-gitgutter'
   Plug 'derekwyatt/vim-scala', {'for': 'scala'}
-  Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
   Plug 'cakebaker/scss-syntax.vim', {'for': 'scss'}
   Plug 'fatih/vim-go', {'for': 'go'}
   Plug 'gorodinskiy/vim-coloresque', {'for': ['css', 'scss', 'html']}
-  Plug 'rizzatti/dash.vim'
   Plug 'fgsch/vim-varnish'
-  let g:dash_map = {
-    \ 'php' : ['drupal', 'php', 'foundation'],
-    \ 'yaml' : 'ansible'
-    \ }
   Plug 'evidens/vim-twig'
 
-  " Tagbar.
-  Plug 'majutsushi/tagbar'
-  nmap tt :TagbarToggle<cr>
+  if executable("ctags-exuberant")
+    Plug 'majutsushi/tagbar'
+    nmap tt :TagbarToggle<cr>
+  endif
 
   " Other Bundles.
   Plug 'junegunn/rainbow_parentheses.vim'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
   nmap <c-p> :Files<cr>
-  nmap <c-j> :Tags<cr>
+  " nmap <c-j> :Tags<cr>
 
   Plug 'dhruvasagar/vim-table-mode'
   Plug 'tpope/vim-commentary'
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-surround'
-  Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
   Plug 'scrooloose/syntastic'
   let g:syntastic_php_phpcs_args="--standard=Drupal"
 
@@ -94,8 +88,6 @@ au BufNewFile,BufRead *.Jenkinsfile set filetype=groovy
 autocmd FileType php autocmd BufWritePre <buffer> :%s/\s\+$//e
 
 au BufNewFile,BufRead *.js set filetype=javascript.jsx
-autocmd FileType javascript setlocal ts=4 sts=4 sw=4
-autocmd FileType javascript.jsx setlocal ts=4 sts=4 sw=4
 
 " Column 80.
 if (exists('+colorcolumn'))
@@ -201,7 +193,7 @@ noremap <c-h> <c-w>h
 
 tnoremap ,, <c-\><c-n>
 
-" Local Vimrc.
+" Load local Vimrc if it exists.
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
