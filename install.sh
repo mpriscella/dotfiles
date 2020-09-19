@@ -26,7 +26,7 @@ case $(uname -s) in
     echo "Operating System $OS not found."
 esac
 
-files=".ackrc .docker.aliases.zshrc .gitconfig .tmux.conf .vimrc .zshrc"
+files=".ackrc .docker.aliases.zshrc .tmux.conf .vimrc .zshrc"
 
 for i in $files; do
   if test -f ~/"$i"; then
