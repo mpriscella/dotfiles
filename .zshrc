@@ -62,8 +62,6 @@ bindkey -s '^P' 'fzf^M'
 
 ###################################### Go ######################################
 
-# export PATH=$HOME/go/bin:$PATH
-
 # alias golang='docker run -it --rm --name golang -v $(pwd):/go/src/${PWD##*/} -w /go/src/${PWD##*/} golang:1.13 bash'
 
 ################################## Kubernetes ##################################
