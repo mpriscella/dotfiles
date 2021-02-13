@@ -8,7 +8,7 @@ export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
 
 alias alpine='docker run -it --rm --name alpine -v $(pwd):$MNT_DIR -w $MNT_DIR alpine sh'
-alias awscli='docker run -it --rm --name awscli -v $HOME/.aws:/ansible/.aws -v $(pwd):$MNT_DIR -w $MNT_DIR groupninemedia/awscli bash'
+alias aws='docker run --rm -it -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli'
 alias composer='docker run -it --rm --name composer -v $(pwd):$MNT_DIR -w $MNT_DIR composer:1.10.12 --ignore-platform-reqs'
 alias amazonlinux='docker run -it --rm --name linux -v $(pwd)/:$MNT_DIR -w $MNT_DIR amazonlinux sh'
 alias gcloud-auth='docker run -it --name gcloud-config gcr.io/google.com/cloudsdktool/cloud-sdk gcloud auth login'
