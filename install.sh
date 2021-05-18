@@ -4,7 +4,8 @@ case $(uname -s) in
   "Linux")
     if command -v apt > /dev/null 2>&1; then
       apt-get update -y
-      apt-get install -y curl exuberant-ctags gawk git jq locales python tar vim zsh
+      apt-get install -y ack curl exuberant-ctags gawk git jq locales python \
+        tar vim zsh
 
       export LANG=en_US.UTF-8
       echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
