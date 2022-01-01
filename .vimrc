@@ -8,7 +8,7 @@ if empty(glob("~/.vim/autoload"))
   silent !mkdir ~/.vim/autoload > /dev/null 2>&1
 endif
 
-" Load plug.
+" Load vim-plug (https://github.com/junegunn/vim-plug).
 if empty(glob("~/.vim/autoload/plug.vim"))
   silent execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
 endif

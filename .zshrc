@@ -27,11 +27,12 @@ zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
 
 bindkey -v
 
-alias fd="find . -name"
+# (F)astly Debug.
 alias fdebug='curl -svo /dev/null -H "Fastly-Debug: true"'
+# (H)eader C(url).
 alias hurl="curl -sLD - -o /dev/null"
-alias lr='ranger'
 alias reload='source ~/.zshrc'
+# (T)ime (T)o (F)irst (B)yte.
 alias ttfb='curl -o /dev/null -H "Cache-Control: no-cache" -s -w "Connect: %{time_connect} TTFB: %{time_starttransfer} Total time: %{time_total} \n"'
 alias vi='vim'
 
@@ -42,16 +43,22 @@ alias grep='grep --color=auto '
 if ls -G > /dev/null 2>&1 ; then
   alias ls='ls -G'
 else
-  alias ls='ls --color=auto'
+  alias ls='ls --color=always'
 fi
 
 export PATH=$HOME/.bin:$PATH
+export GIT_EDITOR=vim
 
 #################################### Docker ####################################
 
 # Only include docker specific configurations if shell is not running on a
 # docker container.
-if [[ ! -f /proc/1/sched || $(cat /proc/1/sched | head -n 1 | grep init) ]]; then
+if (( $+commands[virt-what] ))
+then
+  if [[ $(virt-what) -ne 0 ]]; then
+    source ~/.docker.aliases.zshrc
+  fi
+else
   source ~/.docker.aliases.zshrc
 fi
 
@@ -66,13 +73,13 @@ bindkey -s '^P' 'fzf^M'
 
 ################################## Kubernetes ##################################
 
-export KUBE_EDITOR=vim
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-
 if (( $+commands[kubectl] ))
 then
   source <(kubectl completion zsh)
   zplug jonmosco/kube-ps1, use:kube-ps1.sh, from:github
+
+  export KUBE_EDITOR=vim
+  export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
   export KUBE_PS1_DIVIDER='/'
   export KUBE_PS1_SYMBOL_ENABLE=false
@@ -94,11 +101,6 @@ then
   source <(kops completion zsh)
 fi
 
-if (( $+commands[skaffold] ))
-then
-  source <(skaffold completion zsh)
-fi
-
 if (( $+commands[gh] ))
 then
   source <(gh completion --shell zsh)
@@ -117,8 +119,8 @@ export TERM=xterm-256color
 #######################################
 function sops_install {
   tag_name=$(curl -s https://api.github.com/repos/mozilla/sops/releases/latest | jq -r .tag_name)
-  curl -L https://github.com/mozilla/sops/releases/download/$tag_name/sops-$tag_name.linux -o /usr/local/bin/sops
-  chmod +x /usr/local/bin/sops
+  sudo curl -L https://github.com/mozilla/sops/releases/download/$tag_name/sops-$tag_name.linux -o /usr/local/bin/sops
+  sudo chmod +x /usr/local/bin/sops
 }
 
 ############################### Load Local zshrc ###############################

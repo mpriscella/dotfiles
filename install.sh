@@ -5,7 +5,7 @@ case $(uname -s) in
     if command -v apt > /dev/null 2>&1; then
       apt-get update -y
       apt-get install -y ack curl exuberant-ctags gawk git jq locales python \
-        tar vim zsh
+        tar tmux vim virt-what zsh
 
       export LANG=en_US.UTF-8
       echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
@@ -14,11 +14,11 @@ case $(uname -s) in
 
     if command -v yum > /dev/null 2>&1; then
       yum update
-      yum install -y git jq tar util-linux-user vim zsh
+      yum install -y git jq tar util-linux-user vim zsh virt-what
     fi
 
     if command -v apk > /dev/null 2>&1; then
-      apk add bash curl git jq ncurses perl vim zsh
+      apk add bash curl git jq ncurses perl vim zsh virt-what
     fi
     ;;
   "Darwin")
@@ -27,7 +27,7 @@ case $(uname -s) in
     echo "Operating System $OS not found."
 esac
 
-files=".ackrc .docker.aliases.zshrc .tmux.conf .vimrc .zshrc"
+files=".ackrc .gitconfig .docker.aliases.zshrc .tmux.conf .vimrc .zshrc"
 
 for i in $files; do
   if test -f ~/"$i"; then
@@ -38,3 +38,6 @@ done
 
 zsh -c "source ~/.zshrc; zplug install"
 vim +PlugInstall +qall
+
+# shellcheck source=.zshrc
+. ~/.zshrc
