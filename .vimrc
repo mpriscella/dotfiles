@@ -200,4 +200,11 @@ endif
 
 :imap <c-u> <esc>gUiwi
 
+" Cursor modes.
+let &t_SI.="\e[5 q" " Set INSERT mode cursor to 'blinking vertical bar'.
+let &t_EI.="\e[1 q" " Set NORMAL mode cursor to 'blinking block'.
+let &t_ti.="\e[1 q"
+let &t_te.="\e[0 q"
+
 inoremap <c-s> <c-o>:Update<CR><CR>
+
