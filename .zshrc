@@ -73,17 +73,17 @@ bindkey -s '^P' 'fzf^M'
 
 ################################## Kubernetes ##################################
 
+export KUBE_EDITOR=vim
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+export RPROMPT=""
 if (( $+commands[kubectl] ))
 then
   source <(kubectl completion zsh)
   zplug jonmosco/kube-ps1, use:kube-ps1.sh, from:github
 
-  export KUBE_EDITOR=vim
-  export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-
-  export KUBE_PS1_DIVIDER='/'
+  export KUBE_PS1_DIVIDER="/"
   export KUBE_PS1_SYMBOL_ENABLE=false
-  export RPROMPT='$(kube_ps1)'
 fi
 
 if (( $+commands[minikube] ))
@@ -128,3 +128,8 @@ function sops_install {
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 zplug load
+
+if (( $+commands[kubectl] ))
+then
+  export RPROMPT='$(kube_ps1)'
+fi
