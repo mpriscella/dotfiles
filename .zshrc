@@ -25,6 +25,8 @@ zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
 
 ################################################################################
 
+# Use vi mode with ZSH Line Editor (zle).
+# See https://zsh.sourceforge.io/Guide/zshguide04.html for documentation.
 bindkey -v
 
 # (F)astly Debug.
