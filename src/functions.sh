@@ -65,9 +65,9 @@ function install_packages() {
 function prepare_package_manager() {
   case "$PACKAGE_MANAGER" in
     "apt")
-      INSTALL_PACKAGE="apt-get install -y"
-      PACKAGE_SEARCH="apt -qq list --installed"
-      UPDATE_PACKAGES="apt-get update -y"
+      INSTALL_PACKAGE="sudo apt-get install -y"
+      PACKAGE_SEARCH="sudo apt -qq list --installed"
+      UPDATE_PACKAGES="sudo apt-get update -y"
       ;;
     "yum")
       INSTALL_PACKAGE="yum install -y"

@@ -10,14 +10,6 @@ fi
 
 source ~/.zplug/init.zsh
 
-# Install plugins if there are plugins that have not been installed
-if ! zplug check --verbose; then
-  printf "Install? [y/N]: "
-  if read -q; then
-    echo; zplug install
-  fi
-fi
-
 #################################### Theme #####################################
 
 zplug mafredri/zsh-async, from:github
@@ -55,14 +47,15 @@ export GIT_EDITOR=vim
 
 # Only include docker specific configurations if shell is not running on a
 # docker container.
-if (( $+commands[virt-what] ))
-then
-  if [[ $(virt-what) -ne 0 ]]; then
-    source ~/.docker.aliases.zshrc
-  fi
-else
-  source ~/.docker.aliases.zshrc
-fi
+# TODO Need to come up with better way of dynamically including docker aliases.
+# if (( $+commands[virt-what] ))
+# then
+#   if [[ $(virt-what) -ne 0 ]]; then
+#     source ~/.docker.aliases.zshrc
+#   fi
+# else
+#   source ~/.docker.aliases.zshrc
+# fi
 
 ############## FZF (https://github.com/junegunn/fzf) integration ###############
 
@@ -128,6 +121,14 @@ function sops_install {
 ############################### Load Local zshrc ###############################
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+
+# Install plugins if there are plugins that have not been installed
+if ! zplug check --verbose; then
+  printf "Install? [y/N]: "
+  if read -q; then
+    echo; zplug install
+  fi
+fi
 
 zplug load
 
