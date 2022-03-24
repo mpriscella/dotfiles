@@ -4,7 +4,7 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
 # If zplug isn't installed, clone it.
-if [[ ! -d ~/.zplug ]];then
+if [ ! -d ~/.zplug ]; then
   git clone https://github.com/zplug/zplug ~/.zplug
 fi
 
@@ -104,6 +104,18 @@ fi
 ##################################### tmux #####################################
 
 export TERM=xterm-256color
+
+##################################### brew #####################################
+
+if [ -d "/opt/homebrew/bin" ]; then
+  export PATH="/opt/homebrew/bin:$PATH"
+
+  if (( $+commands[brew] ))
+  then
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+fi
 
 ################################### Functions ##################################
 
