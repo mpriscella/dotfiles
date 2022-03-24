@@ -42,6 +42,14 @@ case $(uname -s) in
     # fi
     ;;
   "Darwin")
+    if ! command -v brew > /dev/null 2>&1; then
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+
+    if ! command -v git-credential-manager-core > /dev/null 2>&1; then
+      brew tap microsoft/git
+      brew install --cask git-credential-manager-core
+    fi
     ;;
   *)
     echo "Operating System '$OS' not supported."
