@@ -42,6 +42,14 @@ case $(uname -s) in
     # fi
     ;;
   "Darwin")
+    if ! command -v brew > /dev/null 2>&1; then
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+
+    if ! command -v git-credential-manager-core > /dev/null 2>&1; then
+      brew tap microsoft/git
+      brew install --cask git-credential-manager-core
+    fi
     ;;
   *)
     echo "Operating System '$OS' not supported."
@@ -50,10 +58,13 @@ esac
 files=".ackrc .gitconfig .tmux.conf .vimrc .zshrc"
 
 for i in $files; do
-  if test -f ~/"$i"; then
-    mv ~/"$i" ~/"$i".bkup
+  if [ "$(readlink "$HOME"/"$i")" != "$PWD"/"$i" ]; then
+    rm "$HOME"/"$i"
+  elif test -f "$HOME"/"$i"; then
+    mv "$HOME"/"$i" "$HOME"/"$i".bkup
   fi
-  ln -s "$(pwd)/$i" ~/"$i"
+
+  ln -s "$PWD"/"$i" "$HOME"/"$i"
 done
 
 vim +PlugInstall +qall
