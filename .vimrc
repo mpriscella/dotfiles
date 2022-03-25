@@ -16,6 +16,8 @@ endif
 if executable("git")
   call plug#begin('~/.vim/plugged')
 
+  Plug 'tpope/vim-sensible'
+
   " Syntax Plugins.
   Plug 'pangloss/vim-javascript'
   Plug 'mxw/vim-jsx', {'for': ['javascript.jsx', 'javascript']}
@@ -37,7 +39,6 @@ if executable("git")
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
   nmap <c-p> :Files<cr>
-  " nmap <c-j> :Tags<cr>
 
   Plug 'dhruvasagar/vim-table-mode'
   Plug 'tpope/vim-commentary'
@@ -74,9 +75,6 @@ endif
 " Clipboard.
 set clipboard=unnamed
 
-scriptencoding utf-8
-set encoding=utf-8
-
 " Syntax Mapping.
 " Drupal.
 au BufNewFile,BufRead *.module set filetype=php
@@ -97,7 +95,6 @@ endif
 
 syntax enable
 set nocompatible
-set incsearch
 set mouse=h
 
 " Enabling Omnitype.
@@ -149,12 +146,9 @@ try
   set relativenumber
 endtry
 set number
-set backspace=2
-set history=1000
 set showcmd
 set showmode
 set gcr=a:blinkon0
-set autoread
 set hidden
 
 " Backup Files.
@@ -162,16 +156,13 @@ set noswapfile
 set nobackup
 set nowb
 
-set autoindent
 set smartindent
-set smarttab
 set shiftwidth=2
 set softtabstop=2
 set tabstop=2
 set expandtab
 set ignorecase
 
-set list listchars=tab:\ \ ,trail:·
 set nowrap
 set linebreak
 
@@ -182,8 +173,6 @@ set nofoldenable
 let php_fold=1
 
 " Scroll.
-set scrolloff=5
-set sidescrolloff=15
 set sidescroll=1
 
 noremap <c-j> <c-w>j

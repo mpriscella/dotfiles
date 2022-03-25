@@ -47,8 +47,11 @@ case $(uname -s) in
     fi
 
     if ! command -v git-credential-manager-core > /dev/null 2>&1; then
-      brew tap microsoft/git
-      brew install --cask git-credential-manager-core
+      brew install tmux
+      brew install --cask 1password/tap/1password-cli
+      brew install shellcheck
+      brew install dive
+      brew install gh
     fi
     ;;
   *)
