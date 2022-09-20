@@ -58,7 +58,7 @@ case $(uname -s) in
     echo "Operating System '$OS' not supported."
 esac
 
-files=".ackrc .gitconfig .tmux.conf .vimrc .zshrc"
+files=".ackrc .tmux.conf .vimrc .zshrc"
 
 for i in $files; do
   if [ "$(readlink "$HOME"/"$i")" != "$PWD"/"$i" ]; then
