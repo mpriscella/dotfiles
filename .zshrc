@@ -62,14 +62,20 @@ export GIT_EDITOR=vim
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 bindkey -s '^P' 'fzf^M'
 
-###################################### Go ######################################
-
-# alias golang='docker run -it --rm --name golang -v $(pwd):/go/src/${PWD##*/} -w /go/src/${PWD##*/} golang:1.13 bash'
-
 ################################## Kubernetes ##################################
 
 export KUBE_EDITOR=vim
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+if (( $+commands[helm] ))
+then
+  source <(helm completion zsh)
+fi
+
+if (( $+commands[kind] ))
+then
+  source <(kind completion zsh)
+fi
 
 export RPROMPT=""
 if (( $+commands[kubectl] ))
@@ -81,21 +87,14 @@ then
   export KUBE_PS1_SYMBOL_ENABLE=false
 fi
 
-if (( $+commands[minikube] ))
+################################## 1password ###################################
+
+if (( $+commands[op] ))
 then
-  source <(minikube completion zsh)
+  eval "$(op completion zsh)"; compdef _op op
 fi
 
-if (( $+commands[helm] ))
-then
-  source <(helm completion zsh)
-fi
-
-if (( $+commands[kops] ))
-then
-  source <(kops completion zsh)
-fi
-
+#################################### github ####################################
 if (( $+commands[gh] ))
 then
   source <(gh completion --shell zsh)
@@ -116,6 +115,18 @@ if [ -d "/opt/homebrew/bin" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 fi
+
+##################################### aws ######################################
+
+#######################################
+# Switch between AWS Profiles.
+# Arguments:
+#   None
+#######################################
+function aws-ps {
+  profile=$(aws configure list-profiles | fzf --height=30% --layout=reverse --border --margin=1 --padding=1)
+  export AWS_PROFILE=$profile
+}
 
 ################################### Functions ##################################
 
@@ -143,5 +154,7 @@ zplug load
 
 if (( $+commands[kubectl] ))
 then
-  export RPROMPT='$(kube_ps1)'
+  export RPROMPT='%{$fg[green]%}${AWS_PROFILE}%{$reset_color%}%::$(kube_ps1)'
 fi
+
+export FZF_DEFAULT_COMMAND="find ."

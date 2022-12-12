@@ -40,7 +40,6 @@ if executable("git")
   Plug 'junegunn/fzf.vim'
   nmap <c-p> :Files<cr>
 
-  Plug 'dhruvasagar/vim-table-mode'
   Plug 'tpope/vim-commentary'
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-surround'
