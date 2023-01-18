@@ -95,6 +95,7 @@ then
 fi
 
 #################################### github ####################################
+
 if (( $+commands[gh] ))
 then
   source <(gh completion --shell zsh)
@@ -118,15 +119,24 @@ fi
 
 ##################################### aws ######################################
 
-#######################################
-# Switch between AWS Profiles.
-# Arguments:
-#   None
-#######################################
-function aws-ps {
-  profile=$(aws configure list-profiles | fzf --height=30% --layout=reverse --border --margin=1 --padding=1)
-  export AWS_PROFILE=$profile
-}
+if (( $+commands[aws] && $+commands[aws_completer] ))
+then
+  autoload bashcompinit && bashcompinit
+  autoload -Uz compinit && compinit
+
+  aws_completer_path=$(which aws_completer)
+  complete -C $aws_completer_path aws
+
+  #######################################
+  # Switch between AWS Profiles.
+  # Arguments:
+  #   None
+  #######################################
+  function aws-ps {
+    profile=$(aws configure list-profiles | fzf --height=30% --layout=reverse --border --margin=1 --padding=1)
+    export AWS_PROFILE=$profile
+  }
+fi
 
 ################################### Functions ##################################
 
