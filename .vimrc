@@ -65,6 +65,8 @@ if executable("git")
 
   Plug 'duff/vim-scratch'
 
+  au BufNewFile,BufRead *.gitconfig set filetype=gitconfig
+
   call plug#end()
 else
   echo "Warning:"
