@@ -127,6 +127,8 @@ then
   aws_completer_path=$(which aws_completer)
   complete -C $aws_completer_path aws
 
+  export AWS_CLI_AUTO_PROMPT=on-partial
+
   #######################################
   # Switch between AWS Profiles.
   # Arguments:
@@ -134,7 +136,9 @@ then
   #######################################
   function aws-ps {
     profile=$(aws configure list-profiles | fzf --height=30% --layout=reverse --border --margin=1 --padding=1)
-    export AWS_PROFILE=$profile
+    if [ ! -z "$profile" ]; then
+      export AWS_PROFILE=$profile
+    fi
   }
 fi
 
