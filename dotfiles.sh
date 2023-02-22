@@ -92,7 +92,7 @@ function install_dotfiles() {
 		nvim +PlugInstall +qall
 	fi
 
-	git config --global include.path ~/.dotfiles.gitconfig
+	git config --global include.path "$HOME"/.dotfiles.gitconfig
 }
 
 
