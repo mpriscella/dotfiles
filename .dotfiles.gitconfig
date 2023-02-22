@@ -63,3 +63,5 @@
 	rebase = false
 [core]
 	editor = vim
+
+; vim: ft=gitconfig
