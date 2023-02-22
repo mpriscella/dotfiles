@@ -2,25 +2,31 @@
 
 " Section: Bootstrap
 
-" Create ~/.vim directory if it doesn't exist.
-if empty(glob("~/.vim"))
-  silent !mkdir ~/.vim > /dev/null 2>&1
+let g:config_dir = expand('~/.vim')
+if has('nvim')
+  let g:config_dir = expand('~/.config/nvim')
 endif
 
-" Create ~/.vim/autoload directory if it doesn't exist.
-if empty(glob("~/.vim/autoload"))
-  silent !mkdir ~/.vim/autoload > /dev/null 2>&1
+" Create config directory if it doesn't exist.
+if !isdirectory(g:config_dir)
+  call mkdir(g:config_dir)
+endif
+
+" Create autoload directory if it doesn't exist.
+if !isdirectory(g:config_dir . "/autoload")
+  call mkdir(g:config_dir . "/autoload")
 endif
 
 " Load vim-plug (https://github.com/junegunn/vim-plug).
-if empty(glob("~/.vim/autoload/plug.vim"))
-  silent execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
+if !filereadable(g:config_dir . '/autoload/plug.vim')
+  let $PLUG_FILE = g:config_dir . '/autoload/plug.vim'
+  silent execute '!curl -fLo $PLUG_FILE https://raw.github.com/junegunn/vim-plug/master/plug.vim'
 endif
 
 " Section: Load Plugins
 
 if executable('git')
-  call plug#begin('~/.vim/plugged')
+  call plug#begin(g:config_dir . '/plugged')
 
   Plug 'tpope/vim-sensible'
 

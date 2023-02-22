@@ -81,9 +81,18 @@ function install_dotfiles() {
 		ln -s "$PWD"/"$i" "$HOME"/"$i"
 	done
 
-	git config --global include.path ~/.dotfiles.gitconfig
-
 	vim +PlugInstall +qall
+
+	# If neovim is installed, symlink vimrc to ~/.config/nvim/init.vim
+	if command -v nvim &> /dev/null; then
+		if [ ! -d "~/.config/nvim" ]; then
+			mkdir -p ~/.config/nvim
+		fi
+		ln -s "$PWD"/.vimrc ~/.config/nvim/init.vim
+		nvim +PlugInstall +qall
+	fi
+
+	git config --global include.path ~/.dotfiles.gitconfig
 }
 
 
