@@ -40,6 +40,11 @@ else
   alias ls='ls --color=always'
 fi
 
+if (( $+commands[nvim] ))
+then
+  alias vim='nvim'
+fi
+
 export PATH=$HOME/.bin:$PATH
 export GIT_EDITOR=vim
 
