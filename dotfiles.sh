@@ -29,6 +29,7 @@ function install_dotfiles() {
 					git
 					jq
 					locales
+					neovim
 					python3
 					tar
 					tmux
@@ -81,11 +82,19 @@ function install_dotfiles() {
 		ln -s "$PWD"/"$i" "$HOME"/"$i"
 	done
 
-	git config --global include.path ~/.dotfiles.gitconfig
-
 	vim +PlugInstall +qall
-}
 
+	# If neovim is installed, symlink vimrc to ~/.config/nvim/init.vim
+	if command -v nvim &> /dev/null; then
+		if [ ! -d "$HOME/.config/nvim" ]; then
+			mkdir -p "$HOME/.config/nvim"
+		fi
+		ln -s "$PWD"/.vimrc "$HOME/.config/nvim/init.vim"
+		nvim +PlugInstall +qall
+	fi
+
+	git config --global include.path "$HOME"/.dotfiles.gitconfig
+}
 
 case "$1" in
   "install")
