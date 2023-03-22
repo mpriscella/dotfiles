@@ -14,7 +14,8 @@
 		"vscode": {
 			"extensions": [
 				"ms-azuretools.vscode-docker",
-				"timonwong.shellcheck"
+				"timonwong.shellcheck",
+				"foxundermoon.shell-format"
 			]
 		}
 	},
@@ -23,6 +24,7 @@
 
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
-		"ghcr.io/devcontainers/features/github-cli:1": {}
+		"ghcr.io/devcontainers/features/github-cli:1": {},
+		"ghcr.io/edouard-lopez/devcontainer-features/bats:0": {}
 	}
 }

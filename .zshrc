@@ -1,7 +1,7 @@
 ############## zplug (https://github.com/zplug/zplug) integration #############
 
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+# export LANG=en_US.UTF-8
+# export LC_ALL=en_US.UTF-8
 
 # If zplug isn't installed, clone it.
 if [ ! -d ~/.zplug ]; then
@@ -23,15 +23,14 @@ bindkey -v
 
 # (F)astly Debug.
 alias fdebug='curl -svo /dev/null -H "Fastly-Debug: true"'
+# Enable colored output for default commands.
+alias grep='grep --color=auto '
 # (H)eader C(url).
 alias hurl="curl -sLD - -o /dev/null"
 alias reload='source ~/.zshrc'
 # (T)ime (T)o (F)irst (B)yte.
 alias ttfb='curl -o /dev/null -H "Cache-Control: no-cache" -s -w "Connect: %{time_connect} TTFB: %{time_starttransfer} Total time: %{time_total} \n"'
 alias vi='vim'
-
-# Enable colored output for default commands.
-alias grep='grep --color=auto '
 
 # Need to see if this works or if we need to use ls --color=auto
 if ls -G > /dev/null 2>&1 ; then
@@ -169,11 +168,11 @@ if ! zplug check --verbose; then
   zplug install
 fi
 
-zplug load
-
 if (( $+commands[kubectl] ))
 then
   export RPROMPT='%{$fg[green]%}${AWS_PROFILE}%{$reset_color%}%::$(kube_ps1)'
 fi
 
 export FZF_DEFAULT_COMMAND="find ."
+
+zplug load
