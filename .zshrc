@@ -1,3 +1,25 @@
+################################### Functions ##################################
+
+#######################################
+# Install latest release of sops.
+# Arguments:
+#   None
+#######################################
+function sops_install {
+  tag_name=$(curl -s https://api.github.com/repos/mozilla/sops/releases/latest | jq -r .tag_name)
+  sudo curl -L https://github.com/mozilla/sops/releases/download/$tag_name/sops-$tag_name.linux -o /usr/local/bin/sops
+  sudo chmod +x /usr/local/bin/sops
+}
+
+function command_exists() {
+  if (( $+commands[$1] ))
+  then
+    true
+  else
+    false
+  fi
+}
+
 ############## zplug (https://github.com/zplug/zplug) integration #############
 
 # export LANG=en_US.UTF-8
@@ -39,7 +61,7 @@ else
   alias ls='ls --color=always'
 fi
 
-if (( $+commands[nvim] ))
+if (( $(command_exists nvim) ))
 then
   alias vim='nvim'
 fi
@@ -146,18 +168,6 @@ then
   }
 fi
 
-################################### Functions ##################################
-
-#######################################
-# Install latest release of sops.
-# Arguments:
-#   None
-#######################################
-function sops_install {
-  tag_name=$(curl -s https://api.github.com/repos/mozilla/sops/releases/latest | jq -r .tag_name)
-  sudo curl -L https://github.com/mozilla/sops/releases/download/$tag_name/sops-$tag_name.linux -o /usr/local/bin/sops
-  sudo chmod +x /usr/local/bin/sops
-}
 
 ############################### Load Local zshrc ###############################
 
