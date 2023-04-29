@@ -134,6 +134,10 @@ then
 
   export AWS_CLI_AUTO_PROMPT=on-partial
 
+  if [ -z "$AWS_PROFILE" ]; then
+    export AWS_PROFILE=default
+  fi
+
   #######################################
   # Switch between AWS Profiles.
   # Arguments:
@@ -158,6 +162,52 @@ function sops_install {
   tag_name=$(curl -s https://api.github.com/repos/mozilla/sops/releases/latest | jq -r .tag_name)
   sudo curl -L https://github.com/mozilla/sops/releases/download/$tag_name/sops-$tag_name.linux -o /usr/local/bin/sops
   sudo chmod +x /usr/local/bin/sops
+}
+
+#######################################
+# Opens interactive bash shell in a kubernetes deployment managed by Helm.
+# Globals:
+#   KSHELL_RELEASE
+#   KSHELL_DEPLOY
+#   KSHELL_CONTAINER
+# Arguments:
+#   None
+#######################################
+function kshell {
+  if [[ (-z "$KSHELL_RELEASE" && -z "$KSHELL_DEPLOY" && -z "$KSHELL_CONTAINER") ]]; then
+    configured=false
+  else
+    configured=true
+  fi
+
+  if [[ "$1" == "status" ]]; then
+    if [[ "$configured" == true ]]; then
+      echo "Helm Release: $KSHELL_RELEASE"
+      echo "Deployment:   $KSHELL_DEPLOY"
+      echo "Container:    $KSHELL_CONTAINER"
+    else
+      echo "kshell not configured yet."
+    fi
+
+    return
+  fi
+
+  if [[ "$configured" == false || ("$1" == "reset") ]]; then
+    echo "Choose Helm release"
+    release=$(helm list -q | fzf --height=30% --layout=reverse --border --margin=1 --padding=1)
+    export KSHELL_RELEASE=$release
+
+    echo "Choose deployment"
+    deploy=$(kubectl get deploy -l "app.kubernetes.io/instance=$release" --sort-by=.metadata.creationTimestamp -o name | fzf --height=30% --layout=reverse --border --margin=1 --padding=1)
+    export KSHELL_DEPLOY=$deploy
+
+    echo "Choose container"
+    containers=$(kubectl get $deploy -o jsonpath='{range .spec.template.spec.containers[*]}{.name}{"\n"}{end}')
+    container=$(echo "$containers" | fzf --height=30% --layout=reverse --border --margin=1 --padding=1)
+    export KSHELL_CONTAINER=$container
+  fi
+
+  kubectl exec -it "$deploy" -c "$container" -- bash
 }
 
 ############################### Load Local zshrc ###############################
