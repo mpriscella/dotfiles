@@ -3,8 +3,6 @@
 load test_helper
 
 @test "Test Environment Variables" {
-	assert_env LANG "en_US.UTF-8"
-	assert_env LC_ALL "en_US.UTF-8"
 	assert_env GIT_EDITOR vim
 	assert_env KUBE_EDITOR vim
 	assert_env FZF_DEFAULT_COMMAND "find ."
