@@ -1,43 +1,24 @@
+[user]
+	name = Mike Priscella
+	email = mpriscella@gmail.com
+
 [alias]
-  # View abbreviated SHA, description, and history graph of the latest 20 commits
-	l = log --pretty=oneline -n 20 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
-
-  ytd-commits = !"git rev-list --count HEAD --since=\"Jan 1 $(date +%Y)\"  --before=\"Dec 31 $(date +%Y)\""
-
-  # View the current working tree status using the short format
-	s = status -s
-
+	branches = branch -a
+  chb = checkout -b
   # Show the diff between the latest commit and the current state
 	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
-
-  # Pull in remote changes for the current repository and all its submodules
-	p = !"git pull; git submodule foreach git pull origin master"
-
-  # Clone a repository including all submodules
-	c = clone --recursive
-
-  # Switch to a branch, creating it if necessary
-	go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
-
-  # Show verbose output about tags, branches or remotes
-	tags = tag -l
-	branches = branch -a
-	remotes = remote -v
-
-  # Color graph log view
-	graph = log --graph --color --pretty=format:"%C(yellow)%H%C(green)%d%C(reset)%n%x20%cd%n%x20%cn%x20(%ce)%n%x20%s%n"
-
   # Remove branches that have already been merged with master
 	# a.k.a. ‘delete merged’
 	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; git remote -v update -p"
-
-  alias=!git config -l | grep ^alias | cut -c 7- | sort
-
-  tlg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
   g = grep --break --heading --line-number
-  chb = checkout -b
+  # View abbreviated SHA, description, and history graph of the latest 20 commits
+	l = log --pretty=oneline -n 20 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+	remotes = remote -v
+  # View the current working tree status using the short format
+	s = status -s
   su = "!git branch --set-upstream-to=origin/$1 $1"
-  edit = "!vi `git ls-files -m` -p"
+	tags = tag -l
+  ytd-commits = !"git rev-list --count HEAD --since=\"Jan 1 $(date +%Y)\"  --before=\"Dec 31 $(date +%Y)\""
 
 [color]
   ui = auto
@@ -59,8 +40,10 @@
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f
 	required = true
+
 [pull]
 	rebase = false
+
 [core]
 	editor = vim
 

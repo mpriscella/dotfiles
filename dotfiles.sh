@@ -64,7 +64,7 @@ function install_dotfiles() {
 			fi
 
 			# if ! command -v git-credential-manager-core > /dev/null 2>&1; then
-			#   brew install tmux shellcheck dive gh helm yq linkerd step jq
+			#   brew install tmux shellcheck dive gh helm yq linkerd step jq derailed/k9s/k9s
 			#   brew install --cask 1password/tap/1password-cli
 			# fi
 			;;
