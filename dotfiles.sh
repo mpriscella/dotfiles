@@ -12,7 +12,7 @@ function usage() {
 	echo ""
 }
 
-files=".ackrc .dotfiles.gitconfig .tmux.conf .vimrc .zshrc"
+files=".ackrc .dotfiles.gitconfig .gitattributes .tmux.conf .vimrc .zshrc"
 
 function install_dotfiles() {
 	# shellcheck source=src/functions.sh

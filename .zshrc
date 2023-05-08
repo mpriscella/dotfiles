@@ -1,21 +1,21 @@
-############## zplug (https://github.com/zplug/zplug) integration #############
+# zmodload zsh/zprof
 
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+######## zinit (https://github.com/zdharma-continuum/zinit) integration ########
 
-# If zplug isn't installed, clone it.
-if [ ! -d ~/.zplug ]; then
-  git clone https://github.com/zplug/zplug ~/.zplug
-fi
-
-source ~/.zplug/init.zsh
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
 
 #################################### Theme #####################################
 
-zplug mafredri/zsh-async, from:github
-zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
+zinit load mafredri/zsh-async
+zinit load sindresorhus/pure
 
 ################################################################################
+
+autoload bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
 
 # Use vi mode with ZSH Line Editor (zle).
 # See https://zsh.sourceforge.io/Guide/zshguide04.html for documentation.
@@ -86,17 +86,10 @@ export RPROMPT=""
 if (( $+commands[kubectl] ))
 then
   source <(kubectl completion zsh)
-  zplug jonmosco/kube-ps1, use:kube-ps1.sh, from:github
+  zinit load jonmosco/kube-ps1
 
   export KUBE_PS1_DIVIDER="/"
   export KUBE_PS1_SYMBOL_ENABLE=false
-fi
-
-################################## 1password ###################################
-
-if (( $+commands[op] ))
-then
-  eval "$(op completion zsh)"; compdef _op op
 fi
 
 #################################### github ####################################
@@ -106,10 +99,6 @@ then
   source <(gh completion --shell zsh)
 fi
 
-##################################### tmux #####################################
-
-export TERM=xterm-256color
-
 ##################################### brew #####################################
 
 if [ -d "/opt/homebrew/bin" ]; then
@@ -117,7 +106,6 @@ if [ -d "/opt/homebrew/bin" ]; then
 
   if (( $+commands[brew] ))
   then
-    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
     eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 fi
@@ -126,9 +114,6 @@ fi
 
 if (( $+commands[aws] && $+commands[aws_completer] ))
 then
-  autoload bashcompinit && bashcompinit
-  autoload -Uz compinit && compinit
-
   aws_completer_path=$(which aws_completer)
   complete -C $aws_completer_path aws
 
@@ -214,16 +199,11 @@ function kshell {
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
-# Install plugins if there are plugins that have not been installed
-if ! zplug check --verbose; then
-  zplug install
-fi
-
-zplug load
-
 if (( $+commands[kubectl] ))
 then
   export RPROMPT='%{$fg[green]%}${AWS_PROFILE}%{$reset_color%}%::$(kube_ps1)'
 fi
 
 export FZF_DEFAULT_COMMAND="find ."
+
+# zprof
