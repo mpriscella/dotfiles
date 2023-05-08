@@ -1,3 +1,5 @@
+# zmodload zsh/zprof
+
 ######## zinit (https://github.com/zdharma-continuum/zinit) integration ########
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -11,6 +13,9 @@ zinit load mafredri/zsh-async
 zinit load sindresorhus/pure
 
 ################################################################################
+
+autoload bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
 
 # Use vi mode with ZSH Line Editor (zle).
 # See https://zsh.sourceforge.io/Guide/zshguide04.html for documentation.
@@ -87,23 +92,12 @@ then
   export KUBE_PS1_SYMBOL_ENABLE=false
 fi
 
-################################## 1password ###################################
-
-if (( $+commands[op] ))
-then
-  eval "$(op completion zsh)"; compdef _op op
-fi
-
 #################################### github ####################################
 
 if (( $+commands[gh] ))
 then
   source <(gh completion --shell zsh)
 fi
-
-##################################### tmux #####################################
-
-export TERM=xterm-256color
 
 ##################################### brew #####################################
 
@@ -112,7 +106,6 @@ if [ -d "/opt/homebrew/bin" ]; then
 
   if (( $+commands[brew] ))
   then
-    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
     eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 fi
@@ -121,9 +114,6 @@ fi
 
 if (( $+commands[aws] && $+commands[aws_completer] ))
 then
-  autoload bashcompinit && bashcompinit
-  autoload -Uz compinit && compinit
-
   aws_completer_path=$(which aws_completer)
   complete -C $aws_completer_path aws
 
@@ -215,3 +205,5 @@ then
 fi
 
 export FZF_DEFAULT_COMMAND="find ."
+
+# zprof

@@ -46,5 +46,7 @@
 
 [core]
 	editor = vim
+  attributesFile = ~/.gitattributes
+
 
 ; vim: ft=gitconfig
