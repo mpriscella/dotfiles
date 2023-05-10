@@ -28,7 +28,8 @@ alias hurl="curl -sLD - -o /dev/null"
 alias reload='source ~/.zshrc'
 # (T)ime (T)o (F)irst (B)yte.
 alias ttfb='curl -o /dev/null -H "Cache-Control: no-cache" -s -w "Connect: %{time_connect} TTFB: %{time_starttransfer} Total time: %{time_total} \n"'
-alias vi='vim'
+alias vi='nvim'
+alias vim='nvim'
 
 # Enable colored output for default commands.
 alias grep='grep --color=auto '
@@ -40,13 +41,8 @@ else
   alias ls='ls --color=always'
 fi
 
-if (( $+commands[nvim] ))
-then
-  alias vim='nvim'
-fi
-
 export PATH=$HOME/.bin:$PATH
-export GIT_EDITOR=vim
+export GIT_EDITOR=nvim
 
 #################################### Docker ####################################
 
@@ -69,7 +65,7 @@ bindkey -s '^P' 'fzf^M'
 
 ################################## Kubernetes ##################################
 
-export KUBE_EDITOR=vim
+export KUBE_EDITOR=nvim
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 if (( $+commands[helm] ))
