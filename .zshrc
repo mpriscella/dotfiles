@@ -7,6 +7,17 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME/.git ] && git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 source "${ZINIT_HOME}/zinit.zsh"
 
+##################################### brew #####################################
+
+if [ -d "/opt/homebrew/bin" ]; then
+  export PATH="/opt/homebrew/bin:$PATH"
+
+  if (( $+commands[brew] ))
+  then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+fi
+
 #################################### Theme #####################################
 
 zinit load mafredri/zsh-async
@@ -83,7 +94,7 @@ fi
 
 #################################### Editor ####################################
 
-if (( $+commands[neovim] ))
+if (( $+commands[nvim] ))
 then
   export GIT_EDITOR=nvim
   export KUBE_EDITOR=nvim
@@ -101,6 +112,7 @@ fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 bindkey -s '^P' 'fzf^M'
+export FZF_DEFAULT_COMMAND='find . -not -path "**/.git/**"'
 
 ################################## Kubernetes ##################################
 
@@ -131,17 +143,6 @@ then
   source <(gh completion --shell zsh)
 fi
 
-##################################### brew #####################################
-
-if [ -d "/opt/homebrew/bin" ]; then
-  export PATH="/opt/homebrew/bin:$PATH"
-
-  if (( $+commands[brew] ))
-  then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  fi
-fi
-
 ################################### Functions ##################################
 
 if (( $+commands[helm] && $+commands[kubectl] )) {
@@ -156,7 +157,5 @@ if (( $+commands[kubectl] ))
 then
   export RPROMPT='%{$fg[green]%}${AWS_PROFILE}%{$reset_color%}%::$(kube_ps1)'
 fi
-
-export FZF_DEFAULT_COMMAND="find ."
 
 # zprof
