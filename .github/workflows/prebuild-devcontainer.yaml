@@ -26,5 +26,6 @@ jobs:
           imageName: ghcr.io/mpriscella/dotfiles/devcontainer
           cacheFrom: ghcr.io/mpriscella/dotfiles/devcontainer
           push: always
+          platform: linux/arm64,linux/amd64
           runCmd: |
             echo "this is a test" > test.txt
