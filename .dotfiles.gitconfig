@@ -1,52 +1,50 @@
 [user]
-	name = Mike Priscella
-	email = mpriscella@gmail.com
+name = Mike Priscella
+email = mpriscella@gmail.com
 
 [alias]
-	branches = branch -a
-  chb = checkout -b
-  # Show the diff between the latest commit and the current state
-	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
-  # Remove branches that have already been merged with master
-	# a.k.a. ‘delete merged’
-	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; git remote -v update -p"
-  g = grep --break --heading --line-number
-  # View abbreviated SHA, description, and history graph of the latest 20 commits
-	l = log --pretty=oneline -n 20 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
-	remotes = remote -v
-  # View the current working tree status using the short format
-	s = status -s
-  su = "!git branch --set-upstream-to=origin/$1 $1"
-	tags = tag -l
-  ytd-commits = !"git rev-list --count HEAD --since=\"Jan 1 $(date +%Y)\"  --before=\"Dec 31 $(date +%Y)\""
+branches = branch -a
+chb = checkout -b
+# Show the diff between the latest commit and the current state
+d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+# Remove branches that have already been merged with master
+# a.k.a. ‘delete merged’
+dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; git remote -v update -p"
+empty = commit --allow-empty -m "Empty-Commit"
+g = grep --break --heading --line-number
+# View abbreviated SHA, description, and history graph of the latest 20 commits
+l = log --pretty=oneline -n 20 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+remotes = remote -v
+# View the current working tree status using the short format
+s = status -s
+su = "!git branch --set-upstream-to=origin/$1 $1"
+tags = tag -l
+ytd-commits = !"git rev-list --count HEAD --since=\"Jan 1 $(date +%Y)\"  --before=\"Dec 31 $(date +%Y)\""
 
 [color]
-  ui = auto
+ui = auto
 
 [fetch]
-  prune = true
+prune = true
 
 [rebase]
-  autosquash = true
+autosquash = true
 
 [push]
-  default = current
+default = current
 
 [grep]
-  extendRegexp = true
-  lineNumber = true
+extendRegexp = true
+lineNumber = true
 
 [filter "lfs"]
-	clean = git-lfs clean %f
-	smudge = git-lfs smudge %f
-	required = true
+clean = git-lfs clean %f
+smudge = git-lfs smudge %f
+required = true
 
 [pull]
-	rebase = false
+rebase = false
 
 [core]
-	editor = nvim
-  attributesFile = ~/.gitattributes
-
-
-; vim: ft=gitconfig
+editor = nvim
+attributesFile = ~/.gitattributes

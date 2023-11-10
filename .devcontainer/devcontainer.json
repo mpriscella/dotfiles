@@ -5,11 +5,11 @@
   "image": "mcr.microsoft.com/devcontainers/base:jammy",
   "customizations": {
     "vscode": {
-      "dotfiles.repository": "",
       "extensions": [
         "ms-azuretools.vscode-docker",
         "timonwong.shellcheck",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "foxundermoon.shell-format"
       ]
     }
   },

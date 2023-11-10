@@ -55,7 +55,7 @@ function kshell {
     export KSHELL_DEPLOY=$deploy
 
     echo "Choose container"
-    containers=$(kubectl get $deploy -o jsonpath='{range .spec.template.spec.containers[*]}{.name}{"\n"}{end}')
+    containers=$(kubectl get "$deploy" -o jsonpath='{range .spec.template.spec.containers[*]}{.name}{"\n"}{end}')
     container=$(echo "$containers" | fzf --height=30% --layout=reverse --border --margin=1 --padding=1)
     export KSHELL_CONTAINER=$container
   fi
