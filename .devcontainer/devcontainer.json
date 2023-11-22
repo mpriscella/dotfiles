@@ -9,8 +9,12 @@
         "ms-azuretools.vscode-docker",
         "timonwong.shellcheck",
         "esbenp.prettier-vscode",
-        "foxundermoon.shell-format"
-      ]
+        "foxundermoon.shell-format",
+        "sumneko.lua"
+      ],
+      "settings": {
+        "Lua.diagnostics.globals": ["vim"]
+      }
     }
   },
   "features": {
