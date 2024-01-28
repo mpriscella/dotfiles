@@ -36,7 +36,7 @@ function install_dotfiles() {
         git
         jq
         locales
-        neovim
+        # neovim
         python3
         tar
         tmux
@@ -70,6 +70,11 @@ function install_dotfiles() {
 
       PACKAGE_MANAGER="yum" install_packages "${packages[@]}"
     fi
+
+    # Install neovim.
+    curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
+    tar xzvf nvim-linux64.tar.gz -C "$HOME"/.nvim --strip-components=1
+    export PATH="$PATH":"$HOME"/.nvim/bin
     ;;
   "Darwin")
     if ! command -v brew >/dev/null 2>&1; then
