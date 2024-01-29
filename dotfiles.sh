@@ -71,9 +71,9 @@ function install_dotfiles() {
     fi
 
     # Install neovim.
+    mkdir "$HOME"/.nvim
     curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
     tar xzf nvim-linux64.tar.gz -C "$HOME"/.nvim --strip-components=1
-    export PATH="$PATH":"$HOME"/.nvim/bin
     rm nvim-linux64.tar.gz
     ;;
   "Darwin")
