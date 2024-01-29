@@ -55,7 +55,7 @@ else
   alias ls='ls --color=always'
 fi
 
-export PATH=$HOME/.bin:$PATH
+export PATH=$HOME/.bin:$HOME/.nvim/bin:$PATH
 
 ##################################### aws ######################################
 

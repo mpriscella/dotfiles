@@ -12,7 +12,7 @@ function usage() {
   echo ""
 }
 
-files=".ackrc .dotfiles.gitconfig .gitattributes .kshell.sh .tmux.conf .vimrc .zshrc"
+files=".ackrc .config/nvim/init.lua .dotfiles.gitconfig .gitattributes .kshell.sh .tmux.conf .vimrc .zshrc"
 
 function config_tmux() {
   if [ ! -d "$HOME"/.tmux/plugins/tpm ]; then
@@ -36,7 +36,6 @@ function install_dotfiles() {
         git
         jq
         locales
-        # neovim
         python3
         tar
         tmux
@@ -73,8 +72,9 @@ function install_dotfiles() {
 
     # Install neovim.
     curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
-    tar xzvf nvim-linux64.tar.gz -C "$HOME"/.nvim --strip-components=1
+    tar xzf nvim-linux64.tar.gz -C "$HOME"/.nvim --strip-components=1
     export PATH="$PATH":"$HOME"/.nvim/bin
+    rm nvim-linux64.tar.gz
     ;;
   "Darwin")
     if ! command -v brew >/dev/null 2>&1; then
@@ -93,6 +93,7 @@ function install_dotfiles() {
   esac
 
   for i in $files; do
+    mkdir --parents "$(dirname "$HOME"/"$i")"
     if [ "$(readlink "$HOME"/"$i")" != "$PWD"/"$i" ]; then
       rm "$HOME"/"$i"
     elif [ ! -L "$HOME"/"$i" ] && [ -f "$HOME"/"$i" ]; then
@@ -102,16 +103,7 @@ function install_dotfiles() {
     ln -s "$PWD"/"$i" "$HOME"/"$i"
   done
 
-  vim +PlugInstall +qall
-
-  # If neovim is installed, symlink vimrc to ~/.config/nvim/init.vim
-  if command -v nvim &>/dev/null; then
-    # if [ ! -d "$HOME/.config/nvim" ]; then
-    #   mkdir -p "$HOME/.config/nvim"
-    # fi
-    # ln -s "$PWD"/.vimrc "$HOME/.config/nvim/init.vim"
-    # nvim +PlugInstall +qall
-  fi
+  nvim --headless "+Lazy! install" +qa
 
   git config --global include.path "$HOME"/.dotfiles.gitconfig
   config_tmux
