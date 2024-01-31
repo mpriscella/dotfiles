@@ -18,22 +18,16 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-  { "tpope/vim-sensible" },
-  { "tpope/vim-surround" },
-  {
-    "tpope/vim-commentary",
-    enabled = not vim.g.vscode
-  },
-  {
-    "junegunn/fzf.vim",
-    enabled = not vim.g.vscode
-  },
   {
     "iamcco/markdown-preview.nvim",
     enabled = not vim.g.vscode,
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     ft = { "markdown" },
     build = function() vim.fn["mkdp#util#install"]() end,
+  },
+  {
+    "junegunn/fzf.vim",
+    enabled = not vim.g.vscode
   },
   {
     "nvim-lualine/lualine.nvim",
@@ -47,7 +41,13 @@ require("lazy").setup({
     config = function()
       require("nvim-tree").setup()
     end
-  }
+  },
+  {
+    "tpope/vim-commentary",
+    enabled = not vim.g.vscode
+  },
+  { "tpope/vim-sensible" },
+  { "tpope/vim-surround" },
 })
 
 ----------------
