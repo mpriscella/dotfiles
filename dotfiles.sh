@@ -70,11 +70,7 @@ function install_dotfiles() {
       PACKAGE_MANAGER="yum" install_packages "${packages[@]}"
     fi
 
-    # Install neovim.
-    mkdir "$HOME"/.nvim
-    curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
-    tar xzf nvim-linux64.tar.gz -C "$HOME"/.nvim --strip-components=1
-    rm nvim-linux64.tar.gz
+    install_neovim
     ;;
   "Darwin")
     if ! command -v brew >/dev/null 2>&1; then

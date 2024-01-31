@@ -1,22 +1,16 @@
 #!/bin/bash
 
 #######################################
-# Check to see if a package is installed or not.
+# Install neovim.
 # Globals:
-#   PACKAGE_SEARCH
-# Arguments:
-#   A package name.
-# Returns:
-#   0 if package is installed, 1 otherwise.
+#   None
 #######################################
-function package_is_installed() {
-  package_name="$1"
-  package_output=$(eval "$PACKAGE_SEARCH" "$package_name" 2>/dev/null)
-  if [ "$package_output" == "" ]; then
-    false
-  else
-    true
-  fi
+function install_neovim() {
+  NEOVIM_HOME="$HOME"/.nvim
+  mkdir "$NEOVIM_HOME"
+  curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
+  tar xzf nvim-linux64.tar.gz -C "$NEOVIM_HOME" --strip-components=1
+  rm nvim-linux64.tar.gz
 }
 
 #######################################
@@ -49,6 +43,25 @@ function install_packages() {
     echo "All packages installed."
   else
     echo "No new packages to install."
+  fi
+}
+
+#######################################
+# Check to see if a package is installed or not.
+# Globals:
+#   PACKAGE_SEARCH
+# Arguments:
+#   A package name.
+# Returns:
+#   0 if package is installed, 1 otherwise.
+#######################################
+function package_is_installed() {
+  package_name="$1"
+  package_output=$(eval "$PACKAGE_SEARCH" "$package_name" 2>/dev/null)
+  if [ "$package_output" == "" ]; then
+    false
+  else
+    true
   fi
 }
 
