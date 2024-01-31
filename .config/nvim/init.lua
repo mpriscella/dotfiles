@@ -18,8 +18,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-  {"tpope/vim-sensible"},
-  {"tpope/vim-surround"},
+  { "tpope/vim-sensible" },
+  { "tpope/vim-surround" },
   {
     "tpope/vim-commentary",
     enabled = not vim.g.vscode
@@ -60,6 +60,8 @@ else
   -- ordinary Neovim
   vim.opt.termguicolors = true
   vim.opt.mouse = "a"
+  vim.opt.number = true          -- Show line numbers.
+  vim.opt.relativenumber = false -- Show the line number relative to the line with the cursor in front of each line.
 end
 
 vim.g.mapleader = ","
@@ -68,18 +70,16 @@ vim.g.mapleader = ","
 -- various.txt -
 ----------------
 
-vim.opt.number = true -- Show line numbers.
 
 ----------------
 -- options.txt -
 ----------------
 
-vim.opt.expandtab = true -- Use spaces instead of tabs.
-vim.opt.ignorecase = true -- Ignore case when searching.
+vim.opt.expandtab = true   -- Use spaces instead of tabs.
+vim.opt.ignorecase = true  -- Ignore case when searching.
 -- vim.opt.linebreak = true
-vim.opt.relativenumber = false -- Show the line number relative to the line with the cursor in front of each line.
 vim.opt.smartindent = true -- Autoindent when starting a new line.
-vim.opt.shiftwidth = 2 -- Number of spaces per indent.
+vim.opt.shiftwidth = 2     -- Number of spaces per indent.
 vim.opt.softtabstop = 2
 vim.opt.tabstop = 2
 vim.opt.clipboard = "unnamedplus"
@@ -95,8 +95,8 @@ vim.keymap.set("n", "<Leader>w", ":tabclose<cr>")
 
 -- Search mappings: These will make it so that going to the next one in a
 -- search will center on the line it's found in.
-vim.keymap.set("n", "n", "nzzzv", {noremap = true})
-vim.keymap.set("n", "N", "Nzzzv", {noremap = true})
+vim.keymap.set("n", "n", "nzzzv", { noremap = true })
+vim.keymap.set("n", "N", "Nzzzv", { noremap = true })
 
 
 
