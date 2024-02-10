@@ -20,3 +20,20 @@ Add the following value to your VSCode's `settings.json` file.
   "dotfiles.repository": "mpriscella/dotfiles"
 }
 ```
+
+## Troubleshooting
+
+### zsh startup taking an abnormally long time
+
+If `zsh` is taking a long time to start up, the startup script can be profiled
+using [zprof](https://zsh.sourceforge.io/Doc/Release/Zsh-Modules.html#The-zsh_002fzprof-Module).
+Add the following lines to the beginning and end of `.zshrc`. The next time `zsh`
+runs, the profiling results will be printed to standard output.
+
+```shell
+zmodload zsh/zprof
+
+# zsh script
+
+zprof
+```

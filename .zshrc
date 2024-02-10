@@ -1,5 +1,3 @@
-# zmodload zsh/zprof
-
 ######## zinit (https://github.com/zdharma-continuum/zinit) integration ########
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -36,12 +34,12 @@ bindkey -v
 # Sends the Fastly-Debug header to an endpoint.
 # Additional documentation: https://developer.fastly.com/reference/http/http-headers/Fastly-Debug/
 alias fdebug='curl -svo /dev/null -H "Fastly-Debug: true"'
-
 # (H)eader C(url).
 alias hurl='curl -sLD - -o /dev/null'
-alias reload='source ~/.zshrc'
 # (T)ime (T)o (F)irst (B)yte.
 alias ttfb='curl -o /dev/null -H "Cache-Control: no-cache" -s -w "Connect: %{time_connect} TTFB: %{time_starttransfer} Total time: %{time_total} \n"'
+
+alias reload='source ~/.zshrc'
 
 # Enable colored output for default commands.
 # TODO should work on both darwin(mac) and linux.
@@ -174,5 +172,3 @@ then
 fi
 
 export RPROMPT=$gen_prompt
-
-# zprof
