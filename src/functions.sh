@@ -46,6 +46,21 @@ function install_packages() {
   fi
 }
 
+# Fix this.
+function install_zunit() {
+  mkdir /home/vscode/.bin
+
+  curl -L https://raw.githubusercontent.com/molovo/revolver/master/revolver >/home/vscode/.bin/revolver
+  chmod +x /home/vscode/.bin/revolver
+
+  # Install ZUnit into $path
+  curl -L https://github.com/zunit-zsh/zunit/releases/download/v0.8.2/zunit >/home/vscode/.bin/zunit
+  chmod +x /home/vscode/.bin/zunit
+
+  # Optional, install ZUnit ZSH completion into $fpath
+  # curl -L https://github.com/zunit-zsh/zunit/releases/download/v0.8.2/zunit.zsh-completion > "${fpath[1]}/_zunit"
+}
+
 #######################################
 # Check to see if a package is installed or not.
 # Globals:

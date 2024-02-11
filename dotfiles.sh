@@ -71,6 +71,7 @@ function install_dotfiles() {
     fi
 
     install_neovim
+    install_zunit
     ;;
   "Darwin")
     if ! command -v brew >/dev/null 2>&1; then
