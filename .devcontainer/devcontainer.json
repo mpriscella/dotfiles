@@ -9,8 +9,13 @@
         "ms-azuretools.vscode-docker",
         "timonwong.shellcheck",
         "esbenp.prettier-vscode",
-        "foxundermoon.shell-format"
-      ]
+        "foxundermoon.shell-format",
+        "sumneko.lua"
+      ],
+      "settings": {
+        "Lua.diagnostics.globals": ["vim"],
+        "vscode-neovim.neovimInitVimPaths.linux": "/workspaces/dotfiles/.config/nvim/init.lua"
+      }
     }
   },
   "features": {

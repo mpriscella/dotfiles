@@ -1,3 +1,5 @@
 #!/bin/bash
 
-./dotfiles.sh install
+if [ -z "$DEBUG_DOTFILES" ]; then
+  ./dotfiles.sh install
+fi

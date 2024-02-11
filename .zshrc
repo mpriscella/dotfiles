@@ -1,5 +1,3 @@
-# zmodload zsh/zprof
-
 ######## zinit (https://github.com/zdharma-continuum/zinit) integration ########
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -32,25 +30,30 @@ autoload -Uz compinit && compinit
 # See https://zsh.sourceforge.io/Guide/zshguide04.html for documentation.
 bindkey -v
 
-# (F)astly Debug.
+# (F)astly (Debug).
+# Sends the Fastly-Debug header to an endpoint.
+# Additional documentation: https://developer.fastly.com/reference/http/http-headers/Fastly-Debug/
 alias fdebug='curl -svo /dev/null -H "Fastly-Debug: true"'
 # (H)eader C(url).
 alias hurl='curl -sLD - -o /dev/null'
-alias reload='source ~/.zshrc'
 # (T)ime (T)o (F)irst (B)yte.
 alias ttfb='curl -o /dev/null -H "Cache-Control: no-cache" -s -w "Connect: %{time_connect} TTFB: %{time_starttransfer} Total time: %{time_total} \n"'
 
+alias reload='source ~/.zshrc'
+
 # Enable colored output for default commands.
+# TODO should work on both darwin(mac) and linux.
 alias grep='grep --color=auto '
 
 # Need to see if this works or if we need to use ls --color=auto
+# TODO should work on both darwin(mac) and linux.
 if ls -G > /dev/null 2>&1 ; then
   alias ls='ls -G'
 else
   alias ls='ls --color=always'
 fi
 
-export PATH=$HOME/.bin:$PATH
+export PATH=$HOME/.bin:$HOME/.nvim/bin:$PATH
 
 ##################################### aws ######################################
 
@@ -83,6 +86,11 @@ then
   #   None
   #######################################
   function ecr-login {
+    if [[ $(aws sts get-caller-identity > /dev/null 2>&1) -ne 0 ]]; then
+      echo "Could not connect to AWS account. Please verify that your credentials are correct."
+      kill -INT $$
+    fi
+
     region=$(aws configure get region)
     name=$(aws ecr describe-repositories --output json --query "repositories[*].repositoryName" | jq -r '.[]' | fzf --height=30% --layout=reverse --border --margin=1 --padding=1)
     uri=$(aws ecr describe-repositories --repository-names "$name" --output json --query "repositories[*].repositoryUri" | jq -r '.[]')
@@ -153,9 +161,14 @@ if (( $+commands[helm] && $+commands[kubectl] )) {
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
-if (( $+commands[kubectl] ))
-then
-  export RPROMPT='%{$fg[green]%}${AWS_PROFILE}%{$reset_color%}%::$(kube_ps1)'
+gen_prompt=''
+if [ -n "$AWS_PROFILE" ]; then
+  gen_prompt='%{$fg[green]%}${AWS_PROFILE}%{$reset_color%}'
 fi
 
-# zprof
+if (( $+commands[kubectl] ))
+then
+  gen_prompt="$gen_prompt%::$(kube_ps1)"
+fi
+
+export RPROMPT=$gen_prompt
