@@ -96,7 +96,7 @@ function install_dotfiles() {
       mv "$HOME"/"$i" "$HOME"/"$i".bkup
     fi
 
-    ln -s "$PWD"/"$i" "$HOME"/"$i"
+    ln -s $PWD/"$i" "$HOME"/"$i"
   done
 
   nvim --headless "+Lazy! install" +qa
