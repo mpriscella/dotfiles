@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/mpriscella/dotfiles/compare/v1.1.1...v1.1.2) (2024-02-13)
+
+
+### Bug Fixes
+
+* Install neovim from source ([#30](https://github.com/mpriscella/dotfiles/issues/30)) ([8651e57](https://github.com/mpriscella/dotfiles/commit/8651e576a81842b111e4df7657be30109cddd2e4))
+
 ## [1.1.1](https://github.com/mpriscella/dotfiles/compare/v1.1.0...v1.1.1) (2024-02-13)
 
 
