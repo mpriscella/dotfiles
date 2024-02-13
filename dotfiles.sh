@@ -81,7 +81,7 @@ function install_dotfiles() {
     brew install --casks \
       dbeaver-community \
       font-space-mono-nerd-font
-    brew install derailed/k9s/k9s dive gh helm jq shellcheck sslscan step tmux yq yt-dlp
+    brew install derailed/k9s/k9s dive gh helm jq kind neovim shellcheck sslscan step tmux yq yt-dlp
     ;;
   *)
     echo "Operating System '$OS' not supported."
@@ -89,7 +89,7 @@ function install_dotfiles() {
   esac
 
   for i in $files; do
-    mkdir --parents "$(dirname "$HOME"/"$i")"
+    mkdir -p "$(dirname "$HOME"/"$i")"
     if [ "$(readlink "$HOME"/"$i")" != "$PWD"/"$i" ]; then
       rm "$HOME"/"$i"
     elif [ ! -L "$HOME"/"$i" ] && [ -f "$HOME"/"$i" ]; then
