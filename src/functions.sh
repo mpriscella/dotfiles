@@ -1,16 +1,20 @@
 #!/bin/bash
 
 #######################################
-# Install neovim.
+# Install neovim from source. Installing from a package manager is unreliable
+# due to there not being official arm releases.
 # Globals:
 #   None
 #######################################
 function install_neovim() {
-  NEOVIM_HOME="$HOME"/.nvim
-  mkdir "$NEOVIM_HOME"
-  curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
-  tar xzf nvim-linux64.tar.gz -C "$NEOVIM_HOME" --strip-components=1
-  rm nvim-linux64.tar.gz
+  old_dir="$PWD"
+  cd "$HOME" || exit
+  git clone --depth 1 --branch stable https://github.com/neovim/neovim.git
+  cd neovim || exit
+  sudo apt-get install -y ninja-build gettext cmake unzip curl
+  make CMAKE_BUILD_TYPE=RelWithDebInfo
+  sudo make install
+  cd "$old_dir" || exit
 }
 
 #######################################

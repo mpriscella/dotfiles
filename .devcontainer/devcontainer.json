@@ -3,6 +3,10 @@
 {
   "name": "Dotfiles",
   "image": "mcr.microsoft.com/devcontainers/base:jammy",
+  // Uncomment below to skip installing dotfiles. Used for debugging.
+  //  "remoteEnv": {
+  //    "DEBUG_DOTFILES": "true"
+  //  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -14,7 +18,8 @@
       ],
       "settings": {
         "Lua.diagnostics.globals": ["vim"],
-        "vscode-neovim.neovimInitVimPaths.linux": "/workspaces/dotfiles/.config/nvim/init.lua"
+        "vscode-neovim.neovimInitVimPaths.linux": "/workspaces/dotfiles/.config/nvim/init.lua",
+        "vscode-neovim.neovimExecutablePaths.linux": "/usr/local/bin/nvim"
       }
     }
   },
