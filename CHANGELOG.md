@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/mpriscella/dotfiles/compare/v1.1.0...v1.1.1) (2024-02-13)
+
+
+### Bug Fixes
+
+* Use -p instead of --parents for mkdir ([#28](https://github.com/mpriscella/dotfiles/issues/28)) ([cb3bad6](https://github.com/mpriscella/dotfiles/commit/cb3bad64d32026e5af3f1f377b1fa986b74d29ec))
+
 ## [1.1.0](https://github.com/mpriscella/dotfiles/compare/v1.0.0...v1.1.0) (2024-02-11)
 
 
