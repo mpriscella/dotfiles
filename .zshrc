@@ -10,7 +10,7 @@ source "${ZINIT_HOME}/zinit.zsh"
 if [ -d "/opt/homebrew/bin" ]; then
   export PATH="/opt/homebrew/bin:$PATH"
 
-  if (($+commands[brew])); then
+  if type "brew" >/dev/null; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 fi
@@ -56,7 +56,7 @@ export PATH=$HOME/.bin:$HOME/.nvim/bin:$PATH
 
 ##################################### aws ######################################
 
-if (($+commands[aws] && $+commands[aws_completer])); then
+if (type "aws" >/dev/null && type aws_completer >/dev/null); then
   aws_completer_path=$(which aws_completer)
   complete -C $aws_completer_path aws
 
@@ -100,7 +100,7 @@ fi
 
 #################################### Editor ####################################
 
-if (($+commands[nvim])); then
+if type "nvim" >/dev/null; then
   export GIT_EDITOR=nvim
   export KUBE_EDITOR=nvim
 
@@ -121,16 +121,16 @@ export FZF_DEFAULT_COMMAND='find . -not -path "**/.git/**"'
 
 ################################## Kubernetes ##################################
 
-if (($+commands[helm])); then
+if type "helm" >/dev/null; then
   source <(helm completion zsh)
 fi
 
-if (($+commands[kind])); then
+if type "kind" >/dev/null; then
   source <(kind completion zsh)
 fi
 
 export RPROMPT=""
-if (($+commands[kubectl])); then
+if type "kubectl" >/dev/null; then
   source <(kubectl completion zsh)
   zinit load jonmosco/kube-ps1
 
@@ -140,13 +140,13 @@ fi
 
 #################################### GitHub ####################################
 
-if (($+commands[gh])); then
+if type "gh" >/dev/null; then
   source <(gh completion --shell zsh)
 fi
 
 ################################### Functions ##################################
 
-if (($+commands[helm] && $+commands[kubectl])); then
+if (type "helm" >/dev/null && type "kubectl" >/dev/null); then
   [ -f ~/.kshell.sh ] && source ~/.kshell.sh
 fi
 
@@ -159,7 +159,7 @@ if [ -n "$AWS_PROFILE" ]; then
   gen_prompt='%{$fg[green]%}${AWS_PROFILE}%{$reset_color%}'
 fi
 
-if (($+commands[kubectl])); then
+if type "kubectl" >/dev/null; then
   gen_prompt="$gen_prompt%::$(kube_ps1)"
 fi
 
