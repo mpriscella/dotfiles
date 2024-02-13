@@ -10,8 +10,7 @@ source "${ZINIT_HOME}/zinit.zsh"
 if [ -d "/opt/homebrew/bin" ]; then
   export PATH="/opt/homebrew/bin:$PATH"
 
-  if (( $+commands[brew] ))
-  then
+  if (($+commands[brew])); then
     eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 fi
@@ -47,7 +46,7 @@ alias grep='grep --color=auto '
 
 # Need to see if this works or if we need to use ls --color=auto
 # TODO should work on both darwin(mac) and linux.
-if ls -G > /dev/null 2>&1 ; then
+if ls -G >/dev/null 2>&1; then
   alias ls='ls -G'
 else
   alias ls='ls --color=always'
@@ -57,8 +56,7 @@ export PATH=$HOME/.bin:$HOME/.nvim/bin:$PATH
 
 ##################################### aws ######################################
 
-if (( $+commands[aws] && $+commands[aws_completer] ))
-then
+if (($+commands[aws] && $+commands[aws_completer])); then
   aws_completer_path=$(which aws_completer)
   complete -C $aws_completer_path aws
 
@@ -86,7 +84,7 @@ then
   #   None
   #######################################
   function ecr-login {
-    if [[ $(aws sts get-caller-identity > /dev/null 2>&1) -ne 0 ]]; then
+    if [[ $(aws sts get-caller-identity >/dev/null 2>&1) -ne 0 ]]; then
       echo "Could not connect to AWS account. Please verify that your credentials are correct."
       kill -INT $$
     fi
@@ -102,8 +100,7 @@ fi
 
 #################################### Editor ####################################
 
-if (( $+commands[nvim] ))
-then
+if (($+commands[nvim])); then
   export GIT_EDITOR=nvim
   export KUBE_EDITOR=nvim
 
@@ -124,19 +121,16 @@ export FZF_DEFAULT_COMMAND='find . -not -path "**/.git/**"'
 
 ################################## Kubernetes ##################################
 
-if (( $+commands[helm] ))
-then
+if (($+commands[helm])); then
   source <(helm completion zsh)
 fi
 
-if (( $+commands[kind] ))
-then
+if (($+commands[kind])); then
   source <(kind completion zsh)
 fi
 
 export RPROMPT=""
-if (( $+commands[kubectl] ))
-then
+if (($+commands[kubectl])); then
   source <(kubectl completion zsh)
   zinit load jonmosco/kube-ps1
 
@@ -146,16 +140,15 @@ fi
 
 #################################### GitHub ####################################
 
-if (( $+commands[gh] ))
-then
+if (($+commands[gh])); then
   source <(gh completion --shell zsh)
 fi
 
 ################################### Functions ##################################
 
-if (( $+commands[helm] && $+commands[kubectl] )) {
+if (($+commands[helm] && $+commands[kubectl])); then
   [ -f ~/.kshell.sh ] && source ~/.kshell.sh
-}
+fi
 
 ############################### Load Local zshrc ###############################
 
@@ -166,8 +159,7 @@ if [ -n "$AWS_PROFILE" ]; then
   gen_prompt='%{$fg[green]%}${AWS_PROFILE}%{$reset_color%}'
 fi
 
-if (( $+commands[kubectl] ))
-then
+if (($+commands[kubectl])); then
   gen_prompt="$gen_prompt%::$(kube_ps1)"
 fi
 
