@@ -12,24 +12,27 @@ usage() {
   echo ""
 }
 
+# Bring in ID and ID_LIKE, if the file exists.
 if [ -f /etc/os-release ]; then
   # shellcheck source=/dev/null
   source /etc/os-release
 fi
 
+# Normalize the OS ID.
 if [ "${ID}" = "debian" ] || [ "${ID_LIKE}" = "debian" ]; then
   ADJUSTED_ID="debian"
 elif [ "$(uname -s)" = "Darwin" ]; then
   ADJUSTED_ID="darwin"
 fi
 
+# Install Homebrew on MacOS.
 if [ "${ADJUSTED_ID}" = "darwin" ]; then
-  # Install homebrew.
   if ! type brew >/dev/null 2>&1; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
 fi
 
+# Determine what the package manager install command for the OS is.
 if type apt-get >/dev/null 2>&1; then
   INSTALL_CMD=apt-get
 elif type brew >/dev/null 2>&1; then
@@ -39,6 +42,13 @@ else
   exit 1
 fi
 
+#######################################
+# Update package manager.
+# Globals:
+#   INSTALL_CMD
+# Arguments:
+#   None
+#######################################
 pkg_mgr_update() {
   if [ "${INSTALL_CMD}" = "apt-get" ]; then
     if [ "$(find /var/lib/apt/lists/* | wc -l)" = "0" ]; then
@@ -51,7 +61,13 @@ pkg_mgr_update() {
   fi
 }
 
-# Checks if packages are installed and installs them if not
+#######################################
+# Ensure packages are installed.
+# Globals:
+#   INSTALL_CMD
+# Arguments:
+#   List of packages to install.
+#######################################
 check_packages() {
   if [ "${INSTALL_CMD}" = "apt-get" ]; then
     if ! dpkg -s "$@" >/dev/null 2>&1; then
@@ -67,6 +83,13 @@ check_packages() {
   fi
 }
 
+#######################################
+# Clean up package manager cache files.
+# Globals:
+#   ADJUSTED_ID
+# Arguments:
+#   None
+#######################################
 clean_up() {
   case "${ADJUSTED_ID}" in
   debian)
@@ -78,6 +101,13 @@ clean_up() {
   esac
 }
 
+#######################################
+# Install package dependencies.
+# Globals:
+#   ADJUSTED_ID
+# Arguments:
+#   None
+#######################################
 install_dependencies() {
   if [ "${ADJUSTED_ID}" = "debian" ]; then
     check_packages ack curl exuberant-ctags gawk git jq locales python3 tar tmux vim virt-what zsh
@@ -91,6 +121,14 @@ install_dependencies() {
   clean_up
 }
 
+#######################################
+# Installs neovim from source.
+# Globals:
+#   HOME
+#   PWD
+# Arguments:
+#   None
+#######################################
 install_neovim() {
   old_dir="$PWD"
   cd "$HOME" || exit
@@ -104,6 +142,13 @@ install_neovim() {
 
 spinner_pid=
 
+#######################################
+# Starts a progress spinner.
+# Globals:
+#   spinner_pid
+# Arguments:
+#   A string to precede the spinner.
+#######################################
 function start_spinner {
   set +m
   echo -n "$1    "
@@ -114,6 +159,13 @@ function start_spinner {
   spinner_pid=$!
 }
 
+#######################################
+# Stops a running progress spinner, identified by spinner_pid.
+# Globals:
+#   spinner_pid
+# Arguments:
+#   None
+#######################################
 function stop_spinner {
   { kill -9 "$spinner_pid" && wait; } 2>/dev/null
   set -m
@@ -122,10 +174,13 @@ function stop_spinner {
 
 trap stop_spinner EXIT
 
-######
-
-files=".ackrc .config/nvim/init.lua .dotfiles.gitconfig .gitattributes .kshell.sh .tmux.conf .vimrc .zshrc"
-
+#######################################
+# Installs tmux plugin manager.
+# Globals:
+#   HOME
+# Arguments:
+#   None
+#######################################
 config_tmux() {
   if [ ! -d "$HOME"/.tmux/plugins/tpm ]; then
     TPM_VERSION=v3.1.0
@@ -134,6 +189,16 @@ config_tmux() {
   "$HOME"/.tmux/plugins/tpm/bin/install_plugins
 }
 
+files=".ackrc .config/nvim/init.lua .dotfiles.gitconfig .gitattributes .kshell.sh .tmux.conf .vimrc .zshrc"
+
+#######################################
+# Symlinks the dotfiles to their correct destination in the home directory.
+# Globals:
+#   files
+#   HOME
+# Arguments:
+#   None
+#######################################
 install_dotfiles() {
   for i in $files; do
     mkdir -p "$(dirname "$HOME"/"$i")"
