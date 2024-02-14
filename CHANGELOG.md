@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/mpriscella/dotfiles/compare/v1.1.2...v1.2.0) (2024-02-14)
+
+
+### Features
+
+* Simplify dependency installation ([#32](https://github.com/mpriscella/dotfiles/issues/32)) ([61f9b99](https://github.com/mpriscella/dotfiles/commit/61f9b999c757a003c2f5d42d932a450e099b493f))
+
 ## [1.1.2](https://github.com/mpriscella/dotfiles/compare/v1.1.1...v1.1.2) (2024-02-13)
 
 
