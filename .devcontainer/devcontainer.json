@@ -4,9 +4,9 @@
   "name": "Dotfiles",
   "image": "mcr.microsoft.com/devcontainers/base:jammy",
   // Uncomment below to skip installing dotfiles. Used for debugging.
-  //  "remoteEnv": {
-  //    "DEBUG_DOTFILES": "true"
-  //  },
+  // "remoteEnv": {
+  //   "DEBUG_DOTFILES": "true"
+  // },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -29,3 +29,5 @@
   },
   "remoteUser": "vscode"
 }
+
+/* vim: set filetype=jsonc : */

@@ -160,7 +160,7 @@ if [ -n "$AWS_PROFILE" ]; then
   gen_prompt='%{$fg[green]%}${AWS_PROFILE}%{$reset_color%}'
 fi
 
-if type "kubectl" >/dev/null; then
+if type "kubectl" >/dev/null && $(kubectl config current-context >/dev/null 2>&1); then
   gen_prompt="$gen_prompt%::$(kube_ps1)"
 fi
 

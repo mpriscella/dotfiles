@@ -48,3 +48,5 @@ rebase = false
 [core]
 editor = nvim
 attributesFile = ~/.gitattributes
+
+# vim: set filetype=gitconfig :

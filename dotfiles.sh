@@ -110,7 +110,8 @@ clean_up() {
 #######################################
 install_dependencies() {
   if [ "${ADJUSTED_ID}" = "debian" ]; then
-    check_packages ack curl exuberant-ctags gawk git jq locales python3 tar tmux vim virt-what zsh
+    check_packages ack curl exuberant-ctags gawk git jq locales python3 tar tmux vim virt-what zsh nodejs npm # Maybe not nodejs? Maybe npm installs it for us.
+    npm install -g tree-sitter-cli
     install_neovim >/dev/null 2>&1
   elif [ "${ADJUSTED_ID}" = "darwin" ]; then
     brew tap homebrew/cask-fonts
