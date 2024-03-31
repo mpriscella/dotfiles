@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/mpriscella/dotfiles/compare/v1.2.0...v1.3.0) (2024-03-31)
+
+
+### Features
+
+* Add telescope and toggleterm plugins ([#36](https://github.com/mpriscella/dotfiles/issues/36)) ([3352a52](https://github.com/mpriscella/dotfiles/commit/3352a524848ce8f76c514b9372a96febc2994da1))
+
 ## [1.2.0](https://github.com/mpriscella/dotfiles/compare/v1.1.2...v1.2.0) (2024-02-14)
 
 
