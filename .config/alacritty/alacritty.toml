@@ -1,0 +1,5 @@
+[env]
+term = "xterm-256color"
+
+[font]
+normal = { family = "SpaceMono Nerd Font", style = "Regular" }

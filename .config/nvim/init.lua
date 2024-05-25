@@ -9,6 +9,7 @@ if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
+    "--depth 1",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
     "--branch=stable", -- latest stable release
@@ -44,7 +45,9 @@ require("lazy").setup({
     enabled = not vim.g.vscode,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      require("lualine").setup()
+      require("lualine").setup({
+        options = { disabled_filetypes = {'NvimTree'} }
+      })
     end
   },
   {

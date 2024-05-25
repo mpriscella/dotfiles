@@ -72,7 +72,7 @@ if (type "aws" >/dev/null && type aws_completer >/dev/null); then
   #   None
   #######################################
   function aws-ps {
-    profile=$(aws configure list-profiles | fzf --height=30% --layout=reverse --border --margin=1 --padding=1)
+    profile=$(aws configure list-profiles | fzf --height=30% --layout=reverse)
     if [ -n "$profile" ]; then
       export AWS_PROFILE=$profile
     fi
@@ -155,13 +155,16 @@ fi
 # shellcheck source=/dev/null
 [ -f "$HOME"/.zshrc.local ] && source "$HOME"/.zshrc.local
 
-gen_prompt=''
-if [ -n "$AWS_PROFILE" ]; then
-  gen_prompt='%{$fg[green]%}${AWS_PROFILE}%{$reset_color%}'
-fi
+# TODO If user is in tmux, don't add Kubernetes info to prompt.
+if [[ true == false ]]; then
+  gen_prompt=''
+  if [ -n "$AWS_PROFILE" ]; then
+    gen_prompt='%{$fg[green]%}${AWS_PROFILE}%{$reset_color%}'
+  fi
 
-if type "kubectl" >/dev/null && $(kubectl config current-context >/dev/null 2>&1); then
-  gen_prompt="$gen_prompt%::$(kube_ps1)"
-fi
+  if type "kubectl" >/dev/null && $(kubectl config current-context >/dev/null 2>&1); then
+    gen_prompt="$gen_prompt%::$(kube_ps1)"
+  fi
 
-export RPROMPT=$gen_prompt
+  export RPROMPT=$gen_prompt
+fi
