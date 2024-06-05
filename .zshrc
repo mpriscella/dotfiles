@@ -75,6 +75,7 @@ if (type "aws" >/dev/null && type aws_completer >/dev/null); then
     profile=$(aws configure list-profiles | fzf --height=30% --layout=reverse)
     if [ -n "$profile" ]; then
       export AWS_PROFILE=$profile
+      echo "AWS profile \"$AWS_PROFILE\" now active."
     fi
   }
 
@@ -101,12 +102,14 @@ fi
 #################################### Editor ####################################
 
 if type "nvim" >/dev/null; then
+  export EDITOR=nvim
   export GIT_EDITOR=nvim
   export KUBE_EDITOR=nvim
 
   alias vi=nvim
   alias vim=nvim
 else
+  export EDITOR=vim
   export GIT_EDITOR=vim
   export KUBE_EDITOR=vim
 
@@ -156,15 +159,21 @@ fi
 [ -f "$HOME"/.zshrc.local ] && source "$HOME"/.zshrc.local
 
 # TODO If user is in tmux, don't add Kubernetes info to prompt.
-if [[ true == false ]]; then
-  gen_prompt=''
-  if [ -n "$AWS_PROFILE" ]; then
-    gen_prompt='%{$fg[green]%}${AWS_PROFILE}%{$reset_color%}'
-  fi
 
+blub_left=''
+blub_right=''
+
+gen_prompt=''
+if [ -n "$AWS_PROFILE" ]; then
+  gen_prompt='%{$fg[yellow]%}$blub_left%{$bg[yellow]$fg[black]%}  ${AWS_PROFILE}%{$reset_color$fg[yellow]%}$blub_right'
+fi
+
+if [[ "$TERM_PROGRAM" != "tmux" ]]; then
   if type "kubectl" >/dev/null && $(kubectl config current-context >/dev/null 2>&1); then
     gen_prompt="$gen_prompt%::$(kube_ps1)"
   fi
-
-  export RPROMPT=$gen_prompt
 fi
+
+export RPROMPT=$gen_prompt
+
+bindkey '^R' history-incremental-search-backward
