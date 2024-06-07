@@ -158,19 +158,43 @@ fi
 # shellcheck source=/dev/null
 [ -f "$HOME"/.zshrc.local ] && source "$HOME"/.zshrc.local
 
-# TODO If user is in tmux, don't add Kubernetes info to prompt.
+#######################################
+# Create a visual pill.
+# Arguments:
+#   text
+#   pill_color
+#   text_color
+#######################################
+function create_pill {
+  icon=$1
+  text=$2
+  pill_color=$3
+  text_color=${4:-"black"}
 
-blub_left=''
-blub_right=''
+  pill_left="%{$fg[$pill_color]%}"
+  pill_right="%{$reset_color$fg[$pill_color]%}"
+
+  pill="$pill_left%{$bg[$pill_color]$fg[$text_color]%}$icon  $text$pill_right%{$reset_color%}"
+  echo $pill
+}
+
+function kube_pill {
+  context=$(kubectl config view --minify -o jsonpath='{.current-context}')
+  namespace=$(kubectl config view --minify -o jsonpath='{.contexts[0].context.namespace}')
+
+  echo "%{$fg[red]%}$context%{$fg[black]%}/%{$fg[white]%}$namespace"
+}
 
 gen_prompt=''
 if [ -n "$AWS_PROFILE" ]; then
-  gen_prompt='%{$fg[yellow]%}$blub_left%{$bg[yellow]$fg[black]%}  ${AWS_PROFILE}%{$reset_color$fg[yellow]%}$blub_right'
+  gen_prompt='$(create_pill   $AWS_PROFILE "yellow")'
 fi
 
+# If shell is running in tmux, don't add kubectl context info to prompt.
 if [[ "$TERM_PROGRAM" != "tmux" ]]; then
   if type "kubectl" >/dev/null && $(kubectl config current-context >/dev/null 2>&1); then
-    gen_prompt="$gen_prompt%::$(kube_ps1)"
+    context=$(kube_pill)
+    gen_prompt="$gen_prompt $(create_pill 󱃾 $context 'blue')"
   fi
 fi
 
