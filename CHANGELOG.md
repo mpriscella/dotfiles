@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/mpriscella/dotfiles/compare/v1.3.0...v1.4.0) (2024-06-07)
+
+
+### Features
+
+* Tmux config updates, add Wezterm, K9 plugin ([#38](https://github.com/mpriscella/dotfiles/issues/38)) ([400c067](https://github.com/mpriscella/dotfiles/commit/400c06771e55c84abd2c62dee25fd5e76d674e44))
+
 ## [1.3.0](https://github.com/mpriscella/dotfiles/compare/v1.2.0...v1.3.0) (2024-03-31)
 
 
