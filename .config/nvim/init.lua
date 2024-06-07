@@ -9,6 +9,7 @@ if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
+    "--depth 1",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
     "--branch=stable", -- latest stable release
@@ -44,7 +45,9 @@ require("lazy").setup({
     enabled = not vim.g.vscode,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      require("lualine").setup()
+      require("lualine").setup({
+        options = { disabled_filetypes = {'NvimTree'} }
+      })
     end
   },
   {
@@ -74,13 +77,6 @@ require("lazy").setup({
         highlight = { enable = true },
         indent = { enable = true },
       })
-    end
-  },
-  {
-    'numToStr/Comment.nvim',
-    lazy = false,
-    config = function()
-      require('Comment').setup()
     end
   },
   {
@@ -144,6 +140,18 @@ require("lazy").setup({
         open_mapping = [[<C-\>]],
       }
     end
+  },
+  {
+    'neovim/nvim-lspconfig',
+    config = function()
+      require'lspconfig'.terraformls.setup{}
+      vim.api.nvim_create_autocmd({"BufWritePre"}, {
+        pattern = {"*.tf", "*.tfvars"},
+        callback = function()
+          vim.lsp.buf.format()
+        end,
+      })
+    end
   }
 })
 
@@ -196,4 +204,3 @@ vim.keymap.set("n", "<C-h>", ":wincmd h<CR>", { silent = true })
 vim.keymap.set("n", "<C-j>", ":wincmd j<CR>", { silent = true })
 vim.keymap.set("n", "<C-k>", ":wincmd k<CR>", { silent = true })
 vim.keymap.set("n", "<C-l>", ":wincmd l<CR>", { silent = true })
-
