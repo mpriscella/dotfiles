@@ -1,8 +1,0 @@
-# https://alacritty.org/config-alacritty.html
-
-[env]
-term = "xterm-256color"
-
-[font]
-normal = { family = "SpaceMono Nerd Font", style = "Regular" }
-size = 13
