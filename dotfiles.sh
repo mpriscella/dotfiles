@@ -110,13 +110,16 @@ clean_up() {
 #######################################
 install_dependencies() {
   if [ "${ADJUSTED_ID}" = "debian" ]; then
-    check_packages ack curl exuberant-ctags gawk git jq locales python3 ripgrep tar tmux vim virt-what zsh nodejs npm # Maybe not nodejs? Maybe npm installs it for us.
+    check_packages ack curl exuberant-ctags fzf gawk git jq locales python3 \
+      ripgrep tar tmux vim virt-what zsh nodejs npm
     npm install -g tree-sitter-cli
     install_neovim >/dev/null 2>&1
   elif [ "${ADJUSTED_ID}" = "darwin" ]; then
     brew tap homebrew/cask-fonts
-    brew install --casks dbeaver-community font-space-mono-nerd-font
-    check_packages derailed/k9s/k9s dive gh helm jq kind neovim ripgrep shellcheck sslscan step tmux yq yt-dlp
+    brew install --casks dbeaver-community font-space-mono-nerd-font wezterm
+    check_packages ack atuin derailed/k9s/k9s dive fzf gh gnupg hadolint helm \
+      jordanbaird-ice jq kind neovim ripgrep shellcheck sslscan step \
+      terraform-ls tmux tree-sitter yq yt-dlp
   fi
 
   clean_up
@@ -124,6 +127,7 @@ install_dependencies() {
 
 #######################################
 # Installs neovim from source.
+# Necessary until this issue gets resolved: https://github.com/neovim/neovim/issues/15143
 # Globals:
 #   HOME
 #   PWD

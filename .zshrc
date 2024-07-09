@@ -5,6 +5,8 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d "$ZINIT_HOME"/.git ] && git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 source "${ZINIT_HOME}/zinit.zsh"
 
+zinit load atuinsh/atuin
+
 ##################################### brew #####################################
 
 if [ -d "/opt/homebrew/bin" ]; then
@@ -54,7 +56,7 @@ fi
 
 export PATH=$HOME/.bin:$HOME/.nvim/bin:$PATH
 
-##################################### aws ######################################
+##################################### AWS ######################################
 
 if (type "aws" >/dev/null && type aws_completer >/dev/null); then
   aws_completer_path=$(which aws_completer)
@@ -119,7 +121,6 @@ fi
 ############## FZF (https://github.com/junegunn/fzf) integration ###############
 
 [ -f "$HOME"/.fzf.zsh ] && source "$HOME"/.fzf.zsh
-bindkey -s '^P' 'fzf^M'
 export FZF_DEFAULT_COMMAND='find . -not -path "**/.git/**"'
 
 ################################## Kubernetes ##################################
@@ -132,13 +133,8 @@ if type "kind" >/dev/null; then
   source <(kind completion zsh)
 fi
 
-export RPROMPT=""
 if type "kubectl" >/dev/null; then
   source <(kubectl completion zsh)
-  zinit load jonmosco/kube-ps1
-
-  export KUBE_PS1_DIVIDER="/"
-  export KUBE_PS1_SYMBOL_ENABLE=false
 fi
 
 #################################### GitHub ####################################
@@ -199,5 +195,3 @@ if [[ "$TERM_PROGRAM" != "tmux" ]]; then
 fi
 
 export RPROMPT=$gen_prompt
-
-bindkey '^R' history-incremental-search-backward
