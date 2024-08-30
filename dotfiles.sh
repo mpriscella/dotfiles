@@ -116,9 +116,9 @@ install_dependencies() {
     install_neovim >/dev/null 2>&1
   elif [ "${ADJUSTED_ID}" = "darwin" ]; then
     brew tap homebrew/cask-fonts
-    brew install --casks dbeaver-community font-space-mono-nerd-font wezterm
+    brew install --casks dbeaver-community devtoys font-space-mono-nerd-font wezterm
     check_packages ack atuin derailed/k9s/k9s dive fzf gh gnupg hadolint helm \
-      jordanbaird-ice jq kind neovim ripgrep shellcheck sslscan step \
+      jordanbaird-ice jq k6 kind neovim ripgrep shellcheck sslscan step \
       terraform-ls tmux tree-sitter yq yt-dlp
   fi
 
