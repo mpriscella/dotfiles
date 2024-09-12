@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/mpriscella/dotfiles/compare/v1.4.0...v1.4.1) (2024-09-12)
+
+
+### Bug Fixes
+
+* Fix script to install lazy.nvim ([#45](https://github.com/mpriscella/dotfiles/issues/45)) ([7f42a23](https://github.com/mpriscella/dotfiles/commit/7f42a2364146e72bb6f428abacf5801e59823f89))
+
 ## [1.4.0](https://github.com/mpriscella/dotfiles/compare/v1.3.0...v1.4.0) (2024-08-30)
 
 
