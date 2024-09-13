@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/mpriscella/dotfiles/compare/v1.4.1...v1.5.0) (2024-09-13)
+
+
+### Features
+
+* Install atuin ([#47](https://github.com/mpriscella/dotfiles/issues/47)) ([7bdbc36](https://github.com/mpriscella/dotfiles/commit/7bdbc360a6e86b679e1c59ae90584268ecebb7d2))
+
 ## [1.4.1](https://github.com/mpriscella/dotfiles/compare/v1.4.0...v1.4.1) (2024-09-12)
 
 
