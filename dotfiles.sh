@@ -113,6 +113,7 @@ install_dependencies() {
     check_packages ack curl exuberant-ctags fzf gawk git jq locales python3 \
       ripgrep tar tmux vim virt-what zsh nodejs npm
     npm install -g tree-sitter-cli
+    curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
     install_neovim >/dev/null 2>&1
   elif [ "${ADJUSTED_ID}" = "darwin" ]; then
     brew tap homebrew/cask-fonts
