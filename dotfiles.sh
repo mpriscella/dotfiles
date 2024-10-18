@@ -111,9 +111,11 @@ clean_up() {
 install_dependencies() {
   if [ "${ADJUSTED_ID}" = "debian" ]; then
     check_packages ack curl exuberant-ctags fd-find fzf gawk git jq locales python3 \
-      ripgrep tar tmux vim virt-what zsh nodejs npm
+      ripgrep tar tmux vim virt-what zsh
     npm install -g tree-sitter-cli
     curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    check_packages nodejs
     install_neovim >/dev/null 2>&1
   elif [ "${ADJUSTED_ID}" = "darwin" ]; then
     brew tap homebrew/cask-fonts
@@ -122,7 +124,6 @@ install_dependencies() {
       jordanbaird-ice jq k6 kind neovim ripgrep shellcheck sslscan step \
       terraform-ls tmux tree-sitter yq yt-dlp
   fi
-
   clean_up
 }
 
