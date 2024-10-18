@@ -110,7 +110,7 @@ clean_up() {
 #######################################
 install_dependencies() {
   if [ "${ADJUSTED_ID}" = "debian" ]; then
-    check_packages ack curl exuberant-ctags fzf gawk git jq locales python3 \
+    check_packages ack curl exuberant-ctags fd-find fzf gawk git jq locales python3 \
       ripgrep tar tmux vim virt-what zsh nodejs npm
     npm install -g tree-sitter-cli
     curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
@@ -195,7 +195,7 @@ config_tmux() {
   "$HOME"/.tmux/plugins/tpm/bin/install_plugins
 }
 
-files=".ackrc .config/nvim/init.lua .dotfiles.gitconfig .gitattributes .kshell.sh .tmux.conf .vimrc .zshrc"
+files=".ackrc .config/nvim .dotfiles.gitconfig .gitattributes .kshell.sh .tmux.conf .vimrc .zshrc"
 
 #######################################
 # Symlinks the dotfiles to their correct destination in the home directory.
