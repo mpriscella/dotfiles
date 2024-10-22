@@ -46,13 +46,7 @@ alias reload='source ~/.zshrc'
 # TODO should work on both darwin(mac) and linux.
 alias grep='grep --color=auto '
 
-# Need to see if this works or if we need to use ls --color=auto
-# TODO should work on both darwin(mac) and linux.
-if ls -G >/dev/null 2>&1; then
-  alias ls='ls -G'
-else
-  alias ls='ls --color=always'
-fi
+alias ls='ls --color=always'
 
 export PATH=$HOME/.bin:$HOME/.nvim/bin:$PATH
 export LANG="en_US.UTF-8"
@@ -137,6 +131,13 @@ fi
 
 if type "kubectl" >/dev/null; then
   source <(kubectl completion zsh)
+fi
+
+################################# Devcontainer #################################
+
+if type "devcontainer" >/dev/null; then
+  alias devup="devcontainer up --workspace-folder . --dotfiles-repository https://github.com/mpriscella/dotfiles.git"
+  alias devexec="devcontainer exec --workspace-folder . zsh"
 fi
 
 #################################### GitHub ####################################
