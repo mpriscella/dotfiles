@@ -121,8 +121,9 @@ install_dependencies() {
     brew tap homebrew/cask-fonts
     brew install --casks dbeaver-community devtoys font-space-mono-nerd-font wezterm
     check_packages ack atuin derailed/k9s/k9s dive fzf gh gnupg hadolint helm \
-      jordanbaird-ice jq k6 kind neovim node ripgrep shellcheck sslscan step \
-      terraform-ls tmux tree-sitter yq yt-dlp
+      jordanbaird-ice jq k6 kind jesseduffield/lazygit/lazygit neovim node \
+      ripgrep shellcheck sslscan step terraform-ls tmux tree-sitter yq \
+      yt-dlp
     npm install -g @devcontainers/cli
   fi
   clean_up
