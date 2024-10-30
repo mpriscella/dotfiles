@@ -155,7 +155,8 @@ return {
       local servers = {
         bashls = {},
         shellcheck = {},
-        markdownlint = {},
+        terraformls = {},
+        -- markdownlint = {},
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},

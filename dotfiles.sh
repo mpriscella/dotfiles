@@ -117,12 +117,18 @@ install_dependencies() {
     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
     check_packages nodejs
     install_neovim >/dev/null 2>&1
+    LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+    curl -Lo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+    tar xf /tmp/lazygit.tar.gz lazygit
+    sudo install lazygit /usr/local/bin
+    rm lazygit
   elif [ "${ADJUSTED_ID}" = "darwin" ]; then
     brew tap homebrew/cask-fonts
     brew install --casks dbeaver-community devtoys font-space-mono-nerd-font wezterm
     check_packages ack atuin derailed/k9s/k9s dive fzf gh gnupg hadolint helm \
-      jordanbaird-ice jq k6 kind neovim node ripgrep shellcheck sslscan step \
-      terraform-ls tmux tree-sitter yq yt-dlp
+      jordanbaird-ice jq k6 kind jesseduffield/lazygit/lazygit neovim node \
+      ripgrep shellcheck sslscan step terraform-ls tmux tree-sitter yq \
+      yt-dlp
     npm install -g @devcontainers/cli
   fi
   clean_up
