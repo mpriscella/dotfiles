@@ -37,3 +37,7 @@ zmodload zsh/zprof
 
 zprof
 ```
+
+## TODO
+- [ ] For terraform files, if I type `gh` in normal mode, I want the following comment inserted.
+- [ ] On nvim save, I should trim whitespace

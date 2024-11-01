@@ -140,6 +140,12 @@ if type "devcontainer" >/dev/null; then
   alias devexec="devcontainer exec --workspace-folder . zsh"
 fi
 
+#################################### LazyGit ###################################
+
+if type "lazygit" >/dev/null; then
+  alias lg="lazygit"
+fi
+
 #################################### GitHub ####################################
 
 if type "gh" >/dev/null; then
