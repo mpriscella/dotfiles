@@ -10,7 +10,7 @@ d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-
 # Remove branches that have already been merged with master
 # a.k.a. ‘delete merged’
 dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; git remote -v update -p"
-empty = commit --allow-empty -m "Empty-Commit"
+empty = commit --allow-empty -n -m "Empty-Commit"
 g = grep --break --heading --line-number
 # View abbreviated SHA, description, and history graph of the latest 20 commits
 l = log --pretty=oneline -n 20 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
