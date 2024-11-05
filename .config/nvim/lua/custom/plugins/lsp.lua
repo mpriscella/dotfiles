@@ -184,6 +184,19 @@ return {
             },
           },
         },
+        yamlls = {
+          settings = {
+            validate = true,
+            -- disable the schema store
+            schemaStore = {
+              enable = false,
+              url = '',
+            },
+            schemas = {
+              ['https://json.schemastore.org/github-workflow.json'] = '.github/workflows/*.{yml,yaml}',
+            },
+          },
+        },
       }
 
       -- Ensure the servers and tools above are installed
