@@ -8,7 +8,7 @@ may vary.
 ## Installation
 
 ```shell
-$ ./dotfiles.sh install
+./dotfiles.sh install
 ```
 
 ## Usage in Development Containers
