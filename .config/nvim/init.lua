@@ -113,6 +113,13 @@ for i = 1, 9, 1 do
   vim.keymap.set('n', string.format('<Leader>%d', i), string.format('%dgt<CR>', i), { noremap = true, silent = true })
 end
 
+-- Indentation configuration.
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.smartindent = true
+-- vim.opt.softtabstop = 2
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 

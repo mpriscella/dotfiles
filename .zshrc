@@ -17,6 +17,12 @@ if [ -d "/opt/homebrew/bin" ]; then
   fi
 fi
 
+###################################### go ######################################
+
+if [ -d "/usr/local/go/bin" ]; then
+  export PATH="/usr/local/go/bin:$PATH"
+fi
+
 #################################### Theme #####################################
 
 zinit load mafredri/zsh-async
@@ -50,7 +56,6 @@ alias ls='ls --color=always'
 
 export PATH=$HOME/.bin:$HOME/.nvim/bin:$PATH
 export LANG="en_US.UTF-8"
-export TERM="xterm-256color"
 
 ##################################### AWS ######################################
 

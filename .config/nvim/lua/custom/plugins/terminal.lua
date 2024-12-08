@@ -1,12 +1,10 @@
 return {
   {
     'akinsho/toggleterm.nvim',
-    version = 'v2.12.0',
-    config = function()
-      require('toggleterm').setup {
-        direction = 'float',
-        open_mapping = [[<C-\>]],
-      }
-    end,
+    version = 'v2.13.0',
+    opts = {
+      autochdir = true,
+      open_mapping = [[<C-\>]],
+    },
   },
 }
