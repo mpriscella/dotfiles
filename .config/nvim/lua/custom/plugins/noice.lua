@@ -1,6 +1,10 @@
 return {
   {
     'folke/noice.nvim',
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'rcarriga/nvim-notify',
+    },
     event = 'VeryLazy',
     opts = {
       lsp = {
@@ -19,10 +23,34 @@ return {
         inc_rename = false, -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = false, -- add a border to hover docs and signature help
       },
-    },
-    dependencies = {
-      'MunifTanjim/nui.nvim',
-      'rcarriga/nvim-notify',
+
+      routes = {
+        {
+          filter = {
+            event = 'msg_show',
+            kind = '',
+            find = 'written',
+          },
+          opts = { skip = true },
+        },
+        {
+          filter = {
+            event = 'notify',
+            kind = 'info',
+            find = '[Neo-tree INFO]',
+          },
+          opts = { skip = true },
+        },
+        -- Is there a way to filter by message title / source?
+        {
+          filter = {
+            event = 'notify',
+            kind = 'warn',
+            find = 'Config Change Detected.',
+          },
+          opts = { skip = true },
+        },
+      },
     },
   },
 }
