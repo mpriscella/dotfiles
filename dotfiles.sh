@@ -203,7 +203,7 @@ config_tmux() {
   "$HOME"/.tmux/plugins/tpm/bin/install_plugins
 }
 
-files=".ackrc .config/nvim .dotfiles.gitconfig .gitattributes .kshell.sh .tmux.conf .vimrc .zshrc"
+files=".ackrc .config/ghostty .config/nvim .dotfiles.gitconfig .gitattributes .kshell.sh .tmux.conf .vimrc .zshrc"
 
 #######################################
 # Symlinks the dotfiles to their correct destination in the home directory.

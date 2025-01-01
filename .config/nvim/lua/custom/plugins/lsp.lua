@@ -154,49 +154,50 @@ return {
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         bashls = {},
-        shellcheck = {},
-        terraformls = {},
-        -- markdownlint = {},
-        -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
-        --
-
+        helm_ls = {
+          settings = {
+            ['helm-ls'] = {
+              yamlls = {
+                path = 'yaml-language-server',
+              },
+            },
+          },
+        },
         lua_ls = {
-          -- cmd = {...},
-          -- filetypes = { ...},
-          -- capabilities = {},
           settings = {
             Lua = {
               completion = {
                 callSnippet = 'Replace',
               },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = {
+                globals = { 'vim' },
+              },
             },
           },
         },
-        yamlls = {
-          settings = {
-            validate = true,
-            -- disable the schema store
-            schemaStore = {
-              enable = false,
-              url = '',
-            },
-            schemas = {
-              ['https://json.schemastore.org/github-workflow.json'] = '.github/workflows/*.{yml,yaml}',
-            },
-          },
+        markdownlint = {},
+        phpactor = {},
+        phpcs = {
+          cmd = { '/Users/michaelpriscella/workspace/wpcomvip/wgb-zenith/vendor/bin/phpcs', '-d', '-1' },
         },
+        shellcheck = {},
+        terraformls = {},
+        tflint = {},
+        ts_ls = {},
+        zls = {},
+        -- yamlls = {
+        --   settings = {
+        --     validate = true,
+        --     -- disable the schema store
+        --     schemaStore = {
+        --       enable = false,
+        --       url = '',
+        --     },
+        --     schemas = {
+        --       ['https://json.schemastore.org/github-workflow.json'] = '.github/workflows/*.{yml,yaml}',
+        --     },
+        --   },
+        -- },
       }
 
       -- Ensure the servers and tools above are installed
@@ -211,6 +212,7 @@ return {
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
+        'prettierd',
         'stylua', -- Used to format Lua code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }

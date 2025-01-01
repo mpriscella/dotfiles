@@ -7,16 +7,6 @@ source "${ZINIT_HOME}/zinit.zsh"
 
 zinit load atuinsh/atuin
 
-##################################### brew #####################################
-
-if [ -d "/opt/homebrew/bin" ]; then
-  export PATH="/opt/homebrew/bin:$PATH"
-
-  if type "brew" >/dev/null; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  fi
-fi
-
 #################################### Theme #####################################
 
 zinit load mafredri/zsh-async
@@ -27,30 +17,38 @@ zinit load sindresorhus/pure
 autoload bashcompinit && bashcompinit
 autoload -Uz compinit && compinit
 
-# Use vi mode with ZSH Line Editor (zle).
-# See https://zsh.sourceforge.io/Guide/zshguide04.html for documentation.
-bindkey -v
+export PATH=$HOME/.bin:$HOME/.nvim/bin:$PATH
+export LANG="en_US.UTF-8"
 
 # (F)astly (Debug).
 # Sends the Fastly-Debug header to an endpoint.
 # Additional documentation: https://developer.fastly.com/reference/http/http-headers/Fastly-Debug/
 alias fdebug='curl -svo /dev/null -H "Fastly-Debug: true"'
-# (H)eader C(url).
-alias hurl='curl -sLD - -o /dev/null'
-# (T)ime (T)o (F)irst (B)yte.
-alias ttfb='curl -o /dev/null -H "Cache-Control: no-cache" -s -w "Connect: %{time_connect} TTFB: %{time_starttransfer} Total time: %{time_total} \n"'
-
-alias reload='source ~/.zshrc'
-
 # Enable colored output for default commands.
 # TODO should work on both darwin(mac) and linux.
 alias grep='grep --color=auto '
-
+# (H)eader C(url).
+alias hurl='curl -sLD - -o /dev/null'
 alias ls='ls --color=always'
+alias reload='source ~/.zshrc'
+# (T)ime (T)o (F)irst (B)yte.
+alias ttfb='curl -o /dev/null -H "Cache-Control: no-cache" -s -w "Connect: %{time_connect} TTFB: %{time_starttransfer} Total time: %{time_total} \n"'
 
-export PATH=$HOME/.bin:$HOME/.nvim/bin:$PATH
-export LANG="en_US.UTF-8"
-export TERM="xterm-256color"
+##################################### brew #####################################
+
+if [ -d "/opt/homebrew/bin" ]; then
+  export PATH="/opt/homebrew/bin:$PATH"
+
+  if type "brew" >/dev/null; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+fi
+
+###################################### go ######################################
+
+if [ -d "/usr/local/go/bin" ]; then
+  export PATH="/usr/local/go/bin:$PATH"
+fi
 
 ##################################### AWS ######################################
 
@@ -104,14 +102,14 @@ if type "nvim" >/dev/null; then
   export GIT_EDITOR=nvim
   export KUBE_EDITOR=nvim
 
-  alias vi=nvim
-  alias vim=nvim
+  alias vi="echo 'Use \"nvim\" instead of \"vi\"'"
+  alias vim="echo 'Use \"nvim\" instead of \"vim\"'"
 else
   export EDITOR=vim
   export GIT_EDITOR=vim
   export KUBE_EDITOR=vim
 
-  alias vi=vim
+  alias vi="echo 'Use \"vim\" instead of \"vi\"'"
 fi
 
 ############## FZF (https://github.com/junegunn/fzf) integration ###############
