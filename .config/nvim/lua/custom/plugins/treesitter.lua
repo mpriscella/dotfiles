@@ -11,6 +11,7 @@ return {
         'c',
         'diff',
         'html',
+        'jsonc',
         'lua',
         'luadoc',
         'markdown',

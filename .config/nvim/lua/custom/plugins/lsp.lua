@@ -4,7 +4,9 @@ return {
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
-      { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
+      -- Mason must be loaded before its dependents so we need to set it up here.
+      -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
+      { 'williamboman/mason.nvim', opts = {} }, -- NOTE: Must be loaded before dependants
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
@@ -40,6 +42,12 @@ return {
       --
       -- If you're wondering about lsp vs treesitter, you can check out the wonderfully
       -- and elegantly composed help section, `:help lsp-vs-treesitter`
+
+      -- vim.filetype.add {
+      --   pattern = {
+      --     ['.*/%.github[%w/]+workflows[%w/]+.*%.ya?ml'] = 'yaml.github',
+      --   },
+      -- }
 
       --  This function gets run when an LSP attaches to a particular buffer.
       --    That is to say, every time a new file is opened that is associated with
@@ -154,15 +162,16 @@ return {
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         bashls = {},
-        helm_ls = {
-          settings = {
-            ['helm-ls'] = {
-              yamlls = {
-                path = 'yaml-language-server',
-              },
-            },
-          },
-        },
+        -- gh_actions_ls = {},
+        -- helm_ls = {
+        --   settings = {
+        --     ['helm-ls'] = {
+        --       yamlls = {
+        --         path = 'yaml-language-server',
+        --       },
+        --     },
+        --   },
+        -- },
         lua_ls = {
           settings = {
             Lua = {
@@ -175,15 +184,15 @@ return {
             },
           },
         },
-        markdownlint = {},
+        -- markdownlint = {},
         phpactor = {},
-        phpcs = {
-          cmd = { '/Users/michaelpriscella/workspace/wpcomvip/wgb-zenith/vendor/bin/phpcs', '-d', '-1' },
-        },
+        -- phpcs = {
+        --   cmd = { '/Users/michaelpriscella/workspace/wpcomvip/wgb-zenith/vendor/bin/phpcs', '-d', '-1' },
+        -- },
         shellcheck = {},
         terraformls = {},
-        tflint = {},
-        ts_ls = {},
+        -- tflint = {},
+        -- ts_ls = {},
         zls = {},
         -- yamlls = {
         --   settings = {
@@ -206,7 +215,7 @@ return {
       --    :Mason
       --
       --  You can press `g?` for help in this menu.
-      require('mason').setup()
+      -- require('mason').setup()
 
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
