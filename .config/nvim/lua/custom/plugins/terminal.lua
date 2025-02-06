@@ -34,14 +34,15 @@ return {
         direction = 'float',
       }
 
-      function _k9s_toggle()
+      -- How to make this a local variable? Or do I create a module? M = {} and whatever.
+      function k9s_toggle()
         k9s:toggle()
         if k9s:is_open() then
           k9s:set_mode(mode.INSERT)
         end
       end
 
-      vim.keymap.set({ 'n', 't' }, '<S-k>9', '<cmd>lua _k9s_toggle()<CR>', { desc = 'Toggle K9s' })
+      vim.keymap.set({ 'n', 't' }, '<S-k>9', '<cmd>lua k9s_toggle()<CR>', { desc = 'Toggle K9s' })
 
       -- htop
       local htop = Terminal:new {
@@ -50,14 +51,14 @@ return {
         direction = 'float',
       }
 
-      function _htop_toggle()
+      function htop_toggle()
         htop:toggle()
         if htop:is_open() then
           htop:set_mode(mode.INSERT)
         end
       end
 
-      vim.keymap.set({ 'n', 't' }, '<leader>ht', '<cmd>lua _htop_toggle()<CR>', { desc = 'Toggle Htop' })
+      vim.keymap.set({ 'n', 't' }, '<leader>ht', '<cmd>lua htop_toggle()<CR>', { desc = 'Toggle Htop' })
     end,
   },
 }

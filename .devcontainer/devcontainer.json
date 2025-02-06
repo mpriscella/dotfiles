@@ -17,9 +17,7 @@
         "sumneko.lua"
       ],
       "settings": {
-        "Lua.diagnostics.globals": ["vim"],
-        "vscode-neovim.neovimInitVimPaths.linux": "/workspaces/dotfiles/.config/nvim/init.lua",
-        "vscode-neovim.neovimExecutablePaths.linux": "/usr/local/bin/nvim"
+        "Lua.diagnostics.globals": ["vim"]
       }
     }
   },

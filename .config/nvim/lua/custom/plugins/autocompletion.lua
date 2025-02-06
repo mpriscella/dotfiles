@@ -1,4 +1,5 @@
 -- Autocompletion
+-- TODO: Look into using blink-cmp instead.
 return {
   {
     'hrsh7th/nvim-cmp',
