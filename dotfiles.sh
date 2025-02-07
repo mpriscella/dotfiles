@@ -42,33 +42,22 @@ fi
 
 ARCHITECTURE="$(uname -m)"
 
-#######################################
-# Ensure package manager is installed.
-# Globals:
-#   ADJUSTED_ID
-#   HOME
-# Arguments:
-#   None
-#######################################
-check_package_manager() {
-  # Install Homebrew on MacOS.
-  if [ "${ADJUSTED_ID}" = "darwin" ]; then
-    if ! type brew >/dev/null 2>&1; then
-      NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# Install Homebrew on MacOS.
+if [ "${ADJUSTED_ID}" = "darwin" ]; then
+  if ! type brew >/dev/null 2>&1; then
+    install_homebrew
 
-      # Create $HOME/.zprofile if it doesn't exist.
-      if [ -f "$HOME"/.zprofile ]; then
-        echo >> "$HOME"/.zprofile
-      fi
-
-      # shellcheck disable=SC2016
-      echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-
-      export PATH="/opt/homebrew/bin:$PATH"
+    # Create $HOME/.zprofile if it doesn't exist.
+    if [ -f "$HOME"/.zprofile ]; then
+      echo >> "$HOME"/.zprofile
     fi
+
+    # shellcheck disable=SC2016
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
-}
+  export PATH="/opt/homebrew/bin:$PATH"
+fi
 
 # Determine what the package manager install command for the OS is.
 if type apt-get >/dev/null 2>&1; then
@@ -202,21 +191,33 @@ install_dependencies() {
 
     # Not working, probably cause node doesn't exist yet.
     npm install -g @devcontainers/cli
-
-    # Change shell to fishshell.
-    if ! grep -q '/fish$' /etc/shells; then
-      which fish | sudo tee -a /etc/shells
-      chsh -s "$(which fish)"
-    fi
   fi
 
-  # TODO: Maybe move changing of shell out of platform specfic conditional.
+  # Change shell to fishshell.
+  if ! grep -q '/fish$' /etc/shells; then
+    which fish | sudo tee -a /etc/shells
+    chsh -s "$(which fish)"
+  fi
 
   if [ "${ENABLE_TMUX}" = "TRUE" ]; then
     install_tmux
   fi
 
   clean_up
+}
+
+#######################################
+# Installs Homebrew.
+# Globals:
+#   TMPDIR
+# Arguments:
+#   None
+#######################################
+install_homebrew() {
+  VERSION=$(curl -s https://api.github.com/repos/Homebrew/brew/releases/latest | grep '"tag_name":' | sed -E 's/.*"tag_name": "v?([^"]*).*/\1/')
+  CURL -Lo "${TMPDIR}"/brew.pkg "https://github.com/Homebrew/brew/releases/download/${VERSION}/Homebrew-${VERSION}.pkg"
+  sudo installer -pkg "${TMPDIR}"/brew.pkg -target /
+  rm "${TMPDIR}"/brew.pkg
 }
 
 #######################################
