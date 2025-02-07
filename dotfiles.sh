@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # User defined configs.
 ENABLE_TMUX=FALSE
 
@@ -64,6 +65,12 @@ if [ "${ID}" = "debian" ] || [ "${ID_LIKE}" = "debian" ]; then
   ADJUSTED_ID="debian"
 elif [ "$(uname -s)" = "Darwin" ]; then
   ADJUSTED_ID="darwin"
+fi
+
+# Check if the script is run as root
+if [[ $EUID -ne 0 && "$ADJUSTED_ID" != "darwin" ]]; then
+  echo "This script must be run as root. Please use sudo."
+  exit 1
 fi
 
 ARCHITECTURE="$(uname -m)"
@@ -156,6 +163,8 @@ clean_up() {
 #   None
 #######################################
 install_dependencies() {
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+
   if [ "${ADJUSTED_ID}" = "debian" ]; then
     check_packages ack build-essential ca-certificates curl fd-find fzf gawk \
       git jq locales ripgrep tar vim virt-what zsh
@@ -165,7 +174,6 @@ install_dependencies() {
     echo 'LANG=en_US.UTF-8' > /etc/default/locale
     locale-gen
 
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
     nvm install 22
     npm install -g tree-sitter-cli @devcontainers/cli
 
@@ -183,17 +191,14 @@ install_dependencies() {
     # check to see if it's installed, and if not, install it. This might be
     # applicable to debian as well, perhaps we can create a function to check if
     # a package is installed that's package manager agnostic.
-    check_packages ack act atuin derailed/k9s/k9s direnv dive fish fd fzf gh \
-      gnupg helm jordanbaird-ice jq k6 kind jesseduffield/lazygit/lazygit \
-      neovim nvm ripgrep shellcheck sslscan step terraform-ls tree-sitter yq \
-      yt-dlp
+    check_packages ack act atuin derailed/k9s/k9s direnv fish fd fzf gh gnupg \
+      helm jordanbaird-ice jq kind jesseduffield/lazygit/lazygit neovim \
+      ripgrep yq yt-dlp
 
-    # TODO: This, and npm below, still don't work. I bet PATH is not set.
     nvm install node
 
     # Hopefully can move the following into nix:
     #   - dive
-    #   - gnupg (?)
     #   - k6
     #   - shellcheck
     #   - sslscan (?)
