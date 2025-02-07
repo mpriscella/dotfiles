@@ -27,6 +27,32 @@ usage() {
   echo ""
 }
 
+#######################################
+# Installs Homebrew.
+# Globals:
+#   TMPDIR
+# Arguments:
+#   None
+#######################################
+install_homebrew() {
+  if ! type brew >/dev/null 2>&1; then
+    VERSION=$(curl -s https://api.github.com/repos/Homebrew/brew/releases/latest | grep '"tag_name":' | sed -E 's/.*"tag_name": "v?([^"]*).*/\1/')
+    CURL -Lo "${TMPDIR}"/brew.pkg "https://github.com/Homebrew/brew/releases/download/${VERSION}/Homebrew-${VERSION}.pkg"
+    sudo installer -pkg "${TMPDIR}"/brew.pkg -target /
+    rm "${TMPDIR}"/brew.pkg
+
+    # Create $HOME/.zprofile if it doesn't exist.
+    if [ -f "$HOME"/.zprofile ]; then
+      echo >> "$HOME"/.zprofile
+    fi
+
+    # shellcheck disable=SC2016
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+  PATH="/opt/homebrew/bin:$PATH"
+}
+
 # Bring in ID and ID_LIKE, if the file exists.
 if [ -f /etc/os-release ]; then
   # shellcheck source=/dev/null
@@ -42,21 +68,8 @@ fi
 
 ARCHITECTURE="$(uname -m)"
 
-# Install Homebrew on MacOS.
 if [ "${ADJUSTED_ID}" = "darwin" ]; then
-  if ! type brew >/dev/null 2>&1; then
-    install_homebrew
-
-    # Create $HOME/.zprofile if it doesn't exist.
-    if [ -f "$HOME"/.zprofile ]; then
-      echo >> "$HOME"/.zprofile
-    fi
-
-    # shellcheck disable=SC2016
-    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  fi
-  export PATH="/opt/homebrew/bin:$PATH"
+  install_homebrew
 fi
 
 # Determine what the package manager install command for the OS is.
@@ -144,12 +157,8 @@ clean_up() {
 #######################################
 install_dependencies() {
   if [ "${ADJUSTED_ID}" = "debian" ]; then
-    check_packages ack build-essential ca-certificates curl exuberant-ctags \
-      fd-find fzf gawk git jq locales python3 ripgrep tar vim virt-what zsh
-
-    # Do I need?
-    #   - exuberant-ctags
-    #   - python3
+    check_packages ack build-essential ca-certificates curl fd-find fzf gawk \
+      git jq locales ripgrep tar vim virt-what zsh
 
     # Set locale.
     sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
@@ -159,7 +168,9 @@ install_dependencies() {
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
     nvm install 22
     npm install -g tree-sitter-cli @devcontainers/cli
-    curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+
+    curl --proto '=https' --tlsv1.2 -LsSf https://github.com/atuinsh/atuin/releases/download/v18.4.0/atuin-installer.sh | sh
+
     install_neovim
 
     # TODO: Install:
@@ -177,6 +188,7 @@ install_dependencies() {
       neovim nvm ripgrep shellcheck sslscan step terraform-ls tree-sitter yq \
       yt-dlp
 
+    # TODO: This, and npm below, still don't work. I bet PATH is not set.
     nvm install node
 
     # Hopefully can move the following into nix:
@@ -207,20 +219,6 @@ install_dependencies() {
 }
 
 #######################################
-# Installs Homebrew.
-# Globals:
-#   TMPDIR
-# Arguments:
-#   None
-#######################################
-install_homebrew() {
-  VERSION=$(curl -s https://api.github.com/repos/Homebrew/brew/releases/latest | grep '"tag_name":' | sed -E 's/.*"tag_name": "v?([^"]*).*/\1/')
-  CURL -Lo "${TMPDIR}"/brew.pkg "https://github.com/Homebrew/brew/releases/download/${VERSION}/Homebrew-${VERSION}.pkg"
-  sudo installer -pkg "${TMPDIR}"/brew.pkg -target /
-  rm "${TMPDIR}"/brew.pkg
-}
-
-#######################################
 # Installs neovim.
 # Globals:
 #   ARCHITECTURE
@@ -230,6 +228,7 @@ install_homebrew() {
 #   None
 #######################################
 install_neovim() {
+  # TODO: Check if neovim is installed already.
   NEOVIM_VERSION=$(curl -s "https://api.github.com/repos/neovim/neovim/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
   if ARCHITECTURE="aarch64"; then
     NEOVIM_ARCHITECTURE="arm64"
@@ -306,7 +305,6 @@ install_dotfiles() {
 
 case "$1" in
 "install")
-  check_package_manager
   install_dependencies
   echo "✅ Dependencies installed."
 
@@ -317,6 +315,8 @@ case "$1" in
   # Open a fish shell and, when the shell exits, kill the shell that the
   # script executed in.
   fish && kill -9 $PPID
+  # TODO: Maybe there's a way to restart the current application?
+  # Maybe an automator script
   ;;
 *)
   usage
