@@ -42,21 +42,33 @@ fi
 
 ARCHITECTURE="$(uname -m)"
 
-# Install Homebrew on MacOS.
-if [ "${ADJUSTED_ID}" = "darwin" ]; then
-  if ! type brew >/dev/null 2>&1; then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+#######################################
+# Ensure package manager is installed.
+# Globals:
+#   ADJUSTED_ID
+#   HOME
+# Arguments:
+#   None
+#######################################
+check_package_manager() {
+  # Install Homebrew on MacOS.
+  if [ "${ADJUSTED_ID}" = "darwin" ]; then
+    if ! type brew >/dev/null 2>&1; then
+      NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-    # Create $HOME/.zprofile if it doesn't exist.
-    if [ -f "$HOME"/.zprofile ]; then
-      echo >> "$HOME"/.zprofile
+      # Create $HOME/.zprofile if it doesn't exist.
+      if [ -f "$HOME"/.zprofile ]; then
+        echo >> "$HOME"/.zprofile
+      fi
+
+      # shellcheck disable=SC2016
+      echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+
+      export PATH="/opt/homebrew/bin:$PATH"
     fi
-
-    # shellcheck disable=SC2016
-    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
-    eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
-fi
+}
 
 # Determine what the package manager install command for the OS is.
 if type apt-get >/dev/null 2>&1; then
@@ -175,6 +187,9 @@ install_dependencies() {
       gnupg helm jordanbaird-ice jq k6 kind jesseduffield/lazygit/lazygit \
       neovim nvm ripgrep shellcheck sslscan step terraform-ls tree-sitter yq \
       yt-dlp
+
+    nvm install node
+
     # Hopefully can move the following into nix:
     #   - dive
     #   - gnupg (?)
@@ -185,12 +200,14 @@ install_dependencies() {
     #   - terraform-ls
     #   - tree-sitter
 
+    # Not working, probably cause node doesn't exist yet.
     npm install -g @devcontainers/cli
 
-    # TODO: Check /etc/shells to see if fish is already in there.
     # Change shell to fishshell.
-    which fish | sudo tee -a /etc/shells
-    chsh -s "$(which fish)"
+    if ! grep -q '/fish$' /etc/shells; then
+      which fish | sudo tee -a /etc/shells
+      chsh -s "$(which fish)"
+    fi
   fi
 
   # TODO: Maybe move changing of shell out of platform specfic conditional.
@@ -288,11 +305,17 @@ install_dotfiles() {
 
 case "$1" in
 "install")
+  check_package_manager
   install_dependencies
   echo "✅ Dependencies installed."
 
   install_dotfiles
   echo "✅ Dotfiles installed."
+  echo "Opening fish shell..."
+
+  # Open a fish shell and, when the shell exits, kill the shell that the
+  # script executed in.
+  fish && kill -9 $PPID
   ;;
 *)
   usage
