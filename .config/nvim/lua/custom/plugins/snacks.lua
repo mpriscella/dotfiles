@@ -21,6 +21,8 @@ return {
       lazygit = { enabled = true },
       ---@type snacks.picker.Config|{}
       picker = {
+        -- Is there a way to automatically close all other pickers when opening
+        -- a new one?
         enabled = true,
         sources = {
           ---@type snacks.picker.explorer.Config|{}
@@ -28,12 +30,15 @@ return {
             auto_close = true,
             git_status_open = true,
             hidden = true,
+            ignored = true,
             layout = { layout = { position = 'right' } },
           },
         },
       },
       ---@type snacks.notifier.Config|{}
-      notifier = { enabled = true },
+      notifier = {
+        enabled = true,
+      },
       ---@type snacks.quickfile.Config|{}
       quickfile = { enabled = true },
       ---@type snacks.statuscolumn.Config|{}
@@ -48,6 +53,13 @@ return {
           Snacks.picker.lsp_definitions()
         end,
         desc = '[G]oto [D]efinition',
+      },
+      {
+        '<leader>sb',
+        function()
+          Snacks.picker.buffers()
+        end,
+        desc = '[S]earch [B]uffers',
       },
       {
         '<leader>sf',

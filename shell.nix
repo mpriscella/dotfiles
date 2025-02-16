@@ -8,7 +8,5 @@ pkgs.mkShellNoCC {
     gh
     git
     shellcheck
-    terraform
-    terraform-ls
   ];
 }
