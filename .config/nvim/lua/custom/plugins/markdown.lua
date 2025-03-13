@@ -7,7 +7,7 @@ return {
       preview = {
         filetypes = { 'markdown', 'codecompanion' },
         ignore_buftypes = {},
-        hybrid_modes = { 'i' },
+        hybrid_modes = { 'i', 'n', 'v' },
       },
     },
   },

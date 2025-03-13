@@ -8,9 +8,22 @@ return {
     },
     keys = {
       {
-        '<leader>cc',
+        '<C-a>',
+        '<cmd>CodeCompanionActions<cr>',
+        desc = 'CodeCompanion [A]ctions',
+        mode = { 'n', 'v' },
+      },
+      {
+        '<LocalLeader>a',
         '<cmd>CodeCompanionChat Toggle<cr>',
-        desc = '[C]ode [C]ompanion',
+        desc = 'CodeCompanion Chat Toggle',
+        mode = { 'n', 'v' },
+      },
+      {
+        'ga',
+        '<cmd>CodeCompanionChat Add<cr>',
+        desc = 'CodeCompanion Chat Add',
+        mode = 'v',
       },
     },
   },

@@ -6,7 +6,6 @@ in
 pkgs.mkShellNoCC {
   packages = with pkgs; [
     gh
-    git
     shellcheck
   ];
 }
