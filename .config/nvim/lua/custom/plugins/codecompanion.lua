@@ -5,6 +5,16 @@ return {
     'nvim-lua/plenary.nvim',
     'nvim-treesitter/nvim-treesitter',
   },
+  opts = {
+    strategies = {
+      chat = {
+        adapter = 'githubmodels',
+      },
+      inline = {
+        adapter = 'copilot',
+      },
+    },
+  },
   keys = {
     {
       '<C-a>',

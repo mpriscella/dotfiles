@@ -24,7 +24,6 @@ return {
       sources = {
         ---@type snacks.picker.explorer.Config|{}
         explorer = {
-          auto_close = true,
           git_status_open = true,
           hidden = true,
           ignored = true,
