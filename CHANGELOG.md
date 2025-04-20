@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.6.0](https://github.com/mpriscella/dotfiles/compare/v1.5.0...v1.6.0) (2024-11-05)
+
+
+### Features
+
+* Add harpoon plugin, as well as other small changes ([#56](https://github.com/mpriscella/dotfiles/issues/56)) ([8029fde](https://github.com/mpriscella/dotfiles/commit/8029fdebcc8cf40c648eaa5c5e43ec3c9b870705))
+* Add Lazygit ([#54](https://github.com/mpriscella/dotfiles/issues/54)) ([1b015ae](https://github.com/mpriscella/dotfiles/commit/1b015ae6ca47b66dbfdd0c3b25e25ab7c9ef9bda))
+* Ensure devcontainers cli is installed and add aliases for up and exec ([#53](https://github.com/mpriscella/dotfiles/issues/53)) ([1b0d480](https://github.com/mpriscella/dotfiles/commit/1b0d4802d4f6c3bbb147d792b09530ce2527e13c))
+* Re-write neovim config based on kickstart ([#49](https://github.com/mpriscella/dotfiles/issues/49)) ([c334be0](https://github.com/mpriscella/dotfiles/commit/c334be00da744129e7860e01663fccced2511823))
+* Small fixes ([#51](https://github.com/mpriscella/dotfiles/issues/51)) ([2f6526e](https://github.com/mpriscella/dotfiles/commit/2f6526e998a0be1d3e84072fdfdb4e53a4d6080f))
+
+
+### Bug Fixes
+
+* Add LANG and TERM env vars to .zshrc ([#52](https://github.com/mpriscella/dotfiles/issues/52)) ([88c5980](https://github.com/mpriscella/dotfiles/commit/88c59802a2ad366bb6b48f8d3c0f28131e8ed6f0))
+* Syncing local changes ([#55](https://github.com/mpriscella/dotfiles/issues/55)) ([6ccfdbc](https://github.com/mpriscella/dotfiles/commit/6ccfdbc9429832e7de5f54d8fc99046a770cb66c))
+
 ## [1.5.0](https://github.com/mpriscella/dotfiles/compare/v1.4.1...v1.5.0) (2024-09-13)
 
 
