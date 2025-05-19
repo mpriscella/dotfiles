@@ -8,4 +8,4 @@ command = /opt/homebrew/bin/fish
 theme = tokyonight
 working-directory = home
 quit-after-last-window-closed = true
-
+window-inherit-working-directory = false
