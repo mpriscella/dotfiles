@@ -33,8 +33,9 @@
 
     ".tmux.conf".source = ../../tmux.conf;
 
-    ".config/atuin/config.toml".source = ../atuin/config.toml;
-    ".config/ghostty/config".source = ../ghostty/config;
+    ".config/atuin".source = ../atuin;
+    ".config/ghostty".source = ../ghostty;
+    ".config/k9s".source = ../k9s;
     ".config/nvim".source = ../nvim;
   };
 
