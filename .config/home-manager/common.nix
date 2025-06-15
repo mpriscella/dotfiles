@@ -27,61 +27,13 @@
     pkgs.yt-dlp
   ];
 
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
   home.file = {
-    # Method 1: Inline content (best for small config files)
-#   ".gitignore_global".text = ''
-#     # OS generated files
-#     .DS_Store
-#     .DS_Store?
-#     ._*
-#     .Spotlight-V100
-#     .Trashes
-#     ehthumbs.db
-#     Thumbs.db
+    ".ackrc".text = ''
+      --pager=less -R
+      --ignore-case
+    '';
 
-#     # IDE files
-#     .vscode/
-#     .idea/
-#     *.swp
-#     *.swo
-#     *~
-
-#     # Build artifacts
-#     node_modules/
-#     target/
-#     dist/
-#     build/
-
-#     # Environment files
-#     .env
-#     .env.local
-#   '';
-
-    # Method 2: Simple file with basic content
-#   ".hushlogin".text = "";  # Suppress login banner
-
-    # Method 3: Executable script
-#   ".local/bin/hello".text = ''
-#     #!/usr/bin/env bash
-#     echo "Hello from Home Manager!"
-#   '';
-#   ".local/bin/hello".executable = true;
-
-    # Method 2: Source from external files (best for large configs)
-#   ".tmux.conf".source = ../../tmux.conf;
-#   ".gitconfig".source = ../../gitconfig;
-
-    # Method 3: Conditional files (using Nix expressions)
-#   ".vimrc".text = ''
-#     set number
-#     set relativenumber
-#     set tabstop=2
-#     set shiftwidth=2
-#     set expandtab
-#     ${if pkgs.stdenv.isDarwin then "set clipboard=unnamed" else "set clipboard=unnamedplus"}
-#   '';
+    ".tmux.conf".source = ../../tmux.conf;
   };
 
   # Common session variables
@@ -108,27 +60,6 @@
             echo "AWS profile $AWS_PROFILE now active."
         end
       '';
-
-#     # Function to reload Fish shell configuration
-#     reload = ''
-#       echo "Reloading Fish shell configuration..."
-#       exec fish
-#     '';
-
-#     # Enhanced rebuild function that reloads Fish afterwards
-#     hm-switch = ''
-#       if test -n "$HM_CONFIG_PATH"
-#         echo "Switching Home Manager configuration..."
-#         home-manager switch --file "$HM_CONFIG_PATH" $argv
-#         and begin
-#           echo "Reloading Fish shell..."
-#           exec fish
-#         end
-#       else
-#         echo "Error: HM_CONFIG_PATH not set. Please set it to your machine config path."
-#         return 1
-#       end
-#     '';
     };
 
     # Fish shell configuration
