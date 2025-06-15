@@ -89,7 +89,7 @@ return {
       function()
         Snacks.lazygit()
       end,
-      desc = 'Toggle Lazygit',
+      desc = 'Toggle [l]azy[g]it',
     },
     {
       '\\',

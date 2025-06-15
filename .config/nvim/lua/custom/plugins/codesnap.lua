@@ -7,6 +7,7 @@ return {
   },
   opts = {
     save_path = '~/Screenshots/CodeSnap',
+    bg_padding = 25,
     has_breadcrumbs = true,
     watermark = '@mpriscella',
   },
