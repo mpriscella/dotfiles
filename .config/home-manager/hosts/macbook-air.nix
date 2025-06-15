@@ -1,15 +1,17 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ../common.nix ];
+  imports = [
+    ../common.nix
+    ../modules/machine-config.nix
+  ];
 
-  # Machine-specific configuration
-  home.username = "michaelpriscella";
-  home.homeDirectory = "/Users/michaelpriscella";
+  home.username = "mpriscella";
+  home.homeDirectory = "/Users/mpriscella";
   home.stateVersion = "25.05";
 
-  # Machine-specific packages or overrides can go here
-  # home.packages = with pkgs; [
-  #   # Additional packages for this machine
-  # ];
+  # Custom configuration using our module
+  myConfig = {
+    configPath = "${config.home.homeDirectory}/.config/home-manager/hosts/macbook-air.nix";
+  };
 }
