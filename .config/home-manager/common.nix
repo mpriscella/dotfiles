@@ -1,8 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  # The home.packages option allows you to install Nix packages into your
-  # environment.
   home.packages = [
     pkgs.ack
     pkgs.act
@@ -11,7 +9,7 @@
     pkgs.fd
     pkgs.fzf
     pkgs.gh
-    pkgs.git  # Explicitly install git for programs.git to work
+    pkgs.git
     pkgs.gnupg
     pkgs.jq
     pkgs.kind
@@ -34,11 +32,16 @@
     '';
 
     ".tmux.conf".source = ../../tmux.conf;
+
+    ".config/atuin/config.toml".source = ../atuin/config.toml;
+    ".config/ghostty/config".source = ../ghostty/config;
   };
 
   # Common session variables
   home.sessionVariables = {
+    AWS_CLI_AUTO_PROMPT = "on-partial";
     EDITOR = "nvim";
+    KUBE_EDITOR = "nvim";
   };
 
   # Enable and configure Fish shell
