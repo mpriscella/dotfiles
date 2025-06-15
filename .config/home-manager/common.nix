@@ -35,6 +35,7 @@
 
     ".config/atuin/config.toml".source = ../atuin/config.toml;
     ".config/ghostty/config".source = ../ghostty/config;
+    ".config/nvim".source = ../nvim;
   };
 
   # Common session variables
