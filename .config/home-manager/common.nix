@@ -7,15 +7,18 @@
     pkgs.ack
     pkgs.act
     pkgs.awscli2
+    pkgs.dive
     pkgs.fd
     pkgs.fzf
     pkgs.gh
     pkgs.git  # Explicitly install git for programs.git to work
     pkgs.gnupg
+    pkgs.jq
     pkgs.kind
     pkgs.k9s
     pkgs.kubectl
     pkgs.kubernetes-helm
+    pkgs.lazydocker
     pkgs.lazygit
     pkgs.neovim
     pkgs.ripgrep
