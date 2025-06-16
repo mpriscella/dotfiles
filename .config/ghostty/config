@@ -5,4 +5,6 @@
 # on Ghostty's website, at https://ghostty.org/docs/config.
 
 theme = tokyonight
-
+working-directory = home
+quit-after-last-window-closed = true
+window-inherit-working-directory = false
