@@ -37,10 +37,18 @@ in
       --ignore-case
     '';
 
+    ".config/ghostty/config".text = ''
+      command = ${pkgs.fish}/bin/fish
+      theme = tokyonight
+      working-directory = home
+      quit-after-last-window-closed = true
+      window-inherit-working-directory = false
+    '';
+
     ".tmux.conf".source = ../../tmux.conf;
 
     ".config/atuin".source = ../atuin;
-    ".config/ghostty".source = ../ghostty;
+    ".config/home-manager".source = ../home-manager;
     ".config/k9s".source = ../k9s;
     ".config/nvim".source = ../nvim;
   };
@@ -50,6 +58,7 @@ in
     AWS_CLI_AUTO_PROMPT = "on-partial";
     EDITOR = "nvim";
     KUBE_EDITOR = "nvim";
+    SHELL = "${pkgs.fish}/bin/fish";
   };
 
   # Enable and configure Fish shell
@@ -82,6 +91,9 @@ in
 
     interactiveShellInit = ''
       # Commands to run in interactive sessions
+      # Set GPG_TTY for proper GPG signing
+      set -gx GPG_TTY (tty)
+
       # Initialize atuin if available
       if command -q atuin
         atuin init fish | source
