@@ -9,6 +9,13 @@ with lib;
       default = "${config.home.homeDirectory}/.config/home-manager/home.nix";
       description = "Path to the home-manager configuration file for this machine";
     };
+
+    gpgSigningKey = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "GPG key ID for signing git commits on this machine";
+      example = "ABC123DEF456";
+    };
   };
 
   config = {
