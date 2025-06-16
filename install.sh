@@ -38,6 +38,7 @@ detect_os() {
     log_info "Running on Linux"
     # Detect Linux distribution
     if [[ -f /etc/os-release ]]; then
+      # shellcheck source=/dev/null
       source /etc/os-release
       DISTRO="$ID"
       log_info "Detected Linux distribution: $PRETTY_NAME"
@@ -109,6 +110,7 @@ install_nix() {
         source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
         log_info "Sourced Nix daemon profile"
       elif [[ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
+        #shellcheck source=/dev/null
         source "$HOME/.nix-profile/etc/profile.d/nix.sh"
         log_info "Sourced Nix single-user profile"
       fi
@@ -140,7 +142,7 @@ install_nix() {
   esac
 
   # Download and run the installer
-  if curl -L https://nixos.org/nix/install | sh -s -- $install_args; then
+  if curl -L https://nixos.org/nix/install | sh -s -- "$install_args"; then
     log_success "Nix installation completed"
 
     # Source nix profile to make nix available in current session
@@ -152,6 +154,7 @@ install_nix() {
         log_info "Sourced Nix daemon profile"
       # Fallback to single-user profile
       elif [[ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
+        #shellcheck source=/dev/null
         source "$HOME/.nix-profile/etc/profile.d/nix.sh"
         log_info "Sourced Nix single-user profile"
       else
