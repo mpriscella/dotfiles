@@ -48,17 +48,23 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
           nix_path: nixpkgs=channel:nixos-unstable
 
-      - name: Setup Cachix (optional - speeds up builds)
-        uses: cachix/cachix-action@v12
-        if: ${{ vars.CACHIX_NAME != '' }}
-        with:
-          name: ${{ vars.CACHIX_NAME }}
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      # - name: Setup Cachix (optional - speeds up builds)
+      #   uses: cachix/cachix-action@v12
+      #   if: ${{ vars.CACHIX_NAME != '' }}
+      #   with:
+      #     name: ${{ vars.CACHIX_NAME }}
+      #     authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
       - name: Install Home Manager
         run: |
+          # Use the standard installation method with proper environment setup
           nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
           nix-channel --update
+
+          # Ensure the channel is in NIX_PATH for this session
+          export NIX_PATH="nixpkgs=channel:nixos-unstable:home-manager=$HOME/.nix-defexpr/channels/home-manager"
+
+          # Install home-manager using the updated NIX_PATH
           nix-shell '<home-manager>' -A install
 
       - name: Set test environment variables
@@ -72,12 +78,15 @@ jobs:
           fi
           echo "HOSTNAME=github-runner" >> $GITHUB_ENV
 
+          # Set proper NIX_PATH for all subsequent steps
+          echo "NIX_PATH=nixpkgs=channel:nixos-unstable:home-manager=$HOME/.nix-defexpr/channels/home-manager" >> $GITHUB_ENV
+
       - name: Test configuration build
         run: |
           cd ${{ github.workspace }}
           echo "Testing configuration: ${{ matrix.host }}.nix"
 
-          # Build the configuration without creating result symlink
+          # Build the configuration using home-manager
           home-manager build \
             --file .config/home-manager/hosts/${{ matrix.host }}.nix \
             --no-out-link \
