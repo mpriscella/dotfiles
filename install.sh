@@ -107,10 +107,11 @@ install_nix() {
       log_info "Sourcing Nix environment for current session..."
       # Try to source Nix profile for current session
       if [[ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]]; then
+        # shellcheck source=/dev/null
         source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
         log_info "Sourced Nix daemon profile"
       elif [[ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
-        #shellcheck source=/dev/null
+        # shellcheck source=/dev/null
         source "$HOME/.nix-profile/etc/profile.d/nix.sh"
         log_info "Sourced Nix single-user profile"
       fi
@@ -150,11 +151,12 @@ install_nix() {
     macos | linux)
       # Try daemon profile first (multi-user install)
       if [[ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]]; then
+        # shellcheck source=/dev/null
         source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
         log_info "Sourced Nix daemon profile"
       # Fallback to single-user profile
       elif [[ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
-        #shellcheck source=/dev/null
+        # shellcheck source=/dev/null
         source "$HOME/.nix-profile/etc/profile.d/nix.sh"
         log_info "Sourced Nix single-user profile"
       else
