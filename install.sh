@@ -2,6 +2,14 @@
 
 set -e # Exit on any error
 
+# Check if dotfiles installation should be skipped
+if [[ "${DEBUG_DOTFILES:-}" == "true" ]]; then
+  echo "🚫 DEBUG_DOTFILES is set to 'true' - skipping dotfiles installation"
+  echo "   This is useful for debugging devcontainer setups without installing dotfiles"
+  echo "   To install dotfiles, unset DEBUG_DOTFILES or set it to 'false'"
+  exit 0
+fi
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'

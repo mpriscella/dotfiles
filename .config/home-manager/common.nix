@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
+
+let
+  # Get GPG signing key from host configuration, with fallback
+  gpgSigningKey = config.myConfig.gpgSigningKey or null;
+in
 
 {
   home.packages = [
@@ -19,6 +24,7 @@
     pkgs.lazydocker
     pkgs.lazygit
     pkgs.neovim
+    pkgs.pinentry-curses  # For GPG password prompts in terminal
     pkgs.ripgrep
     pkgs.tmux
     pkgs.yq
@@ -94,6 +100,11 @@
       hm = "home-manager";
       hms = "home-manager switch";
       hmb = "home-manager build --no-out-link";
+
+      # GPG aliases for easier key management
+      gpg-list = "gpg --list-secret-keys --keyid-format=long";
+      gpg-export = "gpg --armor --export";
+      gpg-restart = "gpg-connect-agent reloadagent /bye";
     };
   };
 
@@ -114,6 +125,10 @@
       init.defaultBranch = "main";
       pull.rebase = false;
       push.default = "simple";
+
+      # GPG signing configuration
+      commit.gpgsign = true;
+      tag.gpgsign = true;
     };
 
     aliases = {
@@ -148,6 +163,43 @@
       ".env"
       ".env.local"
     ];
+  } // lib.optionalAttrs (gpgSigningKey != null) {
+    signing = {
+      key = gpgSigningKey;
+      signByDefault = true;
+    };
+  };
+
+  # Configure GPG for commit signing
+  programs.gpg = {
+    enable = true;
+
+    # Configure GPG settings
+    settings = {
+      # Use agent for key management
+      use-agent = true;
+      # Default key preferences
+      personal-digest-preferences = "SHA512";
+      cert-digest-algo = "SHA512";
+      default-preference-list = "SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB BZIP2 ZIP Uncompressed";
+    };
+  };
+
+  # Configure GPG agent for automatic key management
+  services.gpg-agent = {
+    enable = true;
+
+    # Cache settings for convenience
+    defaultCacheTtl = 43200; # 12 hours (longer default)
+    maxCacheTtl = 86400;     # 24 hours
+
+    # Enable SSH support (optional, useful for SSH key management)
+    enableSshSupport = false;
+
+    # Pin entry program for password prompts
+    pinentry = {
+      package = pkgs.pinentry-curses; # Use curses for terminal, or pkgs.pinentry-gtk2 for GUI
+    };
   };
 
   # Let Home Manager install and manage itself.

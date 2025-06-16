@@ -13,5 +13,6 @@
   # Custom configuration using our module
   myConfig = {
     configPath = "${config.home.homeDirectory}/.config/home-manager/hosts/macbook-air.nix";
+    gpgSigningKey = "PERSONAL_GPG_KEY_ID_HERE"; # Personal MacBook Air GPG key
   };
 }

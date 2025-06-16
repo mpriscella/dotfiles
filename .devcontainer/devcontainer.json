@@ -8,22 +8,10 @@
   //   "DEBUG_DOTFILES": "true"
   // },
   "customizations": {
-    "vscode": {
-      "extensions": [
-        "ms-azuretools.vscode-docker",
-        "timonwong.shellcheck",
-        "esbenp.prettier-vscode",
-        "foxundermoon.shell-format",
-        "sumneko.lua"
-      ],
-      "settings": {
-        "Lua.diagnostics.globals": ["vim"]
-      }
+    "settings": {
+      "dotfiles.repository": "",
+      "dotfiles.targetPath": "",
+      "dotfiles.installCommand": ""
     }
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
-  },
-  "remoteUser": "vscode"
+  }
 }

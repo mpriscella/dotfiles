@@ -34,6 +34,8 @@ in
   # Custom configuration using our module
   myConfig = {
     configPath = "${homeDirectory}/.config/home-manager/hosts/default.nix";
+    # Default GPG key (optional - can be left null for no signing)
+    gpgSigningKey = null; # Set to your default key ID if desired
   };
 
   # Optional: Add some debug info to session variables
