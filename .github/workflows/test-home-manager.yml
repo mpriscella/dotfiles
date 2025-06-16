@@ -69,13 +69,11 @@ jobs:
 
       - name: Set test environment variables
         run: |
-          # Set dummy values for auto-detection in default.nix
+          # Set test username but keep the real HOME directory
           echo "USER=testuser" >> $GITHUB_ENV
-          if [[ "${{ matrix.platform }}" == "darwin" ]]; then
-            echo "HOME=/Users/testuser" >> $GITHUB_ENV
-          else
-            echo "HOME=/home/testuser" >> $GITHUB_ENV
-          fi
+          # Keep the existing HOME directory (GitHub runner's home)
+          echo "REAL_HOME=$HOME" >> $GITHUB_ENV
+          # Set hostname for testing
           echo "HOSTNAME=github-runner" >> $GITHUB_ENV
 
           # Set proper NIX_PATH for all subsequent steps
