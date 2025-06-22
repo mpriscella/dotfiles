@@ -123,7 +123,7 @@ jobs:
 
           # Check flake syntax
           echo "Checking flake syntax..."
-          nix flake check --dry-run
+          nix flake check
 
           echo "✅ Basic checks passed"
 
