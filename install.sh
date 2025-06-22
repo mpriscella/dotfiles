@@ -44,16 +44,6 @@ detect_os() {
   Linux*)
     OS="linux"
     log_info "Running on Linux"
-    # Detect Linux distribution
-    if [[ -f /etc/os-release ]]; then
-      # shellcheck source=/dev/null
-      source /etc/os-release
-      DISTRO="$ID"
-      log_info "Detected Linux distribution: $PRETTY_NAME"
-    else
-      DISTRO="unknown"
-      log_warning "Could not detect Linux distribution"
-    fi
     ;;
   *)
     log_error "Unsupported operating system: $(uname -s)"
@@ -61,52 +51,85 @@ detect_os() {
     exit 1
     ;;
   esac
+
+  # Detect if we're in a container environment
+  if [[ -f /.dockerenv ]] || [[ -n "${CODESPACES:-}" ]] || [[ -n "${DEVCONTAINER:-}" ]] || grep -qi 'docker\|lxc\|container' /proc/1/cgroup 2>/dev/null; then
+    IN_CONTAINER=true
+    log_info "Container environment detected"
+  else
+    IN_CONTAINER=false
+  fi
 }
 
 # Check prerequisites based on OS
 check_prerequisites() {
-  case "$OS" in
-  linux)
-    # Check if curl is available
-    if ! command -v curl >/dev/null 2>&1; then
-      log_error "curl is required but not installed"
-      log_info "Please install curl first:"
-      case "$DISTRO" in
-      ubuntu | debian)
-        log_info "  sudo apt update && sudo apt install curl"
-        ;;
-      fedora | rhel | centos)
-        log_info "  sudo dnf install curl"
-        ;;
-      arch | manjaro)
-        log_info "  sudo pacman -S curl"
-        ;;
-      *)
-        log_info "  Please install curl using your distribution's package manager"
-        ;;
-      esac
-      exit 1
-    fi
-
-    # Check if systemd is available for multi-user install
-    if command -v systemctl >/dev/null 2>&1; then
-      log_info "systemd detected - will use multi-user installation"
-    else
-      log_warning "systemd not detected - will use single-user installation"
-    fi
-    ;;
-  macos)
-    # macOS specific checks
-    if ! command -v curl >/dev/null 2>&1; then
-      log_error "curl is required but not installed"
-      exit 1
-    fi
-    ;;
-  esac
+  if ! command -v curl >/dev/null 2>&1; then
+    log_error "curl is required but not installed"
+    exit 1
+  fi
 }
 
 # Install Nix if not already installed
+# TODO:
+#  - If this script is run and nix is installed, then the script is run again, it's failing because path is not updated.
 install_nix() {
+  # Check for permission issues in devcontainer first
+  if command -v nix >/dev/null 2>&1 && [[ "$IN_CONTAINER" == true ]]; then
+    # Test if we can actually use nix commands that require write access to both db and store
+    write_test_failed=false
+
+    if [[ ! -w /nix/var/nix/db/big-lock ]] 2>/dev/null || ! touch /nix/var/nix/test-write 2>/dev/null; then
+      write_test_failed=true
+    fi
+    rm -f /nix/var/nix/test-write 2>/dev/null # Clean up test file
+
+    # Also test if we can write to the store (where the real issues often occur)
+    if ! touch /nix/store/test-write 2>/dev/null; then
+      write_test_failed=true
+    fi
+    rm -f /nix/store/test-write 2>/dev/null # Clean up test file
+
+    if [[ "$write_test_failed" == true ]]; then
+      log_warning "Detected Nix permission issues in devcontainer"
+      log_error "Nix database permissions issue detected"
+      log_info "This usually happens when Nix was installed as root in devcontainer"
+      log_info ""
+      log_info "Solutions:"
+      echo "  1. Fix database permissions (quick fix):"
+      echo "     sudo chown -R $(whoami):$(whoami) /nix/var/nix/"
+      echo ""
+      echo "  2. Reinstall as single-user (recommended for devcontainers):"
+      echo "     sudo rm -rf /nix /etc/nix"
+      echo "     curl -L https://nixos.org/nix/install | sh -s -- --no-daemon"
+      echo "     source ~/.bashrc"
+
+      read -p "Choose option (1/2) or cancel (N): " -n 1 -r
+      echo
+      if [[ $REPLY == "1" ]]; then
+        log_info "Attempting to fix Nix database permissions..."
+        if sudo chown -R "$(whoami):$(whoami)" /nix/var/nix/ 2>/dev/null; then
+          log_success "Fixed Nix database permissions!"
+          log_warning "Note: You may still encounter issues with /nix/store. Consider option 2 for a complete fix."
+        else
+          log_error "Failed to fix permissions."
+          exit 1
+        fi
+      elif [[ $REPLY == "2" ]]; then
+        log_info "Reinstalling Nix as single-user..."
+        if sudo rm -rf /nix /etc/nix /etc/profile.d/nix.sh 2>/dev/null; then
+          log_info "Removed existing Nix installation"
+          # Fall through to the installation section below
+        else
+          log_error "Failed to remove existing Nix installation"
+          exit 1
+        fi
+      else
+        log_error "Cannot continue with permission issues. Please fix manually."
+        exit 1
+      fi
+    fi
+  fi
+
   if command -v nix >/dev/null 2>&1; then
     log_success "Nix is already installed: $(nix --version)"
 
@@ -135,17 +158,26 @@ install_nix() {
 
   case "$OS" in
   macos)
-    # Use the official Nix installer for macOS with daemon support
-    install_args="--daemon"
+    if [[ "$IN_CONTAINER" == true ]]; then
+      log_info "Container detected on macOS - using single-user installation"
+      install_args="--no-daemon"
+    else
+      # Use the official Nix installer for macOS with daemon support
+      install_args="--daemon"
+    fi
     ;;
   linux)
-    # Check if we should use multi-user or single-user install
-    if command -v systemctl >/dev/null 2>&1 && [[ "$EUID" -ne 0 ]]; then
+    # In containers, always use single-user to avoid permission issues
+    if [[ "$IN_CONTAINER" == true ]]; then
+      log_info "Container environment detected - using single-user installation"
+      install_args="--no-daemon"
+    # Check if we should use multi-user or single-user install on bare metal
+    elif command -v systemctl >/dev/null 2>&1 && [[ "$EUID" -ne 0 ]]; then
       log_info "Using multi-user installation (recommended)"
       install_args="--daemon"
     else
       log_info "Using single-user installation"
-      install_args=""
+      install_args="--no-daemon"
     fi
     ;;
   esac
@@ -190,13 +222,13 @@ install_nix() {
 
 # Install home-manager
 install_home_manager() {
-  # Check if home-manager is already installed
+  # Check if home-manager is already installed.
   if command -v home-manager >/dev/null 2>&1; then
     log_success "home-manager is already installed: $(home-manager --version)"
     return 0
   fi
 
-  # Ensure nix commands are available
+  # Ensure nix-channel command is available.
   if ! command -v nix-channel >/dev/null 2>&1; then
     log_error "nix-channel command not found. Nix may not be properly installed or sourced."
     log_info "Try restarting your terminal or manually sourcing Nix profile."
@@ -256,6 +288,7 @@ setup_home_manager() {
   local config_dir="$HOME/.config/home-manager"
   local dotfiles_config_dir
   dotfiles_config_dir="$(pwd)/.config/home-manager"
+  local config_file
 
   if [[ -d "$config_dir" ]]; then
     log_info "home-manager config directory already exists"
@@ -271,13 +304,15 @@ setup_home_manager() {
     # Suggest appropriate configuration file based on OS
     case "$OS" in
     macos)
-      log_info "You can now run: home-manager switch --file .config/home-manager/hosts/work-macbook-pro.nix"
+      config_file="work-macbook-pro.nix"
+      # log_info "You can now run: home-manager switch --file .config/home-manager/hosts/work-macbook-pro.nix"
       ;;
     linux)
-      log_info "You can now run: home-manager switch --file .config/home-manager/hosts/linux-machine.nix"
-      log_warning "Note: You may need to create a Linux-specific configuration file"
+      config_file="default.nix"
+      # log_info "You can now run: home-manager switch --file .config/home-manager/hosts/linux-machine.nix"
       ;;
     esac
+    log_info "You can now run: home-manager switch --file .config/home-manager/hosts/$config_file"
   else
     log_warning "No home-manager configuration found in dotfiles"
     log_info "You may need to create a home-manager configuration"
@@ -351,12 +386,68 @@ test_and_apply_config() {
   fi
 }
 
+# Check and fix Nix permissions in devcontainer
+check_devcontainer_nix() {
+  if [[ "$IN_CONTAINER" != true ]]; then
+    return 0
+  fi
+
+  # Check if Nix is installed but has permission issues
+  if [[ -d /nix ]] && ! nix-channel --list >/dev/null 2>&1; then
+    log_warning "Detected Nix permission issues in devcontainer"
+
+    # Check if we're running as root
+    if [[ "$EUID" -eq 0 ]]; then
+      log_error "Running as root in devcontainer. This script should run as the target user."
+      log_info "To fix this, ensure your devcontainer runs this script as the 'vscode' user:"
+      echo "  \"postCreateCommand\": \"su - vscode -c 'cd /workspaces/dotfiles && ./install.sh'\""
+      exit 1
+    fi
+
+    # Check if big-lock file has permission issues
+    if [[ ! -w /nix/var/nix/db/big-lock ]] 2>/dev/null; then
+      log_error "Nix database permissions issue detected"
+      log_info "This usually happens when Nix was installed as root in devcontainer"
+      log_info ""
+      log_info "Solutions:"
+      echo "  1. Fix permissions (run as root):"
+      echo "     sudo chown -R $(whoami):$(whoami) /nix/var/nix/"
+      echo ""
+      echo "  2. Or reinstall Nix as single-user:"
+      echo "     sudo rm -rf /nix /etc/nix"
+      echo "     curl -L https://nixos.org/nix/install | sh -s -- --no-daemon"
+      echo "     source ~/.bashrc"
+      echo ""
+      echo "  3. Or run this script with sudo to fix ownership:"
+      echo "     sudo ./install.sh"
+
+      read -p "Would you like to automatically fix the permissions? (y/N): " -n 1 -r
+      echo
+      if [[ $REPLY =~ ^[Yy]$ ]]; then
+        log_info "Attempting to fix Nix permissions..."
+        if sudo chown -R "$(whoami):$(whoami)" /nix/var/nix/ 2>/dev/null; then
+          log_success "Fixed Nix permissions!"
+        else
+          log_error "Failed to fix permissions. You may need to reinstall Nix."
+          exit 1
+        fi
+      else
+        log_error "Cannot continue with permission issues. Please fix manually."
+        exit 1
+      fi
+    fi
+  fi
+}
+
 # Main installation process
 main() {
   log_info "Starting dotfiles installation..."
 
   # Detect operating system
   detect_os
+
+  # Check devcontainer Nix setup
+  check_devcontainer_nix
 
   # Check prerequisites
   check_prerequisites
