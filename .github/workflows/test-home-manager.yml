@@ -6,37 +6,43 @@ on:
       - main
     paths:
       - '.config/home-manager/**'
+      - 'flake.nix'
+      - 'flake.lock'
   pull_request:
     branches:
       - main
     paths:
       - '.config/home-manager/**'
+      - 'flake.nix'
+      - 'flake.lock'
   workflow_dispatch:
 
 jobs:
   test-configs:
-    name: Test ${{ matrix.host }} on ${{ matrix.os }}
+    name: Test ${{ matrix.config }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
         include:
-          # Test default.nix on both platforms (auto-detects)
-          - host: default
+          # Test configurations from flake
+          - config: default
             os: ubuntu-latest
             platform: linux
-          - host: default
+            system: x86_64-linux
+          - config: linux-user
+            os: ubuntu-latest
+            platform: linux
+            system: x86_64-linux
+          - config: work-macbook-pro
             os: macos-latest
             platform: darwin
-
-          # Test specific host configs on their target platforms
-          - host: work-macbook-pro
+            system: aarch64-darwin
+          - config: macbook-air
             os: macos-latest
             platform: darwin
-          - host: macbook-air
-            os: macos-latest
-            platform: darwin
+            system: aarch64-darwin
 
     steps:
       - name: Checkout repository
@@ -46,7 +52,8 @@ jobs:
         uses: cachix/install-nix-action@v24
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            experimental-features = nix-command flakes
 
       # - name: Setup Cachix (optional - speeds up builds)
       #   uses: cachix/cachix-action@v12
@@ -55,40 +62,37 @@ jobs:
       #     name: ${{ vars.CACHIX_NAME }}
       #     authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-      - name: Install Home Manager
-        run: |
-          # Use the standard installation method with proper environment setup
-          nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-          nix-channel --update
-
-          # Ensure the channel is in NIX_PATH for this session
-          export NIX_PATH="nixpkgs=channel:nixos-unstable:home-manager=$HOME/.nix-defexpr/channels/home-manager"
-
-          # Install home-manager using the updated NIX_PATH
-          nix-shell '<home-manager>' -A install
-
       - name: Set test environment variables
         run: |
-          # Set test username but keep the real HOME directory
+          # Set test username for configurations that need it
           echo "USER=testuser" >> $GITHUB_ENV
           # Keep the existing HOME directory (GitHub runner's home)
           echo "REAL_HOME=$HOME" >> $GITHUB_ENV
           # Set hostname for testing
           echo "HOSTNAME=github-runner" >> $GITHUB_ENV
 
-          # Set proper NIX_PATH for all subsequent steps
-          echo "NIX_PATH=nixpkgs=channel:nixos-unstable:home-manager=$HOME/.nix-defexpr/channels/home-manager" >> $GITHUB_ENV
+      - name: Test flake evaluation
+        run: |
+          cd ${{ github.workspace }}
+          echo "Testing flake configuration: ${{ matrix.config }}"
+
+          # Check that the flake is valid
+          nix flake check --show-trace
+
+          # Show available configurations
+          echo "Available configurations:"
+          nix flake show
 
       - name: Test configuration build
         run: |
           cd ${{ github.workspace }}
-          echo "Testing configuration: ${{ matrix.host }}.nix"
+          echo "Building Home Manager configuration: ${{ matrix.config }}"
 
-          # Build the configuration using home-manager
-          home-manager build \
-            --file .config/home-manager/hosts/${{ matrix.host }}.nix \
-            --no-out-link \
-            --show-trace
+          # Build the specific configuration from the flake
+          nix build .#homeConfigurations.${{ matrix.config }}.activationPackage \
+            --no-link \
+            --show-trace \
+            --print-build-logs
 
       - name: Test configuration evaluation
         run: |
@@ -96,22 +100,14 @@ jobs:
           echo "Evaluating configuration for detailed analysis..."
 
           # Test that the configuration evaluates without errors
-          nix-instantiate \
-            --eval \
-            --strict \
-            --show-trace \
-            --expr "
-              let
-                pkgs = import <nixpkgs> {};
-                home-manager = import <home-manager> {};
-                config = import ./.config/home-manager/hosts/${{ matrix.host }}.nix {
-                  inherit pkgs;
-                  config = {};
-                  lib = pkgs.lib;
-                };
-              in
-                config.home.stateVersion or \"unknown\"
-            "
+          nix eval .#homeConfigurations.${{ matrix.config }}.config.home.stateVersion \
+            --show-trace
+
+          # Test that packages are available
+          echo "Testing package availability..."
+          nix eval .#homeConfigurations.${{ matrix.config }}.config.home.packages \
+            --apply "builtins.length" \
+            --show-trace
 
       - name: Check for common issues
         run: |
@@ -119,18 +115,15 @@ jobs:
           echo "Checking for common configuration issues..."
 
           # Check if all imported files exist
-          echo "Checking imports..."
+          echo "Checking Nix syntax..."
           if ! find .config/home-manager -name "*.nix" -exec nix-instantiate --parse {} \; > /dev/null; then
             echo "❌ Syntax errors found in nix files"
             exit 1
           fi
 
-          # Check for missing files referenced in configs
-          echo "Checking file references..."
-          if grep -r "source.*\.\." .config/home-manager/hosts/${{ matrix.host }}.nix; then
-            echo "Found relative path references - ensuring they exist..."
-            # This is just informational, actual test is in the build step
-          fi
+          # Check flake syntax
+          echo "Checking flake syntax..."
+          nix flake check --dry-run
 
           echo "✅ Basic checks passed"
 
@@ -139,8 +132,9 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           echo "## Configuration Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "- **Host**: ${{ matrix.host }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Configuration**: ${{ matrix.config }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Platform**: ${{ matrix.platform }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **System**: ${{ matrix.system }}" >> $GITHUB_STEP_SUMMARY
           echo "- **OS**: ${{ matrix.os }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
@@ -174,6 +168,7 @@ jobs:
 
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Tested Configurations:" >> $GITHUB_STEP_SUMMARY
-          echo "- default.nix (Linux & macOS)" >> $GITHUB_STEP_SUMMARY
-          echo "- work-macbook-pro.nix (macOS)" >> $GITHUB_STEP_SUMMARY
-          echo "- macbook-air.nix (macOS)" >> $GITHUB_STEP_SUMMARY
+          echo "- default (Linux)" >> $GITHUB_STEP_SUMMARY
+          echo "- linux-user (Linux)" >> $GITHUB_STEP_SUMMARY
+          echo "- work-macbook-pro (macOS)" >> $GITHUB_STEP_SUMMARY
+          echo "- macbook-air (macOS)" >> $GITHUB_STEP_SUMMARY
