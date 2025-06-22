@@ -29,6 +29,8 @@ in
     pkgs.neovim
     pkgs.pinentry-curses  # For GPG password prompts in terminal
     pkgs.ripgrep
+    pkgs.terraform
+    pkgs.terraform-docs
     pkgs.tmux
     pkgs.yq
     pkgs.yt-dlp
@@ -94,33 +96,15 @@ in
     };
 
     shellAliases = {
-      ll = "ls -la";
-      la = "ls -la";
-      l = "ls -l";
-      ".." = "cd ..";
-      "..." = "cd ../..";
-
-      # Git aliases
-      g = "git";
-      gs = "git status";
-      gd = "git diff";
-      ga = "git add";
-      gc = "git commit";
-      gp = "git push";
-      gl = "git pull";
-
-      # Docker aliases
-      d = "docker";
-      dc = "docker-compose";
-
-      # Kubernetes aliases
-      k = "kubectl";
-      h = "helm";
-
       # Modern replacements
       cat = "bat --style=plain";
       find = "fd";
       grep = "rg";
+
+      # Nix flake aliases
+      nfc = "nix flake check";
+      nfu = "nix flake update";
+      nfs = "nix flake show";
     };
 
     plugins = [
@@ -139,7 +123,7 @@ in
 
     extraConfig = {
       init.defaultBranch = "main";
-      pull.rebase = true;
+      pull.rebase = false;
       push.autoSetupRemote = true;
       core.editor = "nvim";
 

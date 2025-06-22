@@ -107,22 +107,38 @@
       });
 
       # Packages for each system (useful for CI/CD)
-      packages = forAllSystems (system: {
-        default = self.homeConfigurations.default.activationPackage;
-        work-macbook-pro = self.homeConfigurations.work-macbook-pro.activationPackage;
-        macbook-air = self.homeConfigurations.macbook-air.activationPackage;
-        linux-user = self.homeConfigurations.linux-user.activationPackage;
-      });
+      packages = forAllSystems (system:
+        let
+          # Only include packages that match the target system
+          linuxConfigs = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "linux" system) {
+            default = self.homeConfigurations.default.activationPackage;
+            linux-user = self.homeConfigurations.linux-user.activationPackage;
+          };
+          darwinConfigs = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "darwin" system) {
+            work-macbook-pro = self.homeConfigurations.work-macbook-pro.activationPackage;
+            macbook-air = self.homeConfigurations.macbook-air.activationPackage;
+          };
+        in
+        linuxConfigs // darwinConfigs
+      );
 
       # Formatter for `nix fmt`
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
 
       # Checks for `nix flake check`
-      checks = forAllSystems (system: {
-        default = self.packages.${system}.default;
-        work-macbook-pro = self.packages.${system}.work-macbook-pro;
-        macbook-air = self.packages.${system}.macbook-air;
-        linux-user = self.packages.${system}.linux-user;
-      });
+      checks = forAllSystems (system:
+        let
+          # Only include checks that match the target system
+          linuxChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "linux" system) {
+            default = self.packages.${system}.default or null;
+            linux-user = self.packages.${system}.linux-user or null;
+          };
+          darwinChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "darwin" system) {
+            work-macbook-pro = self.packages.${system}.work-macbook-pro or null;
+            macbook-air = self.packages.${system}.macbook-air or null;
+          };
+        in
+        nixpkgs.lib.filterAttrs (_: v: v != null) (linuxChecks // darwinChecks)
+      );
     };
 }
