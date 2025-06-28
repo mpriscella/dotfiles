@@ -12,6 +12,11 @@
     gpgSigningKey = "799887D03FE96FD0"; # Work-specific GPG key
   };
 
+  # Git configuration with GPG signing
+  myGit = {
+    gpgSigningKey = "799887D03FE96FD0"; # Same GPG key for git signing
+  };
+
   # You can add work-specific packages or configurations here
   home.packages = with pkgs; [
     # Add any work-specific tools here

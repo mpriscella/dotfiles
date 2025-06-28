@@ -6,28 +6,28 @@ let
 in
 
 {
-  # Allow unfree packages (like some proprietary tools)
   nixpkgs.config.allowUnfree = true;
 
   home.packages = [
     pkgs.ack
     pkgs.act
     pkgs.awscli2
+    pkgs.bat
+    pkgs.cf-terraforming # Shouldn't be in base config
     pkgs.dive
     pkgs.fd
     pkgs.fzf
-    pkgs.gh
-    pkgs.git
     pkgs.gnupg
+    pkgs.graphviz
     pkgs.jq
     pkgs.kind
     pkgs.k9s
     pkgs.kubectl
     pkgs.kubernetes-helm
     pkgs.lazydocker
-    pkgs.lazygit
     pkgs.neovim
-    pkgs.pinentry-curses  # For GPG password prompts in terminal
+    pkgs.nodejs_24
+    pkgs.pinentry-curses
     pkgs.ripgrep
     pkgs.terraform
     pkgs.terraform-docs
@@ -79,18 +79,37 @@ in
     '';
 
     functions = {
-      # AWS profile switcher
       aws-ps = {
         description = "Switch AWS profiles";
         body = ''
-          set -l profile $argv[1]
-          if test -z "$profile"
-            echo "Available profiles:"
-            aws configure list-profiles
-            return
+          set -l profile $(aws configure list-profiles | fzf --height=30% --layout=reverse)
+          if set --query profile
+            set -gx AWS_PROFILE $profile
+            echo "Switched to AWS profile: $profile"
           end
-          set -gx AWS_PROFILE $profile
-          echo "Switched to AWS profile: $profile"
+        '';
+      };
+      ecr-login = {
+        description = "Login to ECR";
+        body = ''
+          # Check if AWS credentials are valid
+          if not aws sts get-caller-identity >/dev/null 2>&1
+              echo "Could not connect to AWS account. Please verify that your credentials are correct."
+              return
+          end
+
+          # Get AWS region
+          set region (aws configure get region)
+
+          # Select repository name using fzf
+          set name (aws ecr describe-repositories --output json --query "repositories[*].repositoryName" | jq -r '.[]' | fzf --height=30% --layout=reverse --border --margin=1 --padding=1)
+
+          # Get repository URI
+          set uri (aws ecr describe-repositories --repository-names $name --output json --query "repositories[*].repositoryUri" | jq -r '.[]')
+
+          # Log in to the repository
+          echo "Logging into $uri..."
+          aws ecr get-login-password --region $region | docker login --username AWS --password-stdin $uri
         '';
       };
     };
@@ -101,10 +120,7 @@ in
       find = "fd";
       grep = "rg";
 
-      # Nix flake aliases
-      nfc = "nix flake check";
-      nfu = "nix flake update";
-      nfs = "nix flake show";
+      lg = "lazygit";
     };
 
     plugins = [
@@ -113,49 +129,6 @@ in
         src = pkgs.fishPlugins.pure.src;
       }
     ];
-  };
-
-  # Git configuration
-  programs.git = {
-    enable = true;
-    userName = "Mike Priscella";
-    userEmail = "mpriscella@gmail.com";
-
-    extraConfig = {
-      init.defaultBranch = "main";
-      pull.rebase = false;
-      push.autoSetupRemote = true;
-      core.editor = "nvim";
-
-      # GPG signing configuration (conditional)
-      user.signingkey = lib.mkIf (gpgSigningKey != null) gpgSigningKey;
-      commit.gpgsign = lib.mkIf (gpgSigningKey != null) true;
-      tag.gpgsign = lib.mkIf (gpgSigningKey != null) true;
-    };
-
-    ignores = [
-      ".DS_Store"
-      "*.swp"
-      "*.swo"
-      "*~"
-      ".direnv/"
-      "result"
-      "result-*"
-    ];
-
-    aliases = {
-      st = "status";
-      co = "checkout";
-      br = "branch";
-      ci = "commit";
-      di = "diff";
-      unstage = "reset HEAD --";
-      last = "log -1 HEAD";
-      visual = "!gitk";
-      graph = "log --oneline --graph --decorate --all";
-      # Show files ignored by git
-      ign = "ls-files -o -i --exclude-standard";
-    };
   };
 
   # GPG configuration
@@ -184,7 +157,7 @@ in
     enable = true;
     enableFishIntegration = true;
     pinentry.package = pkgs.pinentry-curses;
-    defaultCacheTtl = 28800;  # 8 hours
-    maxCacheTtl = 86400;      # 24 hours
+    defaultCacheTtl = 28800; # 8 hours
+    maxCacheTtl = 86400; # 24 hours
   };
 }
