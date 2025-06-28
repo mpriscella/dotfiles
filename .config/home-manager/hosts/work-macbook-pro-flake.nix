@@ -9,12 +9,10 @@
   # Custom configuration using our module
   myConfig = {
     configPath = "${config.home.homeDirectory}/.config/home-manager/hosts/work-macbook-pro-flake.nix";
-    gpgSigningKey = "799887D03FE96FD0"; # Work-specific GPG key
   };
 
-  # Git configuration with GPG signing
-  myGit = {
-    gpgSigningKey = "799887D03FE96FD0"; # Same GPG key for git signing
+  gpgConfig = {
+    gpgSigningKey = "799887D03FE96FD0";
   };
 
   # You can add work-specific packages or configurations here

@@ -1,17 +1,13 @@
 { config, pkgs, lib, inputs, ... }:
 
 {
-  options = {
-    myGit = {
-      gpgSigningKey = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "GPG key ID for signing commits";
-      };
-    };
-  };
-
   config = {
+    home.packages = with pkgs; [
+      delta
+      gh
+      lazygit
+    ];
+
     programs.git = {
       enable = true;
       userName = "Mike Priscella";
@@ -38,8 +34,8 @@
           gc.auto = 256;
         }
 
-        (lib.optionalAttrs (config.myGit.gpgSigningKey != null) {
-          user.signingkey = config.myGit.gpgSigningKey;
+        (lib.optionalAttrs (config.gpgConfig.gpgSigningKey != null) {
+          user.signingkey = config.gpgConfig.gpgSigningKey;
           commit.gpgsign = true;
           tag.gpgsign = true;
           gpg.program = "${pkgs.gnupg}/bin/gpg";
@@ -75,11 +71,5 @@
 
       lfs.enable = true;
     };
-
-    home.packages = with pkgs; [
-      delta
-      gh
-      lazygit
-    ];
   };
 }

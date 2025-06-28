@@ -64,6 +64,7 @@
           homeDirectory = "/Users/michaelpriscella";
           modules = [
             ./.config/home-manager/hosts/work-macbook-pro-flake.nix
+            ./home/programs/gpg.nix
             ./home/programs/git.nix
           ];
         };

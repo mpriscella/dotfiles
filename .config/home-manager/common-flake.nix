@@ -1,10 +1,5 @@
 { config, pkgs, lib, inputs, ... }:
 
-let
-  # Get GPG signing key from host configuration, with fallback
-  gpgSigningKey = config.myConfig.gpgSigningKey or null;
-in
-
 {
   nixpkgs.config.allowUnfree = true;
 
@@ -17,7 +12,6 @@ in
     pkgs.dive
     pkgs.fd
     pkgs.fzf
-    pkgs.gnupg
     pkgs.graphviz
     pkgs.jq
     pkgs.kind
@@ -27,7 +21,6 @@ in
     pkgs.lazydocker
     pkgs.neovim
     pkgs.nodejs_24
-    pkgs.pinentry-curses
     pkgs.ripgrep
     pkgs.terraform
     pkgs.terraform-docs
@@ -131,33 +124,10 @@ in
     ];
   };
 
-  # GPG configuration
-  programs.gpg = {
-    enable = true;
-    settings = {
-      # Use a long keyid format
-      keyid-format = "long";
-      # Show fingerprints
-      with-fingerprint = true;
-      # Disable greeting message
-      no-greeting = true;
-      # Use the GPG agent
-      use-agent = true;
-    };
-  };
-
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   programs.home-manager.enable = true;
 
   # Enable man page support
   programs.man.enable = true;
-
-  services.gpg-agent = {
-    enable = true;
-    enableFishIntegration = true;
-    pinentry.package = pkgs.pinentry-curses;
-    defaultCacheTtl = 28800; # 8 hours
-    maxCacheTtl = 86400; # 24 hours
-  };
 }
