@@ -57,6 +57,14 @@
           ];
         };
 
+        # "default" = home-manager.lib.homeManagerConfiguration {
+        #   pkgs = nixpkgs;
+
+        #   modules = [
+
+        #   ]
+        # }
+
         # Work MacBook Pro configuration
         "work-macbook-pro" = mkHomeConfiguration {
           system = "aarch64-darwin";  # Apple Silicon
@@ -66,6 +74,8 @@
             ./.config/home-manager/hosts/work-macbook-pro-flake.nix
             ./home/programs/gpg.nix
             ./home/programs/git.nix
+            ./home/programs/tmux.nix
+            ./home/programs/yt-dlp.nix
           ];
         };
 

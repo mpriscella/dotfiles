@@ -8,7 +8,6 @@
     pkgs.act
     pkgs.awscli2
     pkgs.bat
-    pkgs.cf-terraforming # Shouldn't be in base config
     pkgs.dive
     pkgs.fd
     pkgs.fzf
@@ -22,11 +21,7 @@
     pkgs.neovim
     pkgs.nodejs_24
     pkgs.ripgrep
-    pkgs.terraform
-    pkgs.terraform-docs
-    pkgs.tmux
     pkgs.yq
-    pkgs.yt-dlp
   ];
 
   home.file = {
@@ -35,7 +30,6 @@
       --ignore-case
     '';
 
-    ".tmux.conf".source = ../../tmux.conf;
 
     ".config/atuin".source = ../atuin;
     ".config/ghostty".source = ../ghostty;
