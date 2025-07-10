@@ -20,9 +20,7 @@
       --ignore-case
     '';
 
-    # Common Mac dotfiles
     ".config/ghostty".source = ../../.config/ghostty;
-    ".config/k9s".source = ../../.config/k9s;
     ".config/nvim".source = ../../.config/nvim;
   };
 
@@ -68,5 +66,6 @@
     ../programs/aws.nix
     ../programs/direnv.nix
     ../programs/atuin.nix
+    ../programs/k9s.nix
   ];
 }

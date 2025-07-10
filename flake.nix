@@ -24,7 +24,7 @@
       mkPackagesFor = system:
         let pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
         in with pkgs; [
-          ack act bat dive fd fzf git graphviz jq kind k9s kubectl
+          ack act bat dive fd fzf git graphviz jq kind kubectl
           kubernetes-helm lazydocker neovim nodejs_24 ripgrep yq
         ];
 
