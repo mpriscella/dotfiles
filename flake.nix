@@ -17,15 +17,28 @@
 
   outputs = { self, nixpkgs, home-manager, flake-utils, ... }@inputs:
     let
-      # Define the systems we want to support
       supportedSystems = [ "aarch64-linux" "aarch64-darwin" ];
 
       # Helper function to get packages for a specific system
       mkPackagesFor = system:
         let pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
         in with pkgs; [
-          ack act bat dive fd fzf git graphviz jq kind kubectl
-          kubernetes-helm lazydocker neovim nodejs_24 ripgrep yq
+          ack
+          act
+          bat
+          dive
+          fd
+          fzf
+          graphviz
+          jq
+          kind
+          kubectl
+          kubernetes-helm
+          lazydocker
+          neovim
+          nodejs_24
+          ripgrep
+          yq
         ];
 
       mkPkgsFor = system: import nixpkgs {
@@ -37,35 +50,13 @@
         let pkgs = mkPkgsFor system;
         in with pkgs; [
           home-manager.packages.${system}.default
-          nixpkgs-fmt nil nix-tree
+          nixpkgs-fmt
+          nil
+          nix-tree
         ];
     in
     {
       homeConfigurations = {
-        "dotfiles-utm" = home-manager.lib.homeManagerConfiguration {
-          pkgs = mkPkgsFor "aarch64-darwin";
-
-          modules = [
-            {
-              home.username = "dotfiles";
-              home.homeDirectory = "/Users/dotfiles";
-              home.stateVersion = "25.05";
-
-              # Use the system-specific packages
-              home.packages = mkPackagesFor "aarch64-darwin";
-            }
-            (self.outPath + "/.config/home-manager/hosts/work-macbook-pro-flake.nix")
-            (self.outPath + "/home/programs/gpg.nix")
-            (self.outPath + "/home/programs/git.nix")
-            (self.outPath + "/home/programs/tmux.nix")
-            (self.outPath + "/home/programs/yt-dlp.nix")
-            (self.outPath + "/home/programs/fish.nix")
-            (self.outPath + "/home/programs/aws.nix")
-            (self.outPath + "/home/programs/direnv.nix")
-            (self.outPath + "/home/programs/atuin.nix")
-          ];
-        };
-
         "macbook-pro-m3" = home-manager.lib.homeManagerConfiguration {
           pkgs = mkPkgsFor "aarch64-darwin";
 
@@ -76,45 +67,6 @@
             }
           ];
         };
-
-        "work-macbook-pro" = home-manager.lib.homeManagerConfiguration {
-          pkgs = mkPkgsFor "aarch64-darwin";
-
-          modules = [
-            {
-              home.username = "michaelpriscella";
-              home.homeDirectory = "/Users/michaelpriscella";
-              home.stateVersion = "25.05";
-
-              # Use the system-specific packages
-              home.packages = mkPackagesFor "aarch64-darwin";
-            }
-            (self.outPath + "/.config/home-manager/hosts/work-macbook-pro-flake.nix")
-            (self.outPath + "/home/programs/gpg.nix")
-            (self.outPath + "/home/programs/git.nix")
-            (self.outPath + "/home/programs/tmux.nix")
-            (self.outPath + "/home/programs/yt-dlp.nix")
-            (self.outPath + "/home/programs/fish.nix")
-            (self.outPath + "/home/programs/aws.nix")
-            (self.outPath + "/home/programs/direnv.nix")
-            (self.outPath + "/home/programs/atuin.nix")
-          ];
-        };
-
-        # Easy to add more systems
-        # "personal-linux" = home-manager.lib.homeManagerConfiguration {
-        #   pkgs = mkPkgsFor "x86_64-linux";
-
-        #   modules = [
-        #     {
-        #       home.username = "mpriscella";
-        #       home.homeDirectory = "/home/mpriscella";
-        #       home.stateVersion = "25.05";
-        #       home.packages = mkPackagesFor "x86_64-linux";
-        #     }
-        #     # ... other modules
-        #   ];
-        # };
       };
 
       # Pass through the system-specific outputs from flake-utils
