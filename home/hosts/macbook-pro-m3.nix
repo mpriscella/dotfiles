@@ -2,7 +2,16 @@
 
 {
   imports = [
-    ../modules/darwin-base.nix
+    ../modules/home-base.nix
+    ../programs/gpg.nix
+    ../programs/aws.nix
+    ../programs/git.nix
+    ../programs/tmux.nix
+    ../programs/yt-dlp.nix
+    ../programs/fish.nix
+    ../programs/direnv.nix
+    ../programs/atuin.nix
+    ../programs/k9s.nix
   ];
 
   gpgConfig = {
@@ -12,4 +21,10 @@
   home.username = "michaelpriscella";
   home.homeDirectory = "/Users/michaelpriscella";
   home.stateVersion = "24.05";
+  home.packages = with pkgs; [
+    delta
+    gh
+    lazygit
+    atuin
+  ];
 }

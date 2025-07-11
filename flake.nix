@@ -13,9 +13,14 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, flake-utils, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, flake-utils, nix-darwin, ... }@inputs:
     let
       supportedSystems = [ "aarch64-linux" "aarch64-darwin" ];
 
@@ -25,6 +30,7 @@
         in with pkgs; [
           ack
           act
+          atuin
           bat
           dive
           fd
@@ -53,17 +59,23 @@
           nixpkgs-fmt
           nil
           nix-tree
+          nix-darwin.packages.${system}.darwin-rebuild
         ];
     in
     {
-      homeConfigurations = {
-        "macbook-pro-m3" = home-manager.lib.homeManagerConfiguration {
-          pkgs = mkPkgsFor "aarch64-darwin";
-
+      darwinConfigurations = {
+        "macbook-pro-m3" = nix-darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          specialArgs = { inherit inputs self; };
           modules = [
-            (self.outPath + "/home/hosts/macbook-pro-m3.nix")
+            ./home/modules/darwin-base.nix
+            home-manager.darwinModules.home-manager
             {
-              home.packages = mkPackagesFor "aarch64-darwin";
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              users.users.michaelpriscella.home = "/Users/michaelpriscella";
+              home-manager.users.michaelpriscella = import ./home/hosts/macbook-pro-m3.nix;
+              environment.systemPackages = mkPackagesFor "aarch64-darwin";
             }
           ];
         };
@@ -80,8 +92,7 @@
             echo "📦 Available packages: ${toString (builtins.length (mkPackagesFor system))}"
             echo ""
             echo "Commands:"
-            echo "  home-manager switch --flake .#work-macbook-pro"
-            echo "  home-manager build --flake .#work-macbook-pro"
+            echo "  darwin-rebuild switch --flake .#macbook-pro-m3"
             echo "  nix flake check"
             echo "  nixpkgs-fmt ."
           '';

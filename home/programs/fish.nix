@@ -1,36 +1,47 @@
 { config, pkgs, lib, inputs, ... }:
 
 {
-  config = {
-    # Fish shell configuration
-    # https://github.com/nix-community/home-manager/blob/master/modules/programs/fish.nix
-    programs.fish = {
-      enable = true;
+  programs.fish = {
+    enable = true;
 
-      shellInit = ''
-        # Set up direnv if available
-        if command -v direnv >/dev/null
-          direnv hook fish | source
-        end
+    shellInit = ''
+      set -gx PATH $HOME/.local/state/nix/profiles/home-manager/home-path/bin $PATH
+      echo "DEBUG: PATH at shell startup: $PATH"
 
-        fish_vi_key_bindings
-      '';
+      # Remove Atuin functions if atuin is not available
+      if not type -q atuin
+        functions -e _atuin_preexec
+        functions -e _atuin_postexec
+      end
 
-      shellAliases = {
-        # Modern replacements
-        cat = "bat --style=plain";
-        find = "fd";
-        grep = "rg";
+      # Set up direnv if available
+      if command -v direnv >/dev/null
+        direnv hook fish | source
+      end
 
-        lg = "lazygit";
-      };
+      if type -q atuin
+        atuin init fish | source
+      end
 
-      plugins = [
-        {
-          name = "pure";
-          src = pkgs.fishPlugins.pure.src;
-        }
-      ];
+      fish_vi_key_bindings
+    '';
+
+    interactiveShellInit = "";
+
+    shellAliases = {
+      # Modern replacements
+      cat = "bat --style=plain";
+      find = "fd";
+      grep = "rg";
+
+      lg = "lazygit";
     };
+
+    plugins = [
+      {
+        name = "pure";
+        src = pkgs.fishPlugins.pure.src;
+      }
+    ];
   };
 }
