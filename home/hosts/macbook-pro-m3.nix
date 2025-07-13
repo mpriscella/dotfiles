@@ -1,19 +1,6 @@
-{ config, pkgs, ... }:
+{ home, ... }:
 
 {
-  imports = [
-    ../modules/home-base.nix
-    ../programs/gpg.nix
-    ../programs/aws.nix
-    ../programs/git.nix
-    ../programs/tmux.nix
-    ../programs/yt-dlp.nix
-    ../programs/fish.nix
-    ../programs/direnv.nix
-    ../programs/atuin.nix
-    ../programs/k9s.nix
-  ];
-
   gpgConfig = {
     gpgSigningKey = "799887D03FE96FD0";
   };
@@ -21,10 +8,10 @@
   home.username = "michaelpriscella";
   home.homeDirectory = "/Users/michaelpriscella";
   home.stateVersion = "24.05";
-  home.packages = with pkgs; [
-    delta
-    gh
-    lazygit
-    atuin
-  ];
+  # home.packages = with pkgs; [
+  #   delta
+  #   gh
+  #   lazygit
+  #   atuin
+  # ];
 }

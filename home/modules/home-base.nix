@@ -1,12 +1,24 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [
+    ../programs/gpg.nix
+    ../programs/aws.nix
+    ../programs/git.nix
+    ../programs/tmux.nix
+    ../programs/yt-dlp.nix
+    ../programs/fish.nix
+    ../programs/direnv.nix
+    ../programs/atuin.nix
+    ../programs/k9s.nix
+  ];
+
   # Common Mac packages
-  home.packages = lib.mkBefore (with pkgs; [
-    # mas  # Mac App Store CLI (if you want to manage App Store apps)
-    # rectangle  # Window management
-    # Add other Mac-specific packages here
-  ]);
+  # home.packages = lib.mkBefore (with pkgs; [
+  #   # mas  # Mac App Store CLI (if you want to manage App Store apps)
+  #   # rectangle  # Window management
+  #   # Add other Mac-specific packages here
+  # ]);
 
   # Common Mac file configurations
   home.file = {

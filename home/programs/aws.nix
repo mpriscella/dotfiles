@@ -1,4 +1,4 @@
-{ home, programs, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   programs.awscli = {

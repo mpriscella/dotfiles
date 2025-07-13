@@ -32,6 +32,7 @@
           act
           atuin
           bat
+          cargo
           dive
           fd
           fzf
@@ -64,6 +65,37 @@
     in
     {
       darwinConfigurations = {
+        "ideal" = nix-darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          specialArgs = { inherit inputs self; };
+          modules = [
+            ./home/modules/global.nix
+            # Global
+              # Global packages (linux + Mac)
+              # Default configurations
+                # Dotfiles
+
+            ./home/modules/darwin.nix
+            # Darwin
+              # Darwin specific packages
+              # Darwin configurations
+                # Dock
+
+            # Home Manager
+            home-manager.darwinModules.home-manager
+            {
+              imports = [
+                ./home/modules/home-base.nix
+              ];
+              # Somehow I need to import all of those programs as home-manager modules here.
+            }
+
+            # Host
+              # Host-specific packages
+              # Host-specific configurations
+          ];
+        };
+
         "macbook-pro-m3" = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           specialArgs = { inherit inputs self; };
@@ -73,7 +105,7 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              users.users.michaelpriscella.home = "/Users/michaelpriscella";
+              # users.users.michaelpriscella.home = "/Users/michaelpriscella";
               home-manager.users.michaelpriscella = import ./home/hosts/macbook-pro-m3.nix;
               environment.systemPackages = mkPackagesFor "aarch64-darwin";
             }
