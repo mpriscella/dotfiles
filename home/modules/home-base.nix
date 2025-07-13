@@ -3,7 +3,7 @@
 {
   imports = [
     ../programs/gpg.nix
-    ../programs/aws.nix
+    # ../programs/aws.nix
     ../programs/git.nix
     ../programs/tmux.nix
     ../programs/yt-dlp.nix
