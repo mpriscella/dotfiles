@@ -1,34 +1,29 @@
-{ lib, nixpkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
-  options.gpgConfig.gpgSigningKey = lib.mkOption {
-    type = lib.types.nullOr lib.types.str;
-    default = null;
-    description = "GPG key ID for signing commits";
-  };
-
   config = {
     nixpkgs.config.allowUnfree = true;
-    environment.systemPackages = with nixpkgs; [
+
+    environment.systemPackages = with pkgs; [
       ack
       act
-      # atuin
+      atuin
       bat
-      cargo
+      # cargo
       # delta
-      dive
+      # dive
       fd
       fzf
-      # gh
+      gh
       graphviz
       jq
       kind
       kubectl
       kubernetes-helm
       lazydocker
-      # lazygit
+      lazygit
       neovim
-      nodejs_24
+      # nodejs_24
       ripgrep
       yq
     ];

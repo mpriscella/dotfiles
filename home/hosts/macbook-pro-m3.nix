@@ -1,4 +1,4 @@
-{ home, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   gpgConfig = {
@@ -8,10 +8,4 @@
   home.username = "michaelpriscella";
   home.homeDirectory = "/Users/michaelpriscella";
   home.stateVersion = "24.05";
-  # home.packages = with pkgs; [
-  #   delta
-  #   gh
-  #   lazygit
-  #   atuin
-  # ];
 }

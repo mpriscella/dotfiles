@@ -6,7 +6,6 @@
 
     shellInit = ''
       set -gx PATH $HOME/.local/state/nix/profiles/home-manager/home-path/bin $PATH
-      echo "DEBUG: PATH at shell startup: $PATH"
 
       # Remove Atuin functions if atuin is not available
       if not type -q atuin

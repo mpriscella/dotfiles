@@ -4,7 +4,7 @@
   programs.k9s = {
     enable = true;
 
-    plugin = {
+    plugins = {
       debug-container = {
         shortCut = "d";
         description = "Add debug container";
