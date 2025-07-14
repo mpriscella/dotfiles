@@ -8,15 +8,15 @@
   };
 
   imports = [
-    ../programs/gpg.nix
+    ../programs/atuin.nix
     ../programs/aws.nix
+    ../programs/direnv.nix
+    ../programs/fish.nix
     ../programs/git.nix
+    ../programs/gpg.nix
+    ../programs/k9s.nix
     ../programs/tmux.nix
     ../programs/yt-dlp.nix
-    ../programs/fish.nix
-    ../programs/direnv.nix
-    ../programs/atuin.nix
-    ../programs/k9s.nix
   ];
 
   config = {

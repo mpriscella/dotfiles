@@ -9,9 +9,8 @@
       act
       atuin
       bat
-      # cargo
-      # delta
-      # dive
+      delta
+      dive
       fd
       fzf
       gh
@@ -23,7 +22,7 @@
       lazydocker
       lazygit
       neovim
-      # nodejs_24
+      nil
       ripgrep
       yq
     ];
