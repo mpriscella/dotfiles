@@ -3,8 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-25.05-darwin";
+
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
@@ -72,22 +74,26 @@
         };
       };
 
-      devShells.aarch64-darwin.default = let
-        pkgs = mkPackagesFor "aarch64-darwin";
-      in pkgs.mkShell {
-        buildInputs = (defaultPackages pkgs) ++ [
-          nix-darwin.packages.aarch64-darwin.darwin-rebuild
-          pkgs.nodejs_24 # To build neovim packages.
-        ];
+      devShells.aarch64-darwin.default =
+        let
+          pkgs = mkPackagesFor "aarch64-darwin";
+        in
+        pkgs.mkShell {
+          buildInputs = (defaultPackages pkgs) ++ [
+            nix-darwin.packages.aarch64-darwin.darwin-rebuild
+            pkgs.nodejs_24 # To build neovim packages.
+          ];
 
-        shellHook = ''
-          echo "🏠 Dotfiles Development Shell"
-          echo "Available commands:"
-          echo "  sudo darwin-rebuild switch --flake .#macbook-pro-m3  # Apply system configuration"
-          echo "  nix flake update                                     # Update dependencies"
-          echo "  nix fmt                                              # Format Nix files"
-          echo "  nix flake check                                      # Validate flake"
-        '';
-      };
+          shellHook = ''
+            echo "🏠 Dotfiles Development Shell"
+            echo "Available commands:"
+            echo "  sudo darwin-rebuild switch --flake .#macbook-pro-m3  # Apply system configuration"
+            echo "  nix flake update                                     # Update dependencies"
+            echo "  nix fmt flake.nix home/                              # Format Nix files"
+            echo "  nix flake check                                      # Validate flake"
+          '';
+        };
+
+      formatter.aarch64-darwin = (mkPackagesFor "aarch64-darwin").nixpkgs-fmt;
     };
 }
