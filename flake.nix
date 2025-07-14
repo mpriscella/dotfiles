@@ -28,11 +28,14 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.michaelpriscella = {
+                home.stateVersion = "24.05";
                 imports = [
                   ./home/modules/home-base.nix
-                  ./home/hosts/macbook-pro-m3.nix
                 ];
-                home.stateVersion = "24.05";
+
+                gpgConfig = {
+                  gpgSigningKey = "799887D03FE96FD0";
+                };
               };
             }
           ];
