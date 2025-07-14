@@ -10,12 +10,43 @@
   };
 
   outputs = { self, nixpkgs, nix-darwin, home-manager }:
+    let
+      mkPackagesFor = system: import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+
+      defaultPackages = pkgs: with pkgs; [
+        ack
+        act
+        atuin
+        bat
+        delta
+        dive
+        fd
+        fzf
+        gh
+        graphviz
+        jq
+        kind
+        kubectl
+        kubernetes-helm
+        lazydocker
+        lazygit
+        neovim
+        nil
+        ripgrep
+        yq
+      ];
+    in
     {
       darwinConfigurations = {
         "macbook-pro-m3" = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           modules = [
-            ./home/modules/global.nix
+            {
+              environment.systemPackages = defaultPackages (mkPackagesFor "aarch64-darwin");
+            }
             ./home/modules/darwin.nix
             {
               users.users.michaelpriscella = {
@@ -40,6 +71,14 @@
             }
           ];
         };
+      };
+
+      devShells.aarch64-darwin.default = let
+        pkgs = mkPackagesFor "aarch64-darwin";
+      in pkgs.mkShell {
+        buildInputs = (defaultPackages pkgs) ++ [
+          nix-darwin.packages.aarch64-darwin.darwin-rebuild
+        ];
       };
     };
 }
