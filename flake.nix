@@ -44,9 +44,6 @@
         "macbook-pro-m3" = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           modules = [
-            {
-              environment.systemPackages = defaultPackages (mkPackagesFor "aarch64-darwin");
-            }
             ./home/modules/darwin.nix
             {
               users.users.michaelpriscella = {
@@ -63,6 +60,8 @@
                 imports = [
                   ./home/modules/home-base.nix
                 ];
+
+                home.packages = defaultPackages (mkPackagesFor "aarch64-darwin");
 
                 gpgConfig = {
                   gpgSigningKey = "799887D03FE96FD0";
