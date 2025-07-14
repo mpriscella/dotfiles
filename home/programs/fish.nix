@@ -25,10 +25,7 @@
       fish_vi_key_bindings
     '';
 
-    interactiveShellInit = "";
-
     shellAliases = {
-      # Modern replacements
       cat = "bat --style=plain";
       find = "fd";
       grep = "rg";
