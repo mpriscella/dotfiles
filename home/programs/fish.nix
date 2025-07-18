@@ -26,10 +26,6 @@
     '';
 
     shellAliases = {
-      cat = "bat --style=plain";
-      find = "fd";
-      grep = "rg";
-
       lg = "lazygit";
     };
 

@@ -37,6 +37,7 @@
         lazygit
         neovim
         nil
+        nodejs_24
         ripgrep
         yq
       ];
@@ -81,16 +82,31 @@
         pkgs.mkShell {
           buildInputs = (defaultPackages pkgs) ++ [
             nix-darwin.packages.aarch64-darwin.darwin-rebuild
-            pkgs.nodejs_24 # To build neovim packages.
+            (pkgs.writeShellScriptBin "nvim-dev" ''
+              CONFIG_DIR="$(pwd)/.config/nvim"
+              DATA_DIR="$(pwd)/nvim-data"
+              CACHE_DIR="$(pwd)/nvim-cache"
+
+              mkdir -p "$DATA_DIR" "$CACHE_DIR"
+
+              XDG_CONFIG_HOME="$(pwd)/.config/nvim" \
+              XDG_DATA_HOME="$DATA_DIR" \
+              XDG_CACHE_HOME="$CACHE_DIR" \
+                nvim -u "$CONFIG_DIR/init.lua" \
+                     --cmd "set runtimepath^=$CONFIG_DIR" \
+                     --cmd "lua package.path = '$CONFIG_DIR/lua/?.lua;$CONFIG_DIR/lua/?/init.lua;' .. package.path" \
+                     "$@"
+            '')
           ];
 
           shellHook = ''
-            echo "🏠 Dotfiles Development Shell"
+            echo "🎯 Dotfiles Development Environment"
+            echo ""
             echo "Available commands:"
-            echo "  sudo darwin-rebuild switch --flake .#macbook-pro-m3  # Apply system configuration"
-            echo "  nix flake update                                     # Update dependencies"
-            echo "  nix fmt flake.nix home/                              # Format Nix files"
-            echo "  nix flake check                                      # Validate flake"
+            echo "  darwin-rebuild switch --flake .#<hostname>  # Apply system config"
+            echo "  nix flake update                            # Update dependencies"
+            echo "  nix fmt flake.nix home/                     # Format code"
+            echo "  nvim-dev [files]                            # Neovim with isolated config"
           '';
         };
 
