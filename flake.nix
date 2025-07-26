@@ -74,6 +74,36 @@
             }
           ];
         };
+
+        "macbook-air-m4" = nix-darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          modules = [
+            ./home/modules/darwin.nix
+            {
+              users.users.mpriscella = {
+                name = "mpriscella";
+                home = "/Users/mpriscella";
+              };
+            }
+            home-manager.darwinModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.mpriscella = {
+                home.stateVersion = "24.05";
+                imports = [
+                  ./home/modules/home-base.nix
+                ];
+
+                home.packages = defaultPackages (mkPackagesFor "aarch64-darwin");
+
+                gpgConfig = {
+                  gpgSigningKey = "27301C740482A8B1";
+                };
+              };
+            }
+          ];
+        };
       };
 
       devShells.aarch64-darwin.default =
