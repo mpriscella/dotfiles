@@ -31,7 +31,7 @@ This repository manages cross-platform dotfiles using Nix flakes, Home Manager, 
 - **Program configurations** are modularized in `home/programs/` and imported via `home-base.nix`.
 
 ## Current Structure vs. Intended Structure
-- **Current**: Host configurations are defined inline in `flake.nix` 
+- **Current**: Host configurations are defined inline in `flake.nix`
 - **Intended**: Host configurations should be in `home/hosts/<hostname>.nix` files
 - **When adding new hosts**: Create `home/hosts/<hostname>.nix` and import it in `flake.nix` modules list
 

@@ -30,6 +30,7 @@
         gh
         graphviz
         jq
+        just
         kind
         kubectl
         kubernetes-helm

@@ -15,26 +15,65 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Helper functions
+#######################################
+# Log 'info' message.
+# Globals:
+#  BLUE
+#  NC
+# Arguments:
+#   The message to log.
+#######################################
 log_info() {
   echo -e "${BLUE}[INFO]${NC} $1"
 }
 
+#######################################
+# Log 'success' message.
+# Globals:
+#  GREEN
+#  NC
+# Arguments:
+#   The message to log.
+#######################################
 log_success() {
   echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+#######################################
+# Log 'warning' message.
+# Globals:
+#  BLUE
+#  YELLOW
+# Arguments:
+#   The message to log.
+#######################################
 log_warning() {
   echo -e "${YELLOW}[WARNING]${NC} $1"
 }
 
+#######################################
+# Log 'error' message.
+# Globals:
+#  NC
+#  RED
+# Arguments:
+#   The message to log.
+#######################################
 log_error() {
   echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Detect operating system
+#######################################
+# Detect operating system.
+# Globals:
+#  CODESPACES
+#  DEVCONTAINER
+#  IN_CONTAINER
+# Arguments:
+#   None
+#######################################
 detect_os() {
   case "$(uname -s)" in
   Darwin*)
@@ -61,7 +100,11 @@ detect_os() {
   fi
 }
 
-# Check prerequisites based on OS
+#######################################
+# Check prerequisites based on OS.
+# Arguments:
+#   None
+#######################################
 check_prerequisites() {
   if ! command -v curl >/dev/null 2>&1; then
     log_error "curl is required but not installed"
@@ -69,21 +112,29 @@ check_prerequisites() {
   fi
 }
 
-# Install Nix if not already installed
-# TODO:
-#  - If this script is run and nix is installed, then the script is run again, it's failing because path is not updated.
+#######################################
+# Install Nix if not already installed.
+# Globals:
+#  EUID
+#  HOME
+#  IN_CONTAINER
+#  NIX_PATH
+#  REPLY
+# Arguments:
+#   None
+#######################################
 install_nix() {
-  # Check for permission issues in devcontainer first
+  # Check for permission issues in devcontainer first.
   if command -v nix >/dev/null 2>&1 && [[ "$IN_CONTAINER" == true ]]; then
-    # Test if we can actually use nix commands that require write access to both db and store
     write_test_failed=false
 
+    # Test if we can actually use nix commands that require write access to both db and store.
     if [[ ! -w /nix/var/nix/db/big-lock ]] 2>/dev/null || ! touch /nix/var/nix/test-write 2>/dev/null; then
       write_test_failed=true
     fi
     rm -f /nix/var/nix/test-write 2>/dev/null # Clean up test file
 
-    # Also test if we can write to the store (where the real issues often occur)
+    # Also test if we can write to the store (where the real issues often occur).
     if ! touch /nix/store/test-write 2>/dev/null; then
       write_test_failed=true
     fi
@@ -136,7 +187,6 @@ install_nix() {
     # Even if Nix is installed, ensure it's sourced in current session
     if [[ -z "${NIX_PATH:-}" ]]; then
       log_info "Sourcing Nix environment for current session..."
-      # Try to source Nix profile for current session
       if [[ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]]; then
         # shellcheck source=/dev/null
         source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
@@ -241,7 +291,6 @@ install_home_manager() {
   if nix-channel --list | grep -q "home-manager"; then
     log_info "home-manager channel already exists"
   else
-    # Add home-manager channel
     if nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager; then
       log_success "Added home-manager channel"
     else
@@ -251,7 +300,6 @@ install_home_manager() {
     fi
   fi
 
-  # Update channels
   log_info "Updating Nix channels..."
   if nix-channel --update; then
     log_success "Updated Nix channels"
@@ -260,7 +308,6 @@ install_home_manager() {
     log_info "You may need to run 'nix-channel --update' manually later"
   fi
 
-  # Install home-manager
   log_info "Installing home-manager package..."
   if nix-shell '<home-manager>' -A install; then
     log_success "home-manager installation completed"
@@ -271,7 +318,6 @@ install_home_manager() {
     else
       log_warning "home-manager installed but not available in current session."
       log_info "You may need to restart your terminal or source your shell profile."
-      # Don't exit here - continue with the script
     fi
   else
     log_error "Failed to install home-manager"
@@ -461,6 +507,8 @@ main() {
     log_error "Nix installation failed. Cannot continue."
     exit 1
   fi
+
+  exit 0
 
   # Install home-manager
   log_info "Checking home-manager installation..."
