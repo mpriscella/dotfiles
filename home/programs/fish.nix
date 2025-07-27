@@ -4,8 +4,10 @@
   programs.fish = {
     enable = true;
 
+    # Why do these paths need to be set manually and aren't inferred by home-manager?
     shellInit = ''
       set -gx PATH $HOME/.local/state/nix/profiles/home-manager/home-path/bin $PATH
+      set -gx PATH /nix/var/nix/profiles/default/bin $PATH
 
       # Remove Atuin functions if atuin is not available
       if not type -q atuin

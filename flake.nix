@@ -9,38 +9,41 @@
 
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Pin to Lua 5.1.x.
+    lua51.url = "github:NixOS/nixpkgs/e6f23dc08d3624daab7094b701aa3954923c6bbb";
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager }:
+  outputs = { self, nixpkgs, nix-darwin, home-manager, lua51 }:
     let
       mkPackagesFor = system: import nixpkgs {
         inherit system;
         config.allowUnfree = true;
       };
 
-      defaultPackages = pkgs: with pkgs; [
-        ack
-        act
-        atuin
-        bat
-        delta
-        dive
-        fd
-        fzf
-        gh
-        graphviz
-        jq
-        just
-        kind
-        kubectl
-        kubernetes-helm
-        lazydocker
-        lazygit
-        neovim
-        nil
-        nodejs_24
-        ripgrep
-        yq
+      defaultPackages = pkgs: [
+        pkgs.ack
+        pkgs.act
+        pkgs.atuin
+        pkgs.bat
+        pkgs.delta
+        pkgs.dive
+        pkgs.fd
+        pkgs.fzf
+        pkgs.gh
+        pkgs.graphviz
+        pkgs.jq
+        pkgs.just
+        pkgs.kind
+        pkgs.kubectl
+        pkgs.kubernetes-helm
+        pkgs.lazydocker
+        pkgs.lazygit
+        pkgs.neovim
+        pkgs.nil
+        pkgs.nodejs_24
+        pkgs.ripgrep
+        pkgs.yq
       ];
     in
     {
@@ -120,13 +123,13 @@
 
               mkdir -p "$DATA_DIR" "$CACHE_DIR"
 
-              XDG_CONFIG_HOME="$(pwd)/.config/nvim" \
-              XDG_DATA_HOME="$DATA_DIR" \
-              XDG_CACHE_HOME="$CACHE_DIR" \
+              XDG_CONFIG_HOME="$CONFIG_DIR" \
+                XDG_DATA_HOME="$DATA_DIR" \
+                XDG_CACHE_HOME="$CACHE_DIR" \
                 nvim -u "$CONFIG_DIR/init.lua" \
-                     --cmd "set runtimepath^=$CONFIG_DIR" \
-                     --cmd "lua package.path = '$CONFIG_DIR/lua/?.lua;$CONFIG_DIR/lua/?/init.lua;' .. package.path" \
-                     "$@"
+                  --cmd "set runtimepath^=$CONFIG_DIR" \
+                  --cmd "lua package.path = '$CONFIG_DIR/lua/?.lua;$CONFIG_DIR/lua/?/init.lua;' .. package.path" \
+                  "$@"
             '')
           ];
 
