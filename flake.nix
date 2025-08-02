@@ -24,32 +24,6 @@
         inherit system;
         config.allowUnfree = true;
       };
-
-      defaultPackages = pkgs: [
-        pkgs.ack
-        pkgs.act
-        pkgs.atuin
-        pkgs.bat
-        pkgs.delta
-        pkgs.dive
-        pkgs.fd
-        pkgs.fzf
-        pkgs.gh
-        pkgs.graphviz
-        pkgs.jq
-        pkgs.just
-        pkgs.kind
-        pkgs.kubectl
-        pkgs.kubernetes-helm
-        pkgs.lazydocker
-        pkgs.lazygit
-        pkgs.opencode
-        pkgs.neovim
-        pkgs.nil
-        pkgs.nodejs_24
-        pkgs.ripgrep
-        pkgs.yq
-      ];
     in
     {
       darwinConfigurations = {
@@ -117,7 +91,7 @@
           pkgs = mkPackagesFor "aarch64-darwin";
         in
         pkgs.mkShell {
-          buildInputs = (defaultPackages pkgs) ++ [
+          buildInputs = [
             nix-darwin.packages.aarch64-darwin.darwin-rebuild
             (pkgs.writeShellScriptBin "nvim-dev" ''
               CONFIG_DIR="$(pwd)/.config/nvim"
