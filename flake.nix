@@ -35,6 +35,7 @@
               users.users.michaelpriscella = {
                 name = "michaelpriscella";
                 home = "/Users/michaelpriscella";
+                shell = (mkPackagesFor "aarch64-darwin").fish;
               };
             }
             home-manager.darwinModules.home-manager
@@ -64,6 +65,7 @@
               users.users.mpriscella = {
                 name = "mpriscella";
                 home = "/Users/mpriscella";
+                shell = (mkPackagesFor "aarch64-darwin").fish;
               };
             }
             home-manager.darwinModules.home-manager
@@ -121,10 +123,11 @@
 
             echo ""
             echo "Available commands:"
-            echo "  darwin-rebuild switch --flake .#<hostname>  # Apply system config"
-            echo "  nix flake update                            # Update dependencies"
-            echo "  nix fmt flake.nix home/                     # Format code"
-            echo "  nvim-dev [files]                            # Neovim with isolated config"
+            echo "  sudo darwin-rebuild switch --flake .#<hostname>  # Apply system config"
+            echo "  sudo darwin-rebuild switch --rollback            # Rollback to previous config"
+            echo "  nix flake update                                 # Update dependencies"
+            echo "  nix fmt flake.nix home/                          # Format code"
+            echo "  nvim-dev [files]                                 # Neovim with isolated config"
           '';
         };
 
