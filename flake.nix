@@ -24,6 +24,16 @@
         inherit system;
         config.allowUnfree = true;
       };
+
+      # Helper function to create user configuration
+      mkDarwinUser = { username, system }:
+        {
+          users.users.${username} = {
+            name = username;
+            home = "/Users/${username}";
+            shell = (mkPackagesFor system).fish;
+          };
+        };
     in
     {
       darwinConfigurations = {
@@ -31,13 +41,10 @@
           system = "aarch64-darwin";
           modules = [
             ./home/modules/darwin.nix
-            {
-              users.users.michaelpriscella = {
-                name = "michaelpriscella";
-                home = "/Users/michaelpriscella";
-                shell = (mkPackagesFor "aarch64-darwin").fish;
-              };
-            }
+            (mkDarwinUser {
+              username = "michaelpriscella";
+              system = "aarch64-darwin";
+            })
             home-manager.darwinModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
@@ -61,6 +68,10 @@
           system = "aarch64-darwin";
           modules = [
             ./home/modules/darwin.nix
+            (mkDarwinUser {
+              username = "mpriscella";
+              system = "aarch64-darwin";
+            })
             {
               users.users.mpriscella = {
                 name = "mpriscella";
