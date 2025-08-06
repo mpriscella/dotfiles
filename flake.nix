@@ -155,8 +155,9 @@
           buildInputs = [
             home-manager.packages.${system}.default
             nix-darwin.packages.${system}.darwin-rebuild
+            nixpkgs.legacyPackages.${system}.python3
             (nixpkgs.legacyPackages.${system}.writeShellScriptBin "nvim-dev" ''
-              XDG_CONFIG_HOME=".config/" NVIM_APPNAME="nvim-dev" nvim "$@"
+              XDG_CONFIG_HOME="config/" nvim "$@"
             '')
           ];
 
@@ -171,6 +172,7 @@
 
             echo ""
             echo "Nix Darwin commands:"
+            echo "  sudo darwin-rebuild build --flake .#<hostname>   # Build system config"
             echo "  sudo darwin-rebuild switch --flake .#<hostname>  # Apply system config"
             echo "  sudo darwin-rebuild switch --rollback            # Rollback to previous config"
             echo "  nvim-dev [files]                                 # Neovim with isolated config"
@@ -180,8 +182,8 @@
             echo ""
             echo ""
             echo "Home Manager commands:"
-            echo "  home-manager build --flake .#<hostname>          # Apply system config"
-            echo "  home-manager switch --flake .#<hostname>         # Apply system config"
+            echo "  home-manager build --flake .#<hostname>          # Build home-manager config"
+            echo "  home-manager switch --flake .#<hostname>         # Apply home-manager config"
             echo "  home-manager switch --rollback                   # Rollback to previous config"
             echo ""
             echo "Available Home Manager configurations:"
@@ -200,7 +202,8 @@
       checks = forAllSystems (system:
         let
           macosChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "darwin" system) {
-            macbook-pro-m3 = self.homeConfigurations."macbook-pro-m3".activationPackage;
+            home-manager-macbook-pro-m3 = self.homeConfigurations."macbook-pro-m3".activationPackage;
+            nix-darwin-macbook-pro-m3 = self.darwinConfigurations."macbook-pro-m3".system;
           };
           linuxChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "linux" system) {
             nixos-orbstack = self.homeConfigurations."nixos-orbstack".activationPackage;

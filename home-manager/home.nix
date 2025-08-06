@@ -33,8 +33,8 @@
         --pager=less -R
         --ignore-case
       '';
-      ".config/ghostty".source = ../.config/ghostty;
-      ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${inputs.self}/.config/nvim";
+      ".config/ghostty".source = ../config/ghostty;
+      ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${inputs.self}/config/nvim";
     };
 
     home.packages = [
