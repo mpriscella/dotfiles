@@ -156,6 +156,7 @@
             home-manager.packages.${system}.default
             nix-darwin.packages.${system}.darwin-rebuild
             nixpkgs.legacyPackages.${system}.python3
+            nixpkgs.legacyPackages.${system}.nix-diff
             (nixpkgs.legacyPackages.${system}.writeShellScriptBin "nvim-dev" ''
               XDG_CONFIG_HOME="config/" nvim "$@"
             '')
@@ -191,6 +192,7 @@
             echo ""
             echo ""
             echo "Nix commands:"
+            echo "  nix flake check                                  # Validate and test flake"
             echo "  nix flake update                                 # Update dependencies"
             echo "  nix fmt flake.nix home/                          # Format code"
           '';
