@@ -2,24 +2,32 @@
   description = "Personal dotfiles with Home Manager and nix-darwin";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs = {
+      url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    };
 
-    nix-darwin.url = "github:nix-darwin/nix-darwin";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
-    home-manager-config.url = "github:mpriscella/nix-home-manager";
-    home-manager-config.inputs.nixpkgs.follows = "nixpkgs";
-    home-manager-config.inputs.home-manager.follows = "home-manager";
-
-    # Pin to Lua 5.1.x.
-    lua51.url = "github:NixOS/nixpkgs/e6f23dc08d3624daab7094b701aa3954923c6bbb";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, home-manager-config, lua51 }:
+  outputs = { self, nixpkgs, nix-darwin, home-manager }@inputs:
     let
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+
+      forAllSystems = nixpkgs.lib.genAttrs systems;
+
       mkPackagesFor = system: import nixpkgs {
         inherit system;
         config.allowUnfree = true;
@@ -34,13 +42,50 @@
             shell = (mkPackagesFor system).fish;
           };
         };
+
+      mkHomeConfiguration = { system, username, homeDirectory ? null, modules ? [], extraSpecialArgs ? {}, gpgSigningKey ? null, isDarwinModule ? false }:
+        let
+          calculatedHomeDirectory =
+            if homeDirectory != null then homeDirectory
+            else if nixpkgs.lib.hasInfix "darwin" system then "/Users/${username}"
+            else "/home/${username}";
+
+          baseModules = [
+            # Only set system metadata when not used as nix-darwin module
+            (nixpkgs.lib.optionalAttrs (!isDarwinModule) {
+              home.username = username;
+              home.homeDirectory = calculatedHomeDirectory;
+              home.stateVersion = "25.05";
+            })
+            ./home-manager/home.nix
+          ] ++ modules;
+
+          baseExtraSpecialArgs = {
+            inherit inputs;
+            inherit gpgSigningKey;
+            inherit isDarwinModule;
+          } // extraSpecialArgs;
+        in
+        if isDarwinModule then
+          # When used as nix-darwin module, return module configuration directly
+          {
+            imports = baseModules;
+            _module.args = baseExtraSpecialArgs;
+          }
+        else
+          # When used standalone, wrap in homeManagerConfiguration
+          home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.${system};
+            modules = baseModules;
+            extraSpecialArgs = baseExtraSpecialArgs;
+          };
     in
     {
       darwinConfigurations = {
         "macbook-pro-m3" = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           modules = [
-            ./home/modules/darwin.nix
+            ./nix-darwin/base.nix
             (mkDarwinUser {
               username = "michaelpriscella";
               system = "aarch64-darwin";
@@ -50,7 +95,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.michaelpriscella = nixpkgs.lib.mkMerge [
-                (home-manager-config.lib.mkHomeConfiguration {
+                (mkHomeConfiguration {
                   system = "aarch64-darwin";
                   username = "michaelpriscella";
                   gpgSigningKey = "799887D03FE96FD0";
@@ -67,24 +112,17 @@
         "macbook-air-m4" = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           modules = [
-            ./home/modules/darwin.nix
+            ./nix-darwin/base.nix
             (mkDarwinUser {
               username = "mpriscella";
               system = "aarch64-darwin";
             })
-            {
-              users.users.mpriscella = {
-                name = "mpriscella";
-                home = "/Users/mpriscella";
-                shell = (mkPackagesFor "aarch64-darwin").fish;
-              };
-            }
             home-manager.darwinModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.mpriscella = nixpkgs.lib.mkMerge [
-                (home-manager-config.lib.mkHomeConfiguration {
+                (mkHomeConfiguration {
                   system = "aarch64-darwin";
                   username = "mpriscella";
                   gpgSigningKey = "27301C740482A8B1";
@@ -99,27 +137,26 @@
         };
       };
 
-      devShells.aarch64-darwin.default =
-        let
-          pkgs = mkPackagesFor "aarch64-darwin";
-        in
-        pkgs.mkShell {
+      homeConfigurations = {
+        "macbook-pro-m3" = mkHomeConfiguration {
+          system = "aarch64-darwin";
+          username = "michaelpriscella";
+          gpgSigningKey = "799887D03FE96FD0";
+        };
+
+        "nixos-orbstack" = mkHomeConfiguration {
+          system = "aarch64-linux";
+          username = "mpriscella";
+        };
+      };
+
+      devShells = forAllSystems (system: {
+        default = nixpkgs.legacyPackages.${system}.mkShell {
           buildInputs = [
-            nix-darwin.packages.aarch64-darwin.darwin-rebuild
-            (pkgs.writeShellScriptBin "nvim-dev" ''
-              CONFIG_DIR="$(pwd)/.config/nvim"
-              DATA_DIR="$(pwd)/nvim-data"
-              CACHE_DIR="$(pwd)/nvim-cache"
-
-              mkdir -p "$DATA_DIR" "$CACHE_DIR"
-
-              XDG_CONFIG_HOME="$CONFIG_DIR" \
-                XDG_DATA_HOME="$DATA_DIR" \
-                XDG_CACHE_HOME="$CACHE_DIR" \
-                nvim -u "$CONFIG_DIR/init.lua" \
-                  --cmd "set runtimepath^=$CONFIG_DIR" \
-                  --cmd "lua package.path = '$CONFIG_DIR/lua/?.lua;$CONFIG_DIR/lua/?/init.lua;' .. package.path" \
-                  "$@"
+            home-manager.packages.${system}.default
+            nix-darwin.packages.${system}.darwin-rebuild
+            (nixpkgs.legacyPackages.${system}.writeShellScriptBin "nvim-dev" ''
+              XDG_CONFIG_HOME=".config/" NVIM_APPNAME="nvim-dev" nvim "$@"
             '')
           ];
 
@@ -133,15 +170,43 @@
             EOF
 
             echo ""
-            echo "Available commands:"
+            echo "Nix Darwin commands:"
             echo "  sudo darwin-rebuild switch --flake .#<hostname>  # Apply system config"
             echo "  sudo darwin-rebuild switch --rollback            # Rollback to previous config"
+            echo "  nvim-dev [files]                                 # Neovim with isolated config"
+            echo ""
+            echo "Available Nix Darwin configurations:"
+            echo "  macbook-pro-m3, macbook-air-m4"
+            echo ""
+            echo ""
+            echo "Home Manager commands:"
+            echo "  home-manager build --flake .#<hostname>          # Apply system config"
+            echo "  home-manager switch --flake .#<hostname>         # Apply system config"
+            echo "  home-manager switch --rollback                   # Rollback to previous config"
+            echo ""
+            echo "Available Home Manager configurations:"
+            echo "  macbook-pro-m3, nixos-orbstack"
+            echo ""
+            echo ""
+            echo "Nix commands:"
             echo "  nix flake update                                 # Update dependencies"
             echo "  nix fmt flake.nix home/                          # Format code"
-            echo "  nvim-dev [files]                                 # Neovim with isolated config"
           '';
         };
+      });
 
-      formatter.aarch64-darwin = (mkPackagesFor "aarch64-darwin").nixpkgs-fmt;
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
+
+      checks = forAllSystems (system:
+        let
+          macosChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "darwin" system) {
+            macbook-pro-m3 = self.homeConfigurations."macbook-pro-m3".activationPackage;
+          };
+          linuxChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "linux" system) {
+            nixos-orbstack = self.homeConfigurations."nixos-orbstack".activationPackage;
+          };
+        in
+        macosChecks // linuxChecks
+      );
     };
 }

@@ -20,45 +20,6 @@
         "type": "github"
       }
     },
-    "home-manager-config": {
-      "inputs": {
-        "home-manager": [
-          "home-manager"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1754116270,
-        "narHash": "sha256-C03aQbYGb6G1zhpMz5U1XOCPr5gmLeKMO9mzk2IyPnQ=",
-        "owner": "mpriscella",
-        "repo": "nix-home-manager",
-        "rev": "e8c4e4c27550a18d0e3310e2b6c06afcb9695ad4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mpriscella",
-        "repo": "nix-home-manager",
-        "type": "github"
-      }
-    },
-    "lua51": {
-      "locked": {
-        "lastModified": 1750111231,
-        "narHash": "sha256-3a7Tha/RwYlzH/v3PJrG7+HjOj4c6YOv2K8sqdGsHVQ=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "e6f23dc08d3624daab7094b701aa3954923c6bbb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "e6f23dc08d3624daab7094b701aa3954923c6bbb",
-        "type": "github"
-      }
-    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -98,8 +59,6 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
-        "home-manager-config": "home-manager-config",
-        "lua51": "lua51",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs"
       }
