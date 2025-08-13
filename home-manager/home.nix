@@ -73,11 +73,12 @@
     programs.home-manager.enable = true;
 
     programs.fish.functions = {
-      dns-cache-purge = {
-        description = "Purge DNS Cache";
+      dns-cache-flush = {
+        description = "Flush DNS Cache";
         body = ''
           sudo dscacheutil -flushcache
           sudo killall -HUP mDNSResponder
+          echo "DNS cache has been flushed."
         '';
       };
     };
