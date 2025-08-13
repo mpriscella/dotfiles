@@ -18,6 +18,12 @@
       hostname = {
         disabled = true;
       };
+      kubernetes = {
+        disabled = false;
+      };
+      nix_shell = {
+        format = ''via [$symbol$name]($style) '';
+      };
       terraform = {
         disabled = true;
       };

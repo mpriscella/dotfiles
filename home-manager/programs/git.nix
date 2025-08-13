@@ -7,7 +7,6 @@
     userEmail = "mpriscella@gmail.com";
 
     extraConfig = lib.mkMerge [
-      # Base configuration
       {
         init.defaultBranch = "main";
         pull.rebase = false;
@@ -25,6 +24,14 @@
         core.preloadindex = true;
         core.fscache = true;
         gc.auto = 256;
+
+        # Delta
+        core.pager = "delta";
+        interactive.diffFilter = "delta --color-only";
+        delta = {
+          navigate = true;
+        };
+        merge.conflictstyle = "zdiff3";
       }
 
       (lib.optionalAttrs (gpgSigningKey != null) {

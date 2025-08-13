@@ -59,6 +59,7 @@
       pkgs.nil
       pkgs.nodejs_24
       pkgs.ripgrep
+      pkgs.uv
       pkgs.yq
     ];
 

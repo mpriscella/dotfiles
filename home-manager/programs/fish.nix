@@ -5,6 +5,7 @@
     enable = true;
 
     shellAliases = {
+      cat = "bat";
       lg = "lazygit";
     };
   };
