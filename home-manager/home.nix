@@ -73,6 +73,12 @@
     programs.home-manager.enable = true;
 
     programs.fish.functions = {
+      clear-message-attachments = {
+        description = "Clear Local Message Attachments";
+        body = ''
+          rm -rf ~/Library/Messages/Attachments/*
+        '';
+      };
       dns-cache-flush = {
         description = "Flush DNS Cache";
         body = ''

@@ -43,7 +43,7 @@
           };
         };
 
-      mkHomeConfiguration = { system, username, homeDirectory ? null, modules ? [], extraSpecialArgs ? {}, gpgSigningKey ? null, isDarwinModule ? false }:
+      mkHomeConfiguration = { system, username, homeDirectory ? null, modules ? [ ], extraSpecialArgs ? { }, gpgSigningKey ? null, isDarwinModule ? false }:
         let
           calculatedHomeDirectory =
             if homeDirectory != null then homeDirectory
@@ -67,13 +67,13 @@
           } // extraSpecialArgs;
         in
         if isDarwinModule then
-          # When used as nix-darwin module, return module configuration directly
+        # When used as nix-darwin module, return module configuration directly
           {
             imports = baseModules;
             _module.args = baseExtraSpecialArgs;
           }
         else
-          # When used standalone, wrap in homeManagerConfiguration
+        # When used standalone, wrap in homeManagerConfiguration
           home-manager.lib.homeManagerConfiguration {
             pkgs = nixpkgs.legacyPackages.${system};
             modules = baseModules;
@@ -112,7 +112,7 @@
         "macbook-air-m4" = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           modules = [
-            ./nix-darwin/base.nix
+            ./nix-darwin/official-nix.nix
             (mkDarwinUser {
               username = "mpriscella";
               system = "aarch64-darwin";
@@ -194,7 +194,7 @@
             echo "Nix commands:"
             echo "  nix flake check                                  # Validate and test flake"
             echo "  nix flake update                                 # Update dependencies"
-            echo "  nix fmt flake.nix home/                          # Format code"
+            echo "  nix fmt flake.nix home-manager nix-darwin        # Format code"
           '';
         };
       });
