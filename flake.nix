@@ -33,16 +33,18 @@
         config.allowUnfree = true;
       };
 
-      # Helper function to create user configuration
+      # Helper function to create a nix-darwin user configuration.
       mkDarwinUser = { username, system }:
         {
+          environment.shells = [ "/run/current-system/sw/bin/fish" ];
           users.users.${username} = {
             name = username;
             home = "/Users/${username}";
-            shell = (mkPackagesFor system).fish;
+            shell = "/run/current-system/sw/bin/fish";
           };
         };
 
+      # Helper function to create home-manager configurations.
       mkHomeConfiguration = { system, username, homeDirectory ? null, modules ? [ ], extraSpecialArgs ? { }, gpgSigningKey ? null, isDarwinModule ? false }:
         let
           calculatedHomeDirectory =
@@ -85,7 +87,7 @@
         "macbook-pro-m3" = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           modules = [
-            ./nix-darwin/base.nix
+            ./nix-darwin/determinate-nix.nix
             (mkDarwinUser {
               username = "michaelpriscella";
               system = "aarch64-darwin";

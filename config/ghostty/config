@@ -8,4 +8,3 @@ theme = tokyonight
 working-directory = home
 quit-after-last-window-closed = true
 window-inherit-working-directory = false
-command = $HOME/.local/state/nix/profiles/home-manager/home-path/bin/fish
