@@ -208,6 +208,7 @@
           macosChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "darwin" system) {
             home-manager-macbook-pro-m3 = self.homeConfigurations."macbook-pro-m3".activationPackage;
             nix-darwin-macbook-pro-m3 = self.darwinConfigurations."macbook-pro-m3".system;
+            nix-darwin-macbook-air-m4 = self.darwinConfigurations."macbook-air-m4".system;
           };
           linuxChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "linux" system) {
             nixos-orbstack = self.homeConfigurations."nixos-orbstack".activationPackage;
