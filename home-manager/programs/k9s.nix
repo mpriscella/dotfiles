@@ -1,6 +1,10 @@
-{ config, pkgs, lib, inputs, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}: {
   programs.k9s = {
     enable = true;
 
@@ -9,7 +13,7 @@
         shortCut = "d";
         description = "Add debug container";
         dangerous = true;
-        scopes = [ "containers" ];
+        scopes = ["containers"];
         command = "bash";
         background = false;
         confirm = true;

@@ -1,6 +1,12 @@
-{ config, pkgs, lib, inputs, gpgSigningKey ? null, isDarwinModule ? false, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  inputs,
+  gpgSigningKey ? null,
+  isDarwinModule ? false,
+  ...
+}: {
   imports = [
     ./programs/atuin.nix
     ./programs/aws.nix
@@ -21,12 +27,12 @@
 
   config = {
     # Only set nix configuration when not used as nix-darwin module
-    nix = lib.mkIf (!isDarwinModule) {
-      package = pkgs.nix;
-      settings = {
-        experimental-features = [ "nix-command" "flakes" ];
-      };
-    };
+    # nix = lib.mkIf (!isDarwinModule) {
+    #   package = pkgs.nix;
+    #   settings = {
+    #     experimental-features = [ "nix-command" "flakes" ];
+    #   };
+    # };
 
     home.file = {
       ".ackrc".text = ''

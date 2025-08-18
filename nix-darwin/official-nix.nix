@@ -1,6 +1,8 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     ./base.nix
   ];
@@ -11,5 +13,6 @@
     linux-builder = {
       enable = true;
     };
+    # settings.experimental-features = [ "nix-command" "flakes" ];
   };
 }

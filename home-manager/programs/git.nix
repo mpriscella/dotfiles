@@ -1,6 +1,11 @@
-{ config, pkgs, lib, inputs, gpgSigningKey ? null, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  inputs,
+  gpgSigningKey ? null,
+  ...
+}: {
   programs.git = {
     enable = true;
     userName = "Mike Priscella";
