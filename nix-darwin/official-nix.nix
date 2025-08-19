@@ -7,12 +7,24 @@
     ./base.nix
   ];
 
-  # Nix daemon configuration
   nix = {
     enable = true;
+
     linux-builder = {
       enable = true;
     };
-    # settings.experimental-features = [ "nix-command" "flakes" ];
+
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+    };
+  };
+
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+    };
   };
 }

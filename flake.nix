@@ -32,12 +32,6 @@
 
     forAllSystems = nixpkgs.lib.genAttrs systems;
 
-    mkPackagesFor = system:
-      import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
-
     # Helper function to create a nix-darwin user configuration.
     mkDarwinUser = {
       username,
@@ -177,6 +171,7 @@
         buildInputs = [
           home-manager.packages.${system}.default
           nix-darwin.packages.${system}.darwin-rebuild
+          nixpkgs.legacyPackages.${system}.cargo
           nixpkgs.legacyPackages.${system}.python3
           nixpkgs.legacyPackages.${system}.nix-diff
           nixpkgs.legacyPackages.${system}.nh
