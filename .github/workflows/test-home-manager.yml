@@ -5,14 +5,16 @@ on:
     branches:
       - main
     paths:
-      - '.config/home-manager/**'
+      - 'home-manager/**'
+      - 'nix-darwin/**'
       - 'flake.nix'
       - 'flake.lock'
   pull_request:
     branches:
       - main
     paths:
-      - '.config/home-manager/**'
+      - 'home-manager/**'
+      - 'nix-darwin/**'
       - 'flake.nix'
       - 'flake.lock'
   workflow_dispatch:
@@ -26,23 +28,28 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Test configurations from flake
-          - config: default
-            os: ubuntu-latest
-            platform: linux
-            system: x86_64-linux
-          - config: linux-user
-            os: ubuntu-latest
-            platform: linux
-            system: x86_64-linux
-          - config: work-macbook-pro
+          # Test Home Manager configurations
+          - config: macbook-pro-m3
             os: macos-latest
             platform: darwin
             system: aarch64-darwin
-          - config: macbook-air
+            type: home-manager
+          - config: nixos-orbstack
+            os: ubuntu-latest
+            platform: linux
+            system: aarch64-linux
+            type: home-manager
+          # Test nix-darwin configurations
+          - config: macbook-pro-m3
             os: macos-latest
             platform: darwin
             system: aarch64-darwin
+            type: nix-darwin
+          - config: macbook-air-m4
+            os: macos-latest
+            platform: darwin
+            system: aarch64-darwin
+            type: nix-darwin
 
     steps:
       - name: Checkout repository
@@ -54,13 +61,6 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
           extra_nix_config: |
             experimental-features = nix-command flakes
-
-      # - name: Setup Cachix (optional - speeds up builds)
-      #   uses: cachix/cachix-action@v12
-      #   if: ${{ vars.CACHIX_NAME != '' }}
-      #   with:
-      #     name: ${{ vars.CACHIX_NAME }}
-      #     authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
       - name: Set test environment variables
         run: |
@@ -86,28 +86,48 @@ jobs:
       - name: Test configuration build
         run: |
           cd ${{ github.workspace }}
-          echo "Building Home Manager configuration: ${{ matrix.config }}"
+          echo "Building ${{ matrix.type }} configuration: ${{ matrix.config }}"
 
-          # Build the specific configuration from the flake
-          nix build .#homeConfigurations.${{ matrix.config }}.activationPackage \
-            --no-link \
-            --show-trace \
-            --print-build-logs
+          if [[ "${{ matrix.type }}" == "home-manager" ]]; then
+            # Build Home Manager configuration
+            nix build .#homeConfigurations.${{ matrix.config }}.activationPackage \
+              --no-link \
+              --show-trace \
+              --print-build-logs
+          elif [[ "${{ matrix.type }}" == "nix-darwin" ]]; then
+            # Build nix-darwin configuration
+            nix build .#darwinConfigurations.${{ matrix.config }}.system \
+              --no-link \
+              --show-trace \
+              --print-build-logs
+          fi
 
       - name: Test configuration evaluation
         run: |
           cd ${{ github.workspace }}
-          echo "Evaluating configuration for detailed analysis..."
+          echo "Evaluating ${{ matrix.type }} configuration for detailed analysis..."
 
-          # Test that the configuration evaluates without errors
-          nix eval .#homeConfigurations.${{ matrix.config }}.config.home.stateVersion \
-            --show-trace
+          if [[ "${{ matrix.type }}" == "home-manager" ]]; then
+            # Test Home Manager configuration evaluation
+            nix eval .#homeConfigurations.${{ matrix.config }}.config.home.stateVersion \
+              --show-trace
 
-          # Test that packages are available
-          echo "Testing package availability..."
-          nix eval .#homeConfigurations.${{ matrix.config }}.config.home.packages \
-            --apply "builtins.length" \
-            --show-trace
+            # Test that packages are available
+            echo "Testing package availability..."
+            nix eval .#homeConfigurations.${{ matrix.config }}.config.home.packages \
+              --apply "builtins.length" \
+              --show-trace
+          elif [[ "${{ matrix.type }}" == "nix-darwin" ]]; then
+            # Test nix-darwin configuration evaluation
+            nix eval .#darwinConfigurations.${{ matrix.config }}.config.system.stateVersion \
+              --show-trace
+
+            # Test that system packages are available
+            echo "Testing system package availability..."
+            nix eval .#darwinConfigurations.${{ matrix.config }}.config.environment.systemPackages \
+              --apply "builtins.length" \
+              --show-trace
+          fi
 
       - name: Check for common issues
         run: |
@@ -116,8 +136,13 @@ jobs:
 
           # Check if all imported files exist
           echo "Checking Nix syntax..."
-          if ! find .config/home-manager -name "*.nix" -exec nix-instantiate --parse {} \; > /dev/null; then
-            echo "❌ Syntax errors found in nix files"
+          if ! find home-manager -name "*.nix" -exec nix-instantiate --parse {} \; > /dev/null; then
+            echo "❌ Syntax errors found in home-manager nix files"
+            exit 1
+          fi
+
+          if ! find nix-darwin -name "*.nix" -exec nix-instantiate --parse {} \; > /dev/null; then
+            echo "❌ Syntax errors found in nix-darwin nix files"
             exit 1
           fi
 
@@ -133,6 +158,7 @@ jobs:
           cd ${{ github.workspace }}
           echo "## Configuration Test Results" >> $GITHUB_STEP_SUMMARY
           echo "- **Configuration**: ${{ matrix.config }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Type**: ${{ matrix.type }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Platform**: ${{ matrix.platform }}" >> $GITHUB_STEP_SUMMARY
           echo "- **System**: ${{ matrix.system }}" >> $GITHUB_STEP_SUMMARY
           echo "- **OS**: ${{ matrix.os }}" >> $GITHUB_STEP_SUMMARY
@@ -168,7 +194,5 @@ jobs:
 
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Tested Configurations:" >> $GITHUB_STEP_SUMMARY
-          echo "- default (Linux)" >> $GITHUB_STEP_SUMMARY
-          echo "- linux-user (Linux)" >> $GITHUB_STEP_SUMMARY
-          echo "- work-macbook-pro (macOS)" >> $GITHUB_STEP_SUMMARY
-          echo "- macbook-air (macOS)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Home Manager**: macbook-pro-m3 (macOS), nixos-orbstack (Linux)" >> $GITHUB_STEP_SUMMARY
+          echo "- **nix-darwin**: macbook-pro-m3 (macOS), macbook-air-m4 (macOS)" >> $GITHUB_STEP_SUMMARY
