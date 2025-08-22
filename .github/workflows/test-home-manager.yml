@@ -66,12 +66,16 @@ jobs:
           cd ${{ github.workspace }}
           echo "Testing flake configuration: ${{ matrix.config }}"
 
-          # Check that the flake is valid (but skip nix-darwin checks on CI)
-          nix flake check --show-trace || echo "⚠️ Flake check failed (expected for nix-darwin configs in CI)"
-
+          # Skip nix flake check entirely as it tries to evaluate nix-darwin configs
+          # which conflict with existing Nix installation on GitHub runners
+          
           # Show available configurations
           echo "Available configurations:"
           nix flake show
+
+          # Test that our specific Home Manager configuration exists
+          echo "Verifying ${{ matrix.config }} exists in homeConfigurations..."
+          nix eval .#homeConfigurations.${{ matrix.config }} --apply "x: \"exists\"" --raw
 
       - name: Test configuration build
         run: |
@@ -116,11 +120,17 @@ jobs:
             exit 1
           fi
 
-          # Check flake syntax (but allow nix-darwin failures in CI)
-          echo "Checking flake syntax..."
-          nix flake check || echo "⚠️ Flake check failed (expected due to nix-darwin configs in CI)"
+          # Test flake.nix syntax without full evaluation
+          echo "Checking flake.nix syntax..."
+          if ! nix-instantiate --parse flake.nix > /dev/null; then
+            echo "❌ Syntax errors found in flake.nix"
+            exit 1
+          fi
 
-          echo "✅ Basic checks passed"
+          # Skip full flake check as it conflicts with existing Nix on GitHub runners
+          echo "⚠️ Skipping 'nix flake check' due to nix-darwin build user conflicts in CI"
+
+          echo "✅ Basic syntax checks passed"
 
       - name: Generate build artifacts info
         if: always()
