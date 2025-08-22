@@ -180,7 +180,7 @@ return {
               globals = { 'require', 'snacks', 'vim' },
             },
             workspace = {
-              library = { '/Users/michaelpriscella/.local/share/nvim' },
+              library = { vim.loop.os_homedir() .. '/.local/share/nvim' },
             },
           },
         },
