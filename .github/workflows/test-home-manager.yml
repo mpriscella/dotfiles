@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v24
+        uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
           extra_nix_config: |
@@ -68,7 +68,7 @@ jobs:
 
           # Skip nix flake check entirely as it tries to evaluate nix-darwin configs
           # which conflict with existing Nix installation on GitHub runners
-          
+
           # Show available configurations
           echo "Available configurations:"
           nix flake show
