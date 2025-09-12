@@ -30,6 +30,7 @@ jobs:
         include:
           - machine: macos-26
           - machine: ubuntu-24.04-arm
+          - machine: ubuntu-latest
 
     steps:
       - name: Checkout repository
