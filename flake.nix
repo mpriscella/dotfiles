@@ -214,6 +214,11 @@
           echo "  nix flake update                                 # Update dependencies"
           echo "  nix fmt flake.nix home-manager nix-darwin        # Format code"
           echo "  nix upgrade-nix                                  # Upgrade Nix"
+          echo ""
+          echo ""
+          echo "Nix Helper (nh) commands:"
+          echo "  nh clean all                                     # Clean Nix store"
+          echo "  nh search <query> [--limit n]                    # Search packages"
         '';
       };
     });

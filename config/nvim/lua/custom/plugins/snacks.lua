@@ -9,7 +9,7 @@ return {
     dashboard = { enabled = true },
     ---@type snacks.explorer.Config|{}
     explorer = {
-      enabled = true,
+      enabled = false,
       replace_netrw = true,
     },
     ---@type snacks.indent.Config|{}
@@ -90,13 +90,6 @@ return {
         Snacks.lazygit()
       end,
       desc = 'Toggle [l]azy[g]it',
-    },
-    {
-      '\\',
-      function()
-        Snacks.explorer()
-      end,
-      desc = 'Toggle Explorer',
     },
   },
 }
