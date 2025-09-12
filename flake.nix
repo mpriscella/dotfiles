@@ -26,17 +26,12 @@
     systems = [
       "x86_64-linux"
       "aarch64-linux"
-      "x86_64-darwin"
       "aarch64-darwin"
     ];
 
     forAllSystems = nixpkgs.lib.genAttrs systems;
 
-    # Helper function to create a nix-darwin user configuration.
-    mkDarwinUser = {
-      username,
-      system,
-    }: {
+    mkDarwinUser = {username}: {
       environment.shells = ["/run/current-system/sw/bin/fish"];
       users.users.${username} = {
         name = username;
@@ -45,15 +40,14 @@
       };
     };
 
-    # Helper function to create home-manager configurations.
     mkHomeConfiguration = {
-      system,
+      system ? "aarch64-darwin",
       username,
+      gpgSigningKey ? null,
+      isDarwinModule ? false,
       homeDirectory ? null,
       modules ? [],
       extraSpecialArgs ? {},
-      gpgSigningKey ? null,
-      isDarwinModule ? false,
     }: let
       calculatedHomeDirectory =
         if homeDirectory != null
@@ -79,6 +73,7 @@
           inherit inputs;
           inherit gpgSigningKey;
           inherit isDarwinModule;
+          inherit system;
         }
         // extraSpecialArgs;
     in
@@ -96,26 +91,29 @@
           modules = baseModules;
           extraSpecialArgs = baseExtraSpecialArgs;
         };
-  in {
-    darwinConfigurations = {
-      "macbook-pro-m3" = nix-darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
+
+    mkDarwinConfiguration = {
+      system ? "aarch64-darwin",
+      hostname,
+      username,
+      nixModule,
+      gpgSigningKey,
+    }:
+      nix-darwin.lib.darwinSystem {
+        inherit system;
         modules = [
-          ./nix-darwin/determinate-nix.nix
+          nixModule
           ./nix-darwin/base.nix
           (mkDarwinUser {
-            username = "michaelpriscella";
-            system = "aarch64-darwin";
+            inherit username;
           })
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.michaelpriscella = nixpkgs.lib.mkMerge [
+            home-manager.users.${username} = nixpkgs.lib.mkMerge [
               (mkHomeConfiguration {
-                system = "aarch64-darwin";
-                username = "michaelpriscella";
-                gpgSigningKey = "799887D03FE96FD0";
+                inherit system username gpgSigningKey;
                 isDarwinModule = true;
               })
               {
@@ -125,63 +123,50 @@
           }
         ];
       };
+  in {
+    darwinConfigurations = {
+      "macbook-pro-m3" = mkDarwinConfiguration {
+        hostname = "macbook-pro-m3";
+        username = "michaelpriscella";
+        nixModule = ./nix-darwin/determinate-nix.nix;
+        gpgSigningKey = "799887D03FE96FD0";
+      };
 
-      "macbook-air-m4" = nix-darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        modules = [
-          ./nix-darwin/official-nix.nix
-          ./nix-darwin/base.nix
-          (mkDarwinUser {
-            username = "mpriscella";
-            system = "aarch64-darwin";
-          })
-          home-manager.darwinModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.mpriscella = nixpkgs.lib.mkMerge [
-              (mkHomeConfiguration {
-                system = "aarch64-darwin";
-                username = "mpriscella";
-                gpgSigningKey = "27301C740482A8B1";
-                isDarwinModule = true;
-              })
-              {
-                home.stateVersion = "25.05";
-              }
-            ];
-          }
-        ];
+      "macbook-air-m4" = mkDarwinConfiguration {
+        hostname = "macbook-air-m4";
+        username = "mpriscella";
+        nixModule = ./nix-darwin/official-nix.nix;
+        gpgSigningKey = "27301C740482A8B1";
       };
     };
 
     homeConfigurations = {
-      "macbook-pro-m3" = mkHomeConfiguration {
-        system = "aarch64-darwin";
-        username = "michaelpriscella";
-        gpgSigningKey = "799887D03FE96FD0";
-      };
-
-      "nixos-orbstack" = mkHomeConfiguration {
+      "linux-arm" = mkHomeConfiguration {
         system = "aarch64-linux";
+        username = "mpriscella";
+      };
+      "linux" = mkHomeConfiguration {
+        system = "x86_64-linux";
         username = "mpriscella";
       };
     };
 
     devShells = forAllSystems (system: {
       default = nixpkgs.legacyPackages.${system}.mkShell {
-        buildInputs = [
-          home-manager.packages.${system}.default
-          nixpkgs.legacyPackages.${system}.cargo
-          nixpkgs.legacyPackages.${system}.python3
-          nixpkgs.legacyPackages.${system}.nix-diff
-          nixpkgs.legacyPackages.${system}.nh
-          (nixpkgs.legacyPackages.${system}.writeShellScriptBin "nvim-dev" ''
-            XDG_CONFIG_HOME="config/" nvim "$@"
-          '')
-        ] ++ nixpkgs.lib.optionals (system == "aarch64-darwin") [
-          nix-darwin.packages.${system}.darwin-rebuild
-        ];
+        buildInputs =
+          [
+            home-manager.packages.${system}.default
+            nixpkgs.legacyPackages.${system}.cargo
+            nixpkgs.legacyPackages.${system}.python3
+            nixpkgs.legacyPackages.${system}.nix-diff
+            nixpkgs.legacyPackages.${system}.nh
+            (nixpkgs.legacyPackages.${system}.writeShellScriptBin "nvim-dev" ''
+              XDG_CONFIG_HOME="config/" nvim "$@"
+            '')
+          ]
+          ++ nixpkgs.lib.optionals (nixpkgs.lib.hasInfix "darwin" system) [
+            nix-darwin.packages.${system}.darwin-rebuild
+          ];
 
         shellHook = ''
           cat <<EOF
@@ -231,12 +216,12 @@
     checks = forAllSystems (
       system: let
         macosChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "darwin" system) {
-          home-manager-macbook-pro-m3 = self.homeConfigurations."macbook-pro-m3".activationPackage;
           nix-darwin-macbook-pro-m3 = self.darwinConfigurations."macbook-pro-m3".system;
           nix-darwin-macbook-air-m4 = self.darwinConfigurations."macbook-air-m4".system;
         };
         linuxChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "linux" system) {
-          nixos-orbstack = self.homeConfigurations."nixos-orbstack".activationPackage;
+          linux = self.homeConfigurations."linux".activationPackage;
+          linux-arm = self.homeConfigurations."linux-arm".activationPackage;
         };
       in
         macosChecks // linuxChecks
