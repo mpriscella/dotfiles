@@ -31,14 +31,12 @@ jobs:
           # Test Home Manager configurations only
           # nix-darwin configs are excluded as they require actual macOS system setup
           - config: macbook-pro-m3
-            os: macos-latest
+            os: macos-26
             platform: darwin
-            system: aarch64-darwin
             type: home-manager
           - config: nixos-orbstack
-            os: ubuntu-latest
+            os: ubuntu-24.04-arm
             platform: linux
-            system: aarch64-linux
             type: home-manager
 
     steps:
@@ -140,7 +138,6 @@ jobs:
           echo "- **Configuration**: ${{ matrix.config }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Type**: ${{ matrix.type }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Platform**: ${{ matrix.platform }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **System**: ${{ matrix.system }}" >> $GITHUB_STEP_SUMMARY
           echo "- **OS**: ${{ matrix.os }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
