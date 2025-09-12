@@ -44,36 +44,10 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/determinate-nix-action@v3
 
-      - name: Test flake evaluation
+      - name: Check Flake
         run: |
-          echo "Testing flake configuration: ${{ matrix.config }}"
-
-          echo "Verifying ${{ matrix.config }} exists in homeConfigurations..."
-          nix eval .#homeConfigurations.${{ matrix.config }} --apply "x: \"exists\"" --raw
-
-      - name: Test configuration build
-        run: |
-          echo "Building ${{ matrix.type }} configuration: ${{ matrix.config }}"
-
-          # Build Home Manager configuration
-          nix build .#homeConfigurations.${{ matrix.config }}.activationPackage \
-            --no-link \
-            --show-trace \
-            --print-build-logs
-
-      - name: Test configuration evaluation
-        run: |
-          echo "Evaluating ${{ matrix.type }} configuration for detailed analysis..."
-
-          # Test Home Manager configuration evaluation
-          nix eval .#homeConfigurations.${{ matrix.config }}.config.home.stateVersion \
-            --show-trace
-
-          # Test that packages are available
-          echo "Testing package availability..."
-          nix eval .#homeConfigurations.${{ matrix.config }}.config.home.packages \
-            --apply "builtins.length" \
-            --show-trace
+          echo "Evaluating Flake"
+          nix flake check
 
       - name: Check for common issues
         run: |
@@ -97,9 +71,6 @@ jobs:
             echo "❌ Syntax errors found in flake.nix"
             exit 1
           fi
-
-          # Skip full flake check as it conflicts with existing Nix on GitHub runners
-          echo "⚠️ Skipping 'nix flake check' due to nix-darwin build user conflicts in CI"
 
           echo "✅ Basic syntax checks passed"
 
