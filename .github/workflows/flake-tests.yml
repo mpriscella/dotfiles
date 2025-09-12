@@ -1,0 +1,55 @@
+name: Test Nix Flake
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'home-manager/**'
+      - 'nix-darwin/**'
+      - 'flake.nix'
+      - 'flake.lock'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'home-manager/**'
+      - 'nix-darwin/**'
+      - 'flake.nix'
+      - 'flake.lock'
+  workflow_dispatch:
+
+jobs:
+  test-flake:
+    name: Test ${{ matrix.machine }}
+    runs-on: ${{ matrix.machine }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - machine: macos-26
+          - machine: ubuntu-24.04-arm
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/determinate-nix-action@v3
+
+      - name: Check Flake
+        run: nix flake check
+
+      - name: Generate build artifacts info
+        if: always()
+        run: |
+          echo "## Flake Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "- **Machine**: ${{ matrix.machine }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+
+          if [[ "${{ job.status }}" == "success" ]]; then
+            echo "✅ Configuration builds successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Configuration failed to build" >> $GITHUB_STEP_SUMMARY
+          fi
