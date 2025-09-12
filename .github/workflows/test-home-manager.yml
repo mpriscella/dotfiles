@@ -28,8 +28,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Test Home Manager configurations only
-          # nix-darwin configs are excluded as they require actual macOS system setup
           - config: macbook-pro-m3
             os: macos-26
             platform: darwin
@@ -45,39 +43,16 @@ jobs:
 
       - name: Install Nix
         uses: DeterminateSystems/determinate-nix-action@v3
-        # with:
-        #   github_access_token: ${{ secrets.GITHUB_TOKEN }}
-          # extra_nix_config: |
-          #   experimental-features = nix-command flakes
-
-      - name: Set test environment variables
-        run: |
-          # Set test username for configurations that need it
-          echo "USER=testuser" >> $GITHUB_ENV
-          # Keep the existing HOME directory (GitHub runner's home)
-          echo "REAL_HOME=$HOME" >> $GITHUB_ENV
-          # Set hostname for testing
-          echo "HOSTNAME=github-runner" >> $GITHUB_ENV
 
       - name: Test flake evaluation
         run: |
-          cd ${{ github.workspace }}
           echo "Testing flake configuration: ${{ matrix.config }}"
 
-          # Skip nix flake check entirely as it tries to evaluate nix-darwin configs
-          # which conflict with existing Nix installation on GitHub runners
-
-          # Show available configurations
-          echo "Available configurations:"
-          nix flake show
-
-          # Test that our specific Home Manager configuration exists
           echo "Verifying ${{ matrix.config }} exists in homeConfigurations..."
           nix eval .#homeConfigurations.${{ matrix.config }} --apply "x: \"exists\"" --raw
 
       - name: Test configuration build
         run: |
-          cd ${{ github.workspace }}
           echo "Building ${{ matrix.type }} configuration: ${{ matrix.config }}"
 
           # Build Home Manager configuration
@@ -88,7 +63,6 @@ jobs:
 
       - name: Test configuration evaluation
         run: |
-          cd ${{ github.workspace }}
           echo "Evaluating ${{ matrix.type }} configuration for detailed analysis..."
 
           # Test Home Manager configuration evaluation
@@ -103,7 +77,6 @@ jobs:
 
       - name: Check for common issues
         run: |
-          cd ${{ github.workspace }}
           echo "Checking for common configuration issues..."
 
           # Check if all imported files exist
@@ -133,7 +106,6 @@ jobs:
       - name: Generate build artifacts info
         if: always()
         run: |
-          cd ${{ github.workspace }}
           echo "## Configuration Test Results" >> $GITHUB_STEP_SUMMARY
           echo "- **Configuration**: ${{ matrix.config }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Type**: ${{ matrix.type }}" >> $GITHUB_STEP_SUMMARY
