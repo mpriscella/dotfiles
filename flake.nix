@@ -220,8 +220,15 @@
           nix-darwin-macbook-air-m4 = self.darwinConfigurations."macbook-air-m4".system;
         };
         linuxChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "linux" system) {
-          linux = self.homeConfigurations."linux".activationPackage;
-          linux-arm = self.homeConfigurations."linux-arm".activationPackage;
+          home-manager-linux-arm = (mkHomeConfiguration {
+            system = "aarch64-linux";
+            username = "mpriscella";
+          }).activationPackage;
+
+          home-manager-linux = (mkHomeConfiguration {
+            system = "x86_64-linux";
+            username = "mpriscella";
+          }).activationPackage;
         };
       in
         macosChecks // linuxChecks
