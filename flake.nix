@@ -102,6 +102,7 @@
         system = "aarch64-darwin";
         modules = [
           ./nix-darwin/determinate-nix.nix
+          ./nix-darwin/base.nix
           (mkDarwinUser {
             username = "michaelpriscella";
             system = "aarch64-darwin";
@@ -129,6 +130,7 @@
         system = "aarch64-darwin";
         modules = [
           ./nix-darwin/official-nix.nix
+          ./nix-darwin/base.nix
           (mkDarwinUser {
             username = "mpriscella";
             system = "aarch64-darwin";
