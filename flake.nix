@@ -172,7 +172,6 @@
       default = nixpkgs.legacyPackages.${system}.mkShell {
         buildInputs = [
           home-manager.packages.${system}.default
-          nix-darwin.packages.${system}.darwin-rebuild
           nixpkgs.legacyPackages.${system}.cargo
           nixpkgs.legacyPackages.${system}.python3
           nixpkgs.legacyPackages.${system}.nix-diff
@@ -180,6 +179,8 @@
           (nixpkgs.legacyPackages.${system}.writeShellScriptBin "nvim-dev" ''
             XDG_CONFIG_HOME="config/" nvim "$@"
           '')
+        ] ++ nixpkgs.lib.optionals (system == "aarch64-darwin") [
+          nix-darwin.packages.${system}.darwin-rebuild
         ];
 
         shellHook = ''
