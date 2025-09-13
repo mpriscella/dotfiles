@@ -1,8 +1,3 @@
 .direnv
-
 .DS_Store
-
 result
-
-nvim-cache
-nvim-data
