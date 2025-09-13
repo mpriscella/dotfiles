@@ -19,6 +19,11 @@
       }
     )
     ./programs/gpg.nix
+    (
+      import ./programs/jujutsu.nix {
+        inherit config pkgs lib inputs gpgSigningKey;
+      }
+    )
     ./programs/k9s.nix
     ./programs/starship.nix
     ./programs/tmux.nix
@@ -46,6 +51,7 @@
     home.packages = [
       pkgs.ack
       pkgs.act
+      pkgs.argocd
       pkgs.atuin
       pkgs.bat
       pkgs.delta
@@ -67,6 +73,7 @@
       pkgs.ripgrep
       pkgs.uv
       pkgs.yq
+      pkgs.zig_0_15
     ];
 
     home.sessionVariables = {
@@ -83,6 +90,7 @@
         description = "Clear Local Message Attachments";
         body = ''
           rm -rf ~/Library/Messages/Attachments/*
+          echo "Local Message Attachments have been cleared."
         '';
       };
       dns-cache-flush = {

@@ -180,15 +180,16 @@ return {
               globals = { 'require', 'snacks', 'vim' },
             },
             workspace = {
-              library = { vim.loop.os_homedir() .. '/.local/share/nvim' },
+              library = {
+                vim.loop.os_homedir() .. '/.local/share/nvim',
+                vim.fn.stdpath 'data' .. '/lazy/plenary.nvim',
+              },
             },
           },
         },
       },
       shellcheck = {},
       terraformls = {},
-      -- tflint = {},
-      -- ts_ls = {},
       zls = {},
     }
 

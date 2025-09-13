@@ -5,16 +5,24 @@
 }: {
   programs.fish.enable = true;
 
-  system.stateVersion = 6;
+  system = {
+    keyboard = {
+      enableKeyMapping = true;
+      remapCapsLockToControl = true;
+    };
+    stateVersion = 6;
+  };
 
   environment.systemPackages = [
     pkgs._1password-gui
+    pkgs.betterdisplay
     pkgs.bruno
     pkgs.dbeaver-bin
     pkgs.discord
     pkgs.firefox
     pkgs.obsidian
     pkgs.shottr
+    pkgs.vlc-bin
     pkgs.vscode
   ];
 }

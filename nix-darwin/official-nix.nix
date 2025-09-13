@@ -3,10 +3,10 @@
   pkgs,
   ...
 }: {
-  imports = [
-    ./base.nix
-  ];
-
+  # imports = [
+  #   ./base.nix
+  # ];
+  #
   nix = {
     enable = true;
 

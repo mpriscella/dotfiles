@@ -25,8 +25,11 @@
       kubernetes = {
         disabled = false;
       };
+      lua = {
+        disabled = true;
+      };
       nix_shell = {
-        format = ''via [$symbol$name]($style) '';
+        disabled = true;
       };
       terraform = {
         disabled = true;

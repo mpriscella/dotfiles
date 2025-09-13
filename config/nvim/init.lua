@@ -109,8 +109,8 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- Tabs.
-vim.keymap.set('n', '<Leader>t', ':tabnew<CR>', { silent = true })
-vim.keymap.set('n', '<Leader>w', ':tabclose<CR>', { silent = true })
+-- vim.keymap.set('n', '<Leader>t', ':tabnew<CR>', { silent = true })
+-- vim.keymap.set('n', '<Leader>w', ':tabclose<CR>', { silent = true })
 
 -- Map <Leader>[1-9] to switch between open tabs.
 for i = 1, 9, 1 do
@@ -161,6 +161,7 @@ require('lazy').setup {
       library = {
         -- Load luvit types when the `vim.uv` word is found
         { path = 'luvit-meta/library', words = { 'vim%.uv' } },
+        { path = 'nvim-lua/plenary.nvim' },
       },
     },
   },
@@ -169,6 +170,8 @@ require('lazy').setup {
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = 'custom.plugins' },
 }
+
+vim.api.nvim_set_keymap('n', 'gd', ':vsplit | lua vim.lsp.buf.definition()<CR>', { noremap = true, silent = true })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
