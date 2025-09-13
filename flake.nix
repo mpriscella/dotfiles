@@ -216,14 +216,15 @@
     checks = forAllSystems (
       system: let
         macosChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "darwin" system) {
-          nix-darwin-macbook-pro-m3 = self.darwinConfigurations."macbook-pro-m3".system;
-          nix-darwin-macbook-air-m4 = self.darwinConfigurations."macbook-air-m4".system;
+          macbook-pro-m3 = self.darwinConfigurations."macbook-pro-m3".system;
+          macbook-air-m4 = self.darwinConfigurations."macbook-air-m4".system;
         };
         linuxChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "linux" system) {
-          linux = (mkHomeConfiguration {
-            system = system;
-            username = "mpriscella";
-          }).activationPackage;
+          linux =
+            (mkHomeConfiguration {
+              system = system;
+              username = "mpriscella";
+            }).activationPackage;
         };
       in
         macosChecks // linuxChecks
