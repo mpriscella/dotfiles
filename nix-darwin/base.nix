@@ -3,6 +3,16 @@
   pkgs,
   ...
 }: {
+  nix = {
+    enable = false;
+  };
+
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+    };
+  };
+
   programs.fish.enable = true;
 
   system = {
