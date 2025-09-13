@@ -96,13 +96,11 @@
       system ? "aarch64-darwin",
       hostname,
       username,
-      nixModule,
       gpgSigningKey,
     }:
       nix-darwin.lib.darwinSystem {
         inherit system;
         modules = [
-          nixModule
           ./nix-darwin/base.nix
           (mkDarwinUser {
             inherit username;
@@ -128,14 +126,12 @@
       "macbook-pro-m3" = mkDarwinConfiguration {
         hostname = "macbook-pro-m3";
         username = "michaelpriscella";
-        nixModule = ./nix-darwin/determinate-nix.nix;
         gpgSigningKey = "799887D03FE96FD0";
       };
 
       "macbook-air-m4" = mkDarwinConfiguration {
         hostname = "macbook-air-m4";
         username = "mpriscella";
-        nixModule = ./nix-darwin/determinate-nix.nix;
         gpgSigningKey = "27301C740482A8B1";
       };
     };
@@ -194,14 +190,14 @@
           echo "  home-manager switch --rollback                   # Rollback to previous config"
           echo ""
           echo "Available Home Manager configurations:"
-          echo "  macbook-pro-m3, nixos-orbstack"
+          echo "  linux, linux-arm"
           echo ""
           echo ""
           echo "Nix commands:"
           echo "  nix flake check                                  # Validate and test flake"
           echo "  nix flake update                                 # Update dependencies"
           echo "  nix fmt flake.nix home-manager nix-darwin        # Format code"
-          echo "  nix upgrade-nix                                  # Upgrade Nix"
+          echo "  sudo determinate-nixd upgrade                    # Upgrade Nix"
           echo ""
           echo ""
           echo "Nix Helper (nh) commands:"
