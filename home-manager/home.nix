@@ -67,6 +67,7 @@
       pkgs.lazydocker
       pkgs.lazygit
       pkgs.opencode
+      pkgs.n8n
       pkgs.neovim
       pkgs.nil
       pkgs.nodejs_24

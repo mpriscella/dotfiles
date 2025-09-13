@@ -18,19 +18,15 @@
         push.autoSetupRemote = true;
         core.editor = "nvim";
 
-        # Disable dirty worktree warnings for flake operations
         flake.warn-dirty = false;
 
-        # Better diff and merge tools
         diff.tool = "vimdiff";
         merge.tool = "vimdiff";
 
-        # Performance optimizations
         core.preloadindex = true;
         core.fscache = true;
         gc.auto = 256;
 
-        # Delta
         core.pager = "delta";
         interactive.diffFilter = "delta --color-only";
         delta = {
