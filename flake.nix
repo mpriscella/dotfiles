@@ -135,7 +135,7 @@
       "macbook-air-m4" = mkDarwinConfiguration {
         hostname = "macbook-air-m4";
         username = "mpriscella";
-        nixModule = ./nix-darwin/official-nix.nix;
+        nixModule = ./nix-darwin/determinate-nix.nix;
         gpgSigningKey = "27301C740482A8B1";
       };
     };
