@@ -1,15 +1,11 @@
 # Dotfiles
 
-Cross-platform dotfiles managed with Nix and Home Manager, supporting macOS and
-Linux with host-specific configurations.
+Cross-platform dotfiles managed with Nix, Nix Darwin, and Home Manager. Supports
+macOS and Linux with host-specific configurations.
 
-## Components
+## Requirements
 
-This dotfiles repository includes:
-
-- **Home Manager**: User-level packages, dotfiles, and shell configuration
-- **nix-darwin** (macOS only): System-level macOS configuration and Homebrew management
-- **GPG Configuration**: Git commit signing setup with per-host key support
+- Determinate Nix
 
 ## Quick Setup
 
@@ -18,18 +14,11 @@ This dotfiles repository includes:
 This repository uses Nix flakes for reproducible, multi-system configurations:
 
 ```bash
-# 1. Install Nix with flake support
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-
-# 2. Clone this repository
 git clone https://github.com/mpriscella/dotfiles.git ~/.config/dotfiles
 cd ~/.config/dotfiles
 
-# 3. Enter the development shell (optional, provides helpful tools)
 nix develop
 
-# 4. Apply your configuration (choose your host)
-# For work MacBook Pro:
 home-manager switch --flake .#work-macbook-pro
 
 # For default/devcontainer setup:
@@ -43,38 +32,6 @@ home-manager switch --flake .#linux-user
 ```
 
 ### Legacy Setup (Non-Flake)
-
-#### macOS with nix-darwin
-
-For complete macOS system management:
-
-```bash
-# 1. Install Nix (if not already installed)
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-
-# 2. Clone this repository
-git clone https://github.com/mpriscella/dotfiles.git ~/.config
-
-# 3. Install nix-darwin (includes Home Manager)
-cd ~/.config/nix-darwin
-./install.sh
-
-# 4. Restart your terminal or reload shell
-exec $SHELL
-```
-
-#### Home Manager Only
-
-For user-level configuration only:
-
-```bash
-# 1. Install Nix and Home Manager
-# 2. Clone repository
-git clone https://github.com/mpriscella/dotfiles.git ~/.config
-
-# 3. Apply Home Manager configuration
-home-manager switch --file ~/.config/home-manager/hosts/default.nix
-```
 
 ## Management Commands
 

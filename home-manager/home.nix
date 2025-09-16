@@ -4,7 +4,6 @@
   lib,
   inputs,
   gpgSigningKey ? null,
-  isDarwinModule ? false,
   ...
 }: {
   imports = [
@@ -31,14 +30,6 @@
   ];
 
   config = {
-    # Only set nix configuration when not used as nix-darwin module
-    # nix = lib.mkIf (!isDarwinModule) {
-    #   package = pkgs.nix;
-    #   settings = {
-    #     experimental-features = [ "nix-command" "flakes" ];
-    #   };
-    # };
-
     home.file = {
       ".ackrc".text = ''
         --pager=less -R

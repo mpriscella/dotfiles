@@ -13,3 +13,5 @@ keybind = super+l=goto_split:right
 keybind = super+h=goto_split:left
 keybind = super+k=goto_split:up
 keybind = super+j=goto_split:down
+
+keybind = global:cmd+backquote=toggle_quick_terminal
