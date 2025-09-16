@@ -32,6 +32,7 @@
     pkgs.firefox
     pkgs.obsidian
     pkgs.shottr
+    pkgs.utm
     pkgs.vlc-bin
     pkgs.vscode
   ];
