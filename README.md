@@ -92,12 +92,12 @@ The flake configuration supports:
 
 ### Available Configurations
 
-| Configuration | System | Username | Use Case |
-|---------------|---------|----------|----------|
+| Configuration      | System         | Username         | Use Case                         |
+| ------------------ | -------------- | ---------------- | -------------------------------- |
 | `work-macbook-pro` | aarch64-darwin | michaelpriscella | Work MacBook Pro (Apple Silicon) |
-| `macbook-air` | aarch64-darwin | user | Personal MacBook Air |
-| `default` | x86_64-linux | vscode | Devcontainers, CI/CD |
-| `linux-user` | x86_64-linux | user | General Linux setup |
+| `macbook-air`      | aarch64-darwin | user             | Personal MacBook Air             |
+| `default`          | x86_64-linux   | vscode           | Devcontainers, CI/CD             |
+| `linux-user`       | x86_64-linux   | user             | General Linux setup              |
 
 ### Switching Configurations
 

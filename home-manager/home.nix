@@ -4,6 +4,7 @@
   lib,
   inputs,
   gpgSigningKey ? null,
+  isDarwinModule ? false,
   ...
 }: {
   imports = [
@@ -29,8 +30,15 @@
     ./programs/yt-dlp.nix
   ];
 
-  config = {
-    home.file = {
+  config = lib.mkMerge [
+    # Only set nixpkgs config when not using nix-darwin (standalone Home
+    # Manager).
+    (lib.mkIf (!isDarwinModule) {
+      nixpkgs.config.allowUnfree = true;
+    })
+
+    {
+      home.file = {
       ".ackrc".text = ''
         --pager=less -R
         --ignore-case
@@ -43,12 +51,18 @@
       pkgs.ack
       pkgs.act
       pkgs.argocd
+      pkgs.asciinema
+      pkgs.asciinema-agg
       pkgs.atuin
       pkgs.bat
+      pkgs.bazel_8
+      pkgs.cmake
       pkgs.delta
       pkgs.dive
+      pkgs.exercism
       pkgs.fd
       pkgs.fzf
+      pkgs.github-copilot-cli
       pkgs.graphviz
       pkgs.jq
       pkgs.just
@@ -63,6 +77,7 @@
       pkgs.nodejs_24
       pkgs.ripgrep
       pkgs.uv
+      pkgs.yarn
       pkgs.yq
       pkgs.zig_0_15
     ];
@@ -93,5 +108,6 @@
         '';
       };
     };
-  };
+    }
+  ];
 }

@@ -9,6 +9,20 @@
     enable = true;
 
     plugins = {
+      debug-pod = {
+        shortCut = "Shift-D";
+        description = "Add debug pod";
+        dangerous = false;
+        scopes = ["namespaces"];
+        command = "bash";
+        background = false;
+        confirm = true;
+        args = [
+          "-c"
+          "kubectl run -it $(echo $KUBECONFIG | md5sum | awk '{print $1}') --namespace $NAME --image=ubuntu --rm=true --restart=Never -- bash"
+        ];
+      };
+
       debug-container = {
         shortCut = "d";
         description = "Add debug container";
