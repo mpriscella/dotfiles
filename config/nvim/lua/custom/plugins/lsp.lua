@@ -17,15 +17,6 @@ return {
             completion = {
               callSnippet = "Replace",
             },
-            diagnostics = {
-              globals = { "vim" },
-            },
-            runtime = {
-              version = "LuaJIT",
-            },
-            workspace = {
-              library = vim.api.nvim_get_runtime_file("", true),
-            },
           },
         },
       },
@@ -57,6 +48,13 @@ return {
       -- https://github.com/zigtools/zls
       zls = {},
     }
+
+    -- If the file `lua_ls.lua` exists in the root of the working directory, set
+    -- that as the configpath. This will completely override any other
+    -- configurations.
+    if vim.uv.fs_stat(vim.fn.getcwd() .. "/lua_ls.lua") then
+      language_servers.lua_ls.settings.Lua.cmd = { "lua-language-server", "--configpath=lua_ls.lua" }
+    end
 
     for server, config in pairs(language_servers) do
       vim.lsp.config(server, config)
