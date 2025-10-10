@@ -147,6 +147,14 @@
       };
     };
 
+    templates = {
+      default = {
+        path = ./templates/default;
+        description = "A minimal Nix flake template
+        for reproducible multi-system builds and dev environments.";
+      };
+    };
+
     devShells = forAllSystems (system: {
       default = nixpkgs.legacyPackages.${system}.mkShell {
         buildInputs =
