@@ -38,6 +38,7 @@
         home = "/Users/${username}";
         shell = "/run/current-system/sw/bin/fish";
       };
+      system.primaryUser = username;
     };
 
     mkHomeConfiguration = {
@@ -94,7 +95,6 @@
 
     mkDarwinConfiguration = {
       system ? "aarch64-darwin",
-      hostname,
       username,
       gpgSigningKey,
     }:
@@ -124,13 +124,11 @@
   in {
     darwinConfigurations = {
       "macbook-pro-m3" = mkDarwinConfiguration {
-        hostname = "macbook-pro-m3";
         username = "michaelpriscella";
         gpgSigningKey = "799887D03FE96FD0";
       };
 
       "macbook-air-m4" = mkDarwinConfiguration {
-        hostname = "macbook-air-m4";
         username = "mpriscella";
         gpgSigningKey = "27301C740482A8B1";
       };
@@ -160,10 +158,6 @@
         buildInputs =
           [
             home-manager.packages.${system}.default
-            nixpkgs.legacyPackages.${system}.cargo
-            nixpkgs.legacyPackages.${system}.python3
-            nixpkgs.legacyPackages.${system}.nix-diff
-            nixpkgs.legacyPackages.${system}.nh
             (nixpkgs.legacyPackages.${system}.writeShellScriptBin "nvim-dev" ''
               XDG_CONFIG_HOME="config/" nvim "$@"
             '')
