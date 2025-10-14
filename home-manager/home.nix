@@ -53,10 +53,12 @@
           pkgs.bash-language-server
           pkgs.helm-ls
           pkgs.lua-language-server
+          pkgs.markdownlint-cli
           pkgs.nixd
           pkgs.phpactor
           pkgs.shellcheck
           pkgs.terraform-ls
+          pkgs.tree-sitter
           pkgs.zls
         ];
         packages = [
@@ -85,6 +87,7 @@
           pkgs.lazygit
           pkgs.opencode
           pkgs.neovim
+          pkgs.nh
           pkgs.nodejs_24
           pkgs.php
           pkgs.ripgrep
