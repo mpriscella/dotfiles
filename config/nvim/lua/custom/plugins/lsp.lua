@@ -4,6 +4,12 @@ return {
     { "j-hui/fidget.nvim", opts = {} },
   },
   config = function()
+    vim.filetype.add({
+      extension = {
+        tf = "terraform"
+      }
+    })
+
     local language_servers = {
       -- https://github.com/bash-lsp/bash-language-server
       bashls = {},
