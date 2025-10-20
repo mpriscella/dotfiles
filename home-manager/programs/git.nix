@@ -8,11 +8,18 @@
 }: {
   programs.git = {
     enable = true;
-    userName = "Mike Priscella";
-    userEmail = "mpriscella@gmail.com";
 
-    extraConfig = lib.mkMerge [
+    settings = lib.mkMerge [
       {
+        aliases = {
+          chb = "checkout -b";
+        };
+
+        user = {
+          name = "Mike Priscella";
+          email = "mpriscella@gmail.com";
+        };
+
         init.defaultBranch = "main";
         pull.rebase = false;
         push.autoSetupRemote = true;
@@ -54,9 +61,5 @@
       "dist/"
       "build/"
     ];
-
-    aliases = {
-      chb = "checkout -b";
-    };
   };
 }
