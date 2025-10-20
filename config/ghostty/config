@@ -5,9 +5,9 @@
 # on Ghostty's website, at https://ghostty.org/docs/config.
 
 theme = tokyonight
-working-directory = home
+# working-directory = home
 quit-after-last-window-closed = true
-window-inherit-working-directory = false
+# window-inherit-working-directory = false
 
 keybind = super+l=goto_split:right
 keybind = super+h=goto_split:left
