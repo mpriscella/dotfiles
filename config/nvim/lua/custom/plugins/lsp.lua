@@ -49,6 +49,8 @@ return {
       },
       -- https://github.com/phpactor/phpactor
       phpactor = {},
+      -- https://github.com/python-lsp/python-lsp-server
+      pylsp = {},
       -- https://github.com/hashicorp/terraform-ls
       terraformls = {},
       -- https://github.com/zigtools/zls
