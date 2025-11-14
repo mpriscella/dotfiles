@@ -83,6 +83,7 @@
           pkgs.kind
           pkgs.kubectl
           pkgs.kubernetes-helm
+          pkgs.laravel
           pkgs.lazydocker
           pkgs.lazygit
           pkgs.opencode
