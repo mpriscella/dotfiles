@@ -132,6 +132,11 @@
         username = "mpriscella";
         gpgSigningKey = "27301C740482A8B1";
       };
+
+      "macbook-pro-m5" = mkDarwinConfiguration {
+        username = "mpriscella";
+        gpgSigningKey = "DD1E20A6B283BC4E";
+      };
     };
 
     homeConfigurations = {
