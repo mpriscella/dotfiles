@@ -56,6 +56,7 @@
           pkgs.markdownlint-cli
           pkgs.nixd
           pkgs.phpactor
+          pkgs.python313Packages.python-lsp-server
           pkgs.shellcheck
           pkgs.terraform-ls
           pkgs.tree-sitter
@@ -86,6 +87,8 @@
           pkgs.laravel
           pkgs.lazydocker
           pkgs.lazygit
+          pkgs.lua51Packages.lua
+          pkgs.luajitPackages.luarocks
           pkgs.opencode
           pkgs.neovim
           pkgs.nh
