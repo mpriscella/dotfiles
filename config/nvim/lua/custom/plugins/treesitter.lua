@@ -6,17 +6,25 @@ return {
     opts = {
       ensure_installed = {
         'bash',
+        'blade',
         'c',
+        'css',
         'diff',
         'html',
         'http',
+        'javascript',
         'jsonc',
         'lua',
         'luadoc',
         'markdown',
         'markdown_inline',
+        'nix',
+        'php',
         'query',
+        'regex',
+        'scss',
         'terraform',
+        'typescript',
         'zig',
         'vim',
         'vimdoc',
@@ -27,7 +35,7 @@ return {
       },
       indent = { enable = true },
     },
-    config = function()
+    init = function()
       vim.opt.foldmethod = 'expr'
       vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
       vim.opt.foldlevelstart = 99

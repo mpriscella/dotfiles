@@ -1,7 +1,16 @@
 return {
   "neovim/nvim-lspconfig",
   dependencies = {
-    { "j-hui/fidget.nvim", opts = {} },
+    {
+      "j-hui/fidget.nvim",
+      opts = {
+        notification = {
+          window = {
+            avoid = { 'NvimTree' }
+          }
+        }
+      }
+    },
   },
   config = function()
     vim.filetype.add({

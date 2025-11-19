@@ -31,7 +31,7 @@ return {
       }
     end,
     formatters_by_ft = {
-      lua = { "lua_ls" },
+      lua = { "lua-language-server" },
       nix = { "alejandra" },
     },
   },
