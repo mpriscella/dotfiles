@@ -32,7 +32,7 @@
       upgrade = true;
     };
 
-    brews = ["cowsay"];
+    casks = ["devtoys"];
   };
 
   environment.systemPackages = [

@@ -35,11 +35,6 @@ return {
       },
       indent = { enable = true },
     },
-    init = function()
-      vim.opt.foldmethod = 'expr'
-      vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
-      vim.opt.foldlevelstart = 99
-    end,
   },
   {
     'nvim-treesitter/nvim-treesitter-context',
