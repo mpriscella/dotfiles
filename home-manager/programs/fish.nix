@@ -1,10 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  inputs,
-  ...
-}: {
+{...}: {
   programs.fish = {
     enable = true;
 
@@ -12,6 +6,10 @@
       cat = "bat";
       lg = "lazygit";
     };
+
+    interactiveShellInit = ''
+      set -g fish_key_bindings fish_vi_key_bindings
+    '';
   };
 
   home.sessionPath = [

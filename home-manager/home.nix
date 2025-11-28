@@ -79,6 +79,7 @@
           pkgs.fzf
           pkgs.github-copilot-cli
           pkgs.graphviz
+          pkgs.hyperfine
           pkgs.jq
           pkgs.just
           pkgs.kind
