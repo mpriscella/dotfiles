@@ -1,4 +1,6 @@
 return {
+  -- TODO: All of these types should be included in the lua language server.
+  --
   -- @see https://github.com/folke/snacks.nvim
   'folke/snacks.nvim',
   priority = 1000,
