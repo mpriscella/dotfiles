@@ -32,7 +32,10 @@
       upgrade = true;
     };
 
-    casks = ["devtoys"];
+    casks = [
+      "devtoys"
+      "headlamp"
+    ];
   };
 
   environment.systemPackages = [

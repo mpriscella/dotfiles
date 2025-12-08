@@ -166,12 +166,48 @@ require("lazy").setup({
       },
     },
   },
-  -- { "Bilal2453/luvit-meta",   lazy = true },
 
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = "custom.plugins" },
 })
 
-vim.api.nvim_set_keymap("n", "gd", ":vsplit | lua vim.lsp.buf.definition()<CR>", { noremap = true, silent = true })
+
+-- The functionality I want here is:
+-- If I go to definition, and there is no split, create one and go to
+-- definition.
+-- If the split exists, open up the definition in the other split.
+
+-- Should be gd<direction>, so gdl opens in right tab, gdh in left
+vim.api.nvim_set_keymap("n", "gd", "",
+  {
+    noremap = true,
+    silent = true,
+    callback = function()
+      vim.lsp.buf.definition()
+    end
+  }
+)
+
+vim.api.nvim_set_keymap("n", "gdh", "",
+  {
+    noremap = true,
+    silent = true,
+    callback = function()
+      vim.lsp.buf.definition()
+    end
+  }
+)
+
+
+vim.api.nvim_set_keymap("n", "gdl", "",
+  {
+    noremap = true,
+    silent = true,
+    callback = function()
+      vim.cmd('vsplit')
+      vim.lsp.buf.definition()
+    end
+  }
+)
 
 -- vim: ts=2 sts=2 sw=2 et
