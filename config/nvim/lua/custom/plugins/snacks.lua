@@ -9,14 +9,8 @@ return {
   opts = {
     ---@type snacks.indent.Config|{}
     indent = { enabled = true },
-    ---@type snacks.input.Config|{}
-    input = { enabled = true },
-    ---@type snacks.lazygit.Config|{}
-    lazygit = { enabled = true },
     ---@type snacks.notifier.Config|{}
-    notifier = {
-      enabled = true,
-    },
+    notifier = { enabled = true, },
     ---@type snacks.quickfile.Config|{}
     quickfile = { enabled = true },
     ---@type snacks.statuscolumn.Config|{}

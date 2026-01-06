@@ -53,11 +53,13 @@
           pkgs.bash-language-server
           pkgs.helm-ls
           pkgs.lua-language-server
+          pkgs.mago
           pkgs.markdownlint-cli
           pkgs.nixd
           pkgs.phpactor
           pkgs.python313Packages.python-lsp-server
           pkgs.shellcheck
+          pkgs.tailwindcss-language-server
           pkgs.terraform-ls
           pkgs.tree-sitter
           pkgs.zls
@@ -80,6 +82,7 @@
           pkgs.github-copilot-cli
           pkgs.graphviz
           pkgs.hyperfine
+          pkgs.imagemagick
           pkgs.jq
           pkgs.just
           pkgs.kind
@@ -95,6 +98,7 @@
           pkgs.nh
           pkgs.nodejs_24
           pkgs.php
+          pkgs.pnpm
           pkgs.ripgrep
           pkgs.uv
           pkgs.yarn

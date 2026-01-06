@@ -13,6 +13,9 @@
         template-aliases = {
           "format_timestamp(timestamp)" = "timestamp.ago()";
         };
+        templates = {
+          "git_push_bookmark" = ''"mpriscella/push-" ++ change_id.short()'';
+        };
         user = {
           name = "Mike Priscella";
           email = "mpriscella@gmail.com";

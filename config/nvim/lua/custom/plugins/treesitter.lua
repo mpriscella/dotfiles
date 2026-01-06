@@ -10,6 +10,7 @@ return {
         'c',
         'css',
         'diff',
+        'fish',
         'html',
         'http',
         'javascript',
@@ -20,6 +21,7 @@ return {
         'markdown_inline',
         'nix',
         'php',
+        'python',
         'query',
         'regex',
         'scss',
@@ -28,6 +30,7 @@ return {
         'zig',
         'vim',
         'vimdoc',
+        'vue',
       },
       auto_install = true,
       highlight = {
