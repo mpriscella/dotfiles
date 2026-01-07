@@ -1,7 +1,7 @@
 {
   pkgs,
   lib,
-  gpgSigningKey ? null,
+  gpgSigningKey,
   ...
 }: {
   programs.git = {
@@ -40,7 +40,7 @@
         merge.conflictstyle = "zdiff3";
       }
 
-      (lib.optionalAttrs (gpgSigningKey != null) {
+      (lib.optionalAttrs (gpgSigningKey != null && gpgSigningKey != "") {
         user.signingkey = gpgSigningKey;
         commit.gpgsign = true;
         tag.gpgsign = true;

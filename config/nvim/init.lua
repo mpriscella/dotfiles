@@ -178,7 +178,7 @@ require("lazy").setup({
 -- If the split exists, open up the definition in the other split.
 
 -- Should be gd<direction>, so gdl opens in right tab, gdh in left
-vim.api.nvim_set_keymap("n", "gd", "",
+vim.keymap.set("n", "gd", "",
   {
     noremap = true,
     silent = true,
@@ -188,18 +188,18 @@ vim.api.nvim_set_keymap("n", "gd", "",
   }
 )
 
-vim.api.nvim_set_keymap("n", "gdh", "",
-  {
-    noremap = true,
-    silent = true,
-    callback = function()
-      vim.lsp.buf.definition()
-    end
-  }
-)
+-- vim.api.nvim_set_keymap("n", "gdh", "",
+--   {
+--     noremap = true,
+--     silent = true,
+--     callback = function()
+--       vim.lsp.buf.definition()
+--     end
+--   }
+-- )
 
 
-vim.api.nvim_set_keymap("n", "gdl", "",
+vim.keymap.set("n", "gdl", "",
   {
     noremap = true,
     silent = true,

@@ -3,7 +3,7 @@
   pkgs,
   lib,
   inputs,
-  gpgSigningKey ? null,
+  system,
   isDarwinModule ? false,
   ...
 }: {
@@ -13,17 +13,9 @@
     ./programs/direnv.nix
     ./programs/fish.nix
     ./programs/gh.nix
-    (
-      import ./programs/git.nix {
-        inherit config pkgs lib inputs gpgSigningKey;
-      }
-    )
+    ./programs/git.nix
     ./programs/gpg.nix
-    (
-      import ./programs/jujutsu.nix {
-        inherit config pkgs lib inputs gpgSigningKey;
-      }
-    )
+    ./programs/jujutsu.nix
     ./programs/k9s.nix
     ./programs/starship.nix
     ./programs/tmux.nix
@@ -70,9 +62,9 @@
           pkgs.argocd
           pkgs.asciinema
           pkgs.asciinema-agg
-          pkgs.atuin
           pkgs.bat
           pkgs.bazel_8
+          pkgs.claude-code
           pkgs.cmake
           pkgs.delta
           pkgs.dive
@@ -116,7 +108,10 @@
 
       programs.man.enable = true;
       programs.home-manager.enable = true;
+    }
 
+    # macOS-specific fish functions
+    (lib.mkIf (lib.hasInfix "darwin" system) {
       programs.fish.functions = {
         clear-message-attachments = {
           description = "Clear Local Message Attachments";
@@ -134,6 +129,6 @@
           '';
         };
       };
-    }
+    })
   ];
 }
