@@ -15,6 +15,11 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -22,6 +27,7 @@
     nixpkgs,
     nix-darwin,
     home-manager,
+    sops-nix,
   } @ inputs: let
     systems = [
       "x86_64-linux"
@@ -65,6 +71,7 @@
             home.homeDirectory = calculatedHomeDirectory;
             home.stateVersion = "25.05";
           })
+          sops-nix.homeManagerModules.sops
           ./home-manager/home.nix
         ]
         ++ modules;

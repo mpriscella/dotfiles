@@ -10,6 +10,7 @@
   imports = [
     ./programs/atuin.nix
     ./programs/aws.nix
+    ./programs/claude-code.nix
     ./programs/direnv.nix
     ./programs/fish.nix
     ./programs/gh.nix
@@ -17,6 +18,7 @@
     ./programs/gpg.nix
     ./programs/jujutsu.nix
     ./programs/k9s.nix
+    ./programs/sops.nix
     ./programs/starship.nix
     ./programs/tmux.nix
     ./programs/yt-dlp.nix
@@ -59,12 +61,12 @@
         packages = [
           pkgs.ack
           pkgs.act
+          pkgs.age
           pkgs.argocd
           pkgs.asciinema
           pkgs.asciinema-agg
           pkgs.bat
           pkgs.bazel_8
-          pkgs.claude-code
           pkgs.cmake
           pkgs.delta
           pkgs.dive
@@ -92,6 +94,7 @@
           pkgs.php
           pkgs.pnpm
           pkgs.ripgrep
+          pkgs.sops
           pkgs.uv
           pkgs.yarn
           pkgs.yq
