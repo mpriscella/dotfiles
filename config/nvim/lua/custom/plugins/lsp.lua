@@ -46,11 +46,11 @@ return {
               command = { "alejandra" },
             },
             options = {
-              nixos = {
-                expr = '(builtins.getFlake ("git+file://" + toString ./.)).nixosConfigurations.k-on.options',
+              darwin = {
+                expr = '(builtins.getFlake ("git+file://" + toString ./.)).darwinConfigurations."macbook-pro-m5".options',
               },
               home_manager = {
-                expr = '(builtins.getFlake ("git+file://" + toString ./.)).homeConfigurations."ruixi@k-on".options',
+                expr = '(builtins.getFlake ("git+file://" + toString ./.)).homeConfigurations."linux".options',
               },
             },
           }

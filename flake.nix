@@ -123,6 +123,11 @@
       };
   in {
     darwinConfigurations = {
+      "macbook-pro-m5" = mkDarwinConfiguration {
+        username = "mpriscella";
+        gpgSigningKey = "DD1E20A6B283BC4E";
+      };
+
       "macbook-pro-m3" = mkDarwinConfiguration {
         username = "michaelpriscella";
         gpgSigningKey = "799887D03FE96FD0";
@@ -131,11 +136,6 @@
       "macbook-air-m4" = mkDarwinConfiguration {
         username = "mpriscella";
         gpgSigningKey = "27301C740482A8B1";
-      };
-
-      "macbook-pro-m5" = mkDarwinConfiguration {
-        username = "mpriscella";
-        gpgSigningKey = "DD1E20A6B283BC4E";
       };
     };
 
@@ -188,7 +188,7 @@
           echo "  nvim-dev [files]                                 # Neovim with isolated config"
           echo ""
           echo "Available Nix Darwin configurations:"
-          echo "  macbook-pro-m3, macbook-air-m4"
+          echo "  macbook-pro-m5, macbook-pro-m3, macbook-air-m4"
           echo ""
           echo ""
           echo "Home Manager commands:"
@@ -219,6 +219,7 @@
     checks = forAllSystems (
       system: let
         macosChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "darwin" system) {
+          macbook-pro-m5 = self.darwinConfigurations."macbook-pro-m5".system;
           macbook-pro-m3 = self.darwinConfigurations."macbook-pro-m3".system;
           macbook-air-m4 = self.darwinConfigurations."macbook-air-m4".system;
         };

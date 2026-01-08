@@ -1,7 +1,7 @@
 {
   pkgs,
   lib,
-  gpgSigningKey ? null,
+  gpgSigningKey,
   ...
 }: {
   programs.jujutsu = {
@@ -27,7 +27,7 @@
         };
       }
 
-      (lib.optionalAttrs (gpgSigningKey != null) {
+      (lib.optionalAttrs (gpgSigningKey != null && gpgSigningKey != "") {
         signing = {
           behavior = "own";
           backend = "gpg";
