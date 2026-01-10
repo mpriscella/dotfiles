@@ -1,0 +1,8 @@
+keys:
+  - &macbook_pro_m5 age1nzsx242psud20dkle5qqfdnxkw899k9cnte07ljxch7yt5zmtc6sz9hmtl
+
+creation_rules:
+  - path_regex: secrets/.*\.yaml$
+    key_groups:
+      - age:
+          - *macbook_pro_m5
