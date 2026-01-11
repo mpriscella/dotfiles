@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/mpriscella/dotfiles/compare/v2.0.0...v2.1.0) (2026-01-11)
+
+
+### Features
+
+* Automatically track main branch when initializing jujutsu ([#91](https://github.com/mpriscella/dotfiles/issues/91)) ([351a114](https://github.com/mpriscella/dotfiles/commit/351a1140e69757ae009e7c3a68c8db72c3fd8929))
+
 ## [2.0.0](https://github.com/mpriscella/dotfiles/compare/v1.6.0...v2.0.0) (2026-01-11)
 
 
