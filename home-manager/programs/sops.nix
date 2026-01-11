@@ -15,6 +15,11 @@ in {
 
     defaultSopsFile = ../../secrets/secrets.yaml;
 
+    # macOS launchd service needs PATH for getconf, newfs_hfs, etc.
+    environment = lib.mkIf isDarwin {
+      PATH = lib.mkForce "/usr/bin:/bin:/usr/sbin:/sbin";
+    };
+
     secrets = {
       github_mcp_token = {};
     };

@@ -1,8 +1,13 @@
 return {
   -- dir = "~/workspace/mpriscella/vscpanel.nvim",
-  -- name = "vscpanel.nvim",
   'mpriscella/vscpanel.nvim',
+  name = "vscpanel.nvim",
   lazy = false,
+  opts = {
+    problems = {
+      scope = "current_file"
+    }
+  },
   config = function()
     vim.keymap.set("t", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
     vim.keymap.set("t", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })

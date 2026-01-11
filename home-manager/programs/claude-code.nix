@@ -3,14 +3,6 @@
   programs.claude-code = {
     enable = true;
 
-    mcpServers = {
-      github = {
-        type = "http";
-        url = "https://api.githubcopilot.com/mcp/";
-        headers = {
-          Authorization = "Bearer \${GITHUB_MCP_TOKEN}";
-        };
-      };
-    };
+    enableMcpIntegration = true;
   };
 }

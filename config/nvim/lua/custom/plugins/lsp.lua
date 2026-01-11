@@ -32,6 +32,14 @@ return {
             completion = {
               callSnippet = "Replace",
             },
+            diagnostics = {
+              globals = { "vim" },
+            },
+            format = {
+              enable = true,
+              indent_style = "space",
+              indent_size = 2,
+            },
           },
         },
       },

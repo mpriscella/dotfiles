@@ -161,8 +161,12 @@ require("lazy").setup({
     opts = {
       library = {
         -- Load luvit types when the `vim.uv` word is found
-        { path = "luvit-meta/library",   words = { "vim%.uv" } },
+        { path = "luvit-meta/library", words = { "vim%.uv" } },
         { path = "nvim-lua/plenary.nvim" },
+        { path = "saghen/blink.cmp" },
+        { path = "MeanderingProgrammer/render-markdown.nvim" },
+        { path = "folke/snacks.nvim" },
+        { path = "folke/which-key.nvim" },
       },
     },
   },
