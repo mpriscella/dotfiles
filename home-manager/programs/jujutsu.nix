@@ -7,9 +7,14 @@
   programs.jujutsu = {
     enable = true;
 
-    # Disable pager
     settings = lib.mkMerge [
       {
+        git = {
+          auto-local-bookmark = true;
+          fetch = {
+            bookmark = ["main" "master"];
+          };
+        };
         template-aliases = {
           "format_timestamp(timestamp)" = "timestamp.ago()";
         };
