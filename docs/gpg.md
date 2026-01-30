@@ -28,9 +28,6 @@ Follow the prompts:
 ```bash
 # List all secret keys with long format key IDs
 gpg --list-secret-keys --keyid-format=long
-
-# Or use the provided alias
-gpg-list
 ```
 
 Output will look like:
@@ -48,9 +45,6 @@ Your **GPG Key ID** is `ABC123DEF456` (the part after `rsa4096/`).
 ```bash
 # Export your public key (replace with your actual key ID)
 gpg --armor --export ABC123DEF456
-
-# Or use the provided alias
-gpg-export ABC123DEF456
 ```
 
 Copy the entire output (including `-----BEGIN PGP PUBLIC KEY BLOCK-----` and `-----END PGP PUBLIC KEY BLOCK-----`).
@@ -127,17 +121,15 @@ This dotfiles setup supports different GPG keys for different machines:
 
 ## GPG Key Management Commands
 
-The dotfiles include helpful aliases:
-
 ```bash
 # List all secret keys
-gpg-list
+gpg --list-secret-keys --keyid-format=long
 
 # Export a public key
-gpg-export KEY_ID
+gpg --armor --export KEY_ID
 
 # Restart GPG agent (if having issues)
-gpg-restart
+gpg-connect-agent reloadagent /bye
 
 # Edit a key (change expiration, add email, etc.)
 gpg --edit-key KEY_ID
@@ -148,9 +140,6 @@ gpg --edit-key KEY_ID
 **GPG agent not starting:**
 ```bash
 # Restart the GPG agent
-gpg-restart
-
-# Or manually
 gpg-connect-agent reloadagent /bye
 ```
 
@@ -171,7 +160,7 @@ gpg> expire
 gpg> save
 
 # Re-export and update on GitHub
-gpg-export KEY_ID
+gpg --armor --export KEY_ID
 ```
 
 ## Security Best Practices

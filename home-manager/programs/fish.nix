@@ -1,4 +1,9 @@
-{config, ...}: {
+{
+  config,
+  lib,
+  system,
+  ...
+}: {
   programs.fish = {
     enable = true;
 
@@ -17,7 +22,8 @@
     '';
   };
 
-  home.sessionPath = [
+  # macOS Homebrew paths
+  home.sessionPath = lib.mkIf (lib.hasInfix "darwin" system) [
     "/opt/homebrew/bin"
     "/opt/homebrew/sbin"
   ];

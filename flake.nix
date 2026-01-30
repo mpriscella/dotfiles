@@ -47,6 +47,12 @@
       system.primaryUser = username;
     };
 
+    # Shared user identity configuration
+    userConfig = {
+      name = "Mike Priscella";
+      email = "mpriscella@gmail.com";
+    };
+
     mkHomeConfiguration = {
       system ? "aarch64-darwin",
       username,
@@ -82,6 +88,7 @@
           inherit gpgSigningKey;
           inherit isDarwinModule;
           inherit system;
+          inherit userConfig;
         }
         // extraSpecialArgs;
     in
