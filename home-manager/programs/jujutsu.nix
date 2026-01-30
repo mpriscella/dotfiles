@@ -10,10 +10,8 @@
     settings = lib.mkMerge [
       {
         git = {
-          auto-local-bookmark = true;
-          fetch = {
-            bookmark = ["main" "master"];
-          };
+          auto-track-bookmarks = "main";
+          fetch-tags = true;
         };
         template-aliases = {
           "format_timestamp(timestamp)" = "timestamp.ago()";

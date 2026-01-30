@@ -32,6 +32,10 @@
       upgrade = true;
     };
 
+    brews = [
+      "localstack/tap/localstack-cli"
+    ];
+
     casks = [
       "devtoys"
       "headlamp"

@@ -18,6 +18,7 @@
     ./programs/gpg.nix
     ./programs/jujutsu.nix
     ./programs/k9s.nix
+    ./programs/mcp.nix
     ./programs/sops.nix
     ./programs/starship.nix
     ./programs/tmux.nix
