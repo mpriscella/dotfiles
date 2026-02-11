@@ -23,6 +23,7 @@ return {
     formatters_by_ft = {
       lua = { "lua-language-server" },
       nix = { "alejandra" },
+      php = { "mago_format" },
     },
   },
 }
