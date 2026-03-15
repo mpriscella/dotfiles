@@ -2,6 +2,7 @@
   pkgs,
   lib,
   gpgSigningKey,
+  userConfig,
   ...
 }: {
   programs.git = {
@@ -14,8 +15,8 @@
         };
 
         user = {
-          name = "Mike Priscella";
-          email = "mpriscella@gmail.com";
+          name = userConfig.name;
+          email = userConfig.email;
         };
 
         init.defaultBranch = "main";

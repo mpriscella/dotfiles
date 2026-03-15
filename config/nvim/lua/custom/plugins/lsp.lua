@@ -72,6 +72,8 @@ return {
       tailwindcss = {},
       -- https://github.com/hashicorp/terraform-ls
       terraformls = {},
+      -- https://github.com/typescript-language-server/typescript-language-server
+      ts_ls = {},
       -- https://github.com/zigtools/zls
       zls = {},
     }

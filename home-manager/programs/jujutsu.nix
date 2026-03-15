@@ -2,6 +2,7 @@
   pkgs,
   lib,
   gpgSigningKey,
+  userConfig,
   ...
 }: {
   programs.jujutsu = {
@@ -20,8 +21,8 @@
           "git_push_bookmark" = ''"mpriscella/push-" ++ change_id.short()'';
         };
         user = {
-          name = "Mike Priscella";
-          email = "mpriscella@gmail.com";
+          name = userConfig.name;
+          email = userConfig.email;
         };
         ui = {
           default-command = "log";

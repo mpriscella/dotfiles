@@ -57,13 +57,14 @@
           pkgs.tailwindcss-language-server
           pkgs.terraform-ls
           pkgs.tree-sitter
+          pkgs.typescript-language-server
           pkgs.zls
         ];
         packages = [
           pkgs.ack
           pkgs.act
           pkgs.age
-          pkgs.argocd
+          # pkgs.argocd
           pkgs.asciinema
           pkgs.asciinema-agg
           pkgs.bat
@@ -96,6 +97,7 @@
           pkgs.pnpm
           pkgs.ripgrep
           pkgs.sops
+          pkgs.typescript
           pkgs.uv
           pkgs.yarn
           pkgs.yq
