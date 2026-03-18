@@ -68,6 +68,8 @@ return {
       phpactor = {},
       -- https://github.com/python-lsp/python-lsp-server
       pylsp = {},
+      -- https://github.com/swiftlang/sourcekit-lsp
+      sourcekit = {},
       -- https://github.com/tailwindlabs/tailwindcss-intellisense
       tailwindcss = {},
       -- https://github.com/hashicorp/terraform-ls

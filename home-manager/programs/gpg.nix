@@ -1,7 +1,18 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  system,
+  ...
+}: let
+  isDarwin = lib.hasInfix "darwin" system;
+  pinentryPkg =
+    if isDarwin
+    then pkgs.pinentry_mac
+    else pkgs.pinentry-curses;
+in {
   home.packages = with pkgs; [
     gnupg
-    pinentry-curses
+    pinentryPkg
   ];
 
   programs.gpg = {
@@ -17,7 +28,7 @@
   services.gpg-agent = {
     enable = true;
     enableFishIntegration = true;
-    pinentry.package = pkgs.pinentry-curses;
+    pinentry.package = pinentryPkg;
     defaultCacheTtl = 28800; # 8 hours
     maxCacheTtl = 86400; # 24 hours
   };

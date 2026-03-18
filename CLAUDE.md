@@ -1,10 +1,13 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with
+code in this repository.
 
 ## Overview
 
-Cross-platform dotfiles managed with Nix flakes, nix-darwin (macOS), and Home Manager (Linux). Provides reproducible system and user-level configuration with host-specific overrides.
+Cross-platform dotfiles managed with Nix flakes, nix-darwin (macOS), and Home
+Manager (Linux). Provides reproducible system and user-level configuration with
+host-specific overrides.
 
 ## Common Commands
 
@@ -37,11 +40,16 @@ nvim-dev [files]
 
 ## Architecture
 
-- **flake.nix** - Entry point defining inputs, outputs, and all configurations. Contains `mkDarwinConfiguration` and `mkHomeConfiguration` helper functions.
-- **home-manager/home.nix** - Main Home Manager config importing all program modules
-- **home-manager/programs/*.nix** - Modular program configurations (git, fish, claude-code, etc.)
-- **nix-darwin/base.nix** - macOS system-level config (keyboard, homebrew, GUI apps). Includes Home Manager as a module.
-- **config/nvim/** - Neovim IDE configuration (Lua-based with LSP, Telescope, Treesitter)
+- **flake.nix** - Entry point defining inputs, outputs, and all configurations.
+  Contains `mkDarwinConfiguration` and `mkHomeConfiguration` helper functions.
+- **home-manager/home.nix** - Main Home Manager config importing all program
+  modules
+- **home-manager/programs/*.nix** - Modular program configurations (git, fish,
+  claude-code, etc.)
+- **nix-darwin/base.nix** - macOS system-level config (keyboard, homebrew, GUI
+  apps). Includes Home Manager as a module.
+- **config/nvim/** - Neovim IDE configuration (Lua-based with LSP, Telescope,
+  Treesitter)
 - **secrets/** - Encrypted secrets using sops-nix with age encryption
 
 ## Key Conventions

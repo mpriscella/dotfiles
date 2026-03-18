@@ -1,8 +1,9 @@
 return {
   {
     'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs',
+    main = 'nvim-treesitter',
     opts = {
       ensure_installed = {
         'bash',
@@ -14,6 +15,7 @@ return {
         'html',
         'http',
         'javascript',
+        'json',
         'jsonc',
         'lua',
         'luadoc',

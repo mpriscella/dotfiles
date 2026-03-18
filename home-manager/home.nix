@@ -19,6 +19,7 @@
     ./programs/jujutsu.nix
     ./programs/k9s.nix
     ./programs/mcp.nix
+    ./programs/opencode.nix
     ./programs/sops.nix
     ./programs/starship.nix
     ./programs/tmux.nix
@@ -54,6 +55,7 @@
           pkgs.phpactor
           pkgs.python313Packages.python-lsp-server
           pkgs.shellcheck
+          pkgs.sourcekit-lsp
           pkgs.tailwindcss-language-server
           pkgs.terraform-ls
           pkgs.tree-sitter
@@ -70,6 +72,7 @@
           pkgs.bat
           pkgs.bazel_8
           pkgs.cmake
+          pkgs.codex
           pkgs.delta
           pkgs.dive
           pkgs.exercism
@@ -79,6 +82,7 @@
           pkgs.graphviz
           pkgs.hyperfine
           pkgs.imagemagick
+          pkgs.jjui
           pkgs.jq
           pkgs.just
           pkgs.kind
@@ -89,8 +93,8 @@
           pkgs.lazygit
           pkgs.lua51Packages.lua
           pkgs.luajitPackages.luarocks
-          pkgs.opencode
           pkgs.neovim
+          pkgs.ngrok
           pkgs.nh
           pkgs.nodejs_24
           pkgs.php
