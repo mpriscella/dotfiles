@@ -5,10 +5,8 @@
 
     enableMcpIntegration = true;
 
-    agents = {
-      notes--daily-summary = ./../../agents/notes/daily-summary.md;
-      image--svg-to-png = ./../../agents/image/svg-to-png.md;
-    };
+    agentsDir = ./../../agents;
+    skills = ./../../skills;
 
     settings = {
       permissions = {

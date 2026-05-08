@@ -39,6 +39,7 @@
     casks = [
       "devtoys"
       "headlamp"
+      "lm-studio"
     ];
   };
 
