@@ -135,6 +135,102 @@ gpg-connect-agent reloadagent /bye
 gpg --edit-key KEY_ID
 ```
 
+## Extending an Expired Key
+
+If a key has expired (or is about to), the recommended path is to **extend its
+expiration**, not generate a new one. Extending preserves the fingerprint, so
+prior signed commits stay verified and you don't need to re-establish trust
+with collaborators. Only rotate if the secret key may be compromised, you've
+lost the secret material, or the algorithm is weak.
+
+Symptom that prompts this: `gpg: skipped "<KEY_ID>": Unusable secret key` when
+trying to commit, and `gpg --list-secret-keys` shows `[expired: <date>]`.
+
+### Step 1: Open the key for editing
+
+```bash
+gpg --edit-key KEY_ID
+```
+
+You'll land at a `gpg>` prompt. The header will list the primary key and any
+subkeys, each with `usage:` flags. `[SC]` = Sign + Certify (primary),
+`[E]` = Encrypt (usually a subkey), `[S]` = a separate signing subkey.
+
+### Step 2: Extend the primary key
+
+At the `gpg>` prompt:
+
+```
+gpg> expire
+```
+
+Enter a new expiration when prompted. Recommended values:
+
+- `1y` — one year (good default)
+- `2y` — two years
+- `0` — never expires (not recommended; the expiration date is what protects
+  you if you lose access to the key)
+
+You'll be prompted for your passphrase to confirm.
+
+### Step 3: Extend each subkey (if any)
+
+Subkeys have their own expiration dates and must be extended separately. If
+`gpg --list-secret-keys` showed any `ssb` lines, repeat for each:
+
+```
+gpg> key 1
+gpg> expire
+```
+
+`key 1` selects the first subkey (you'll see a `*` appear next to it). Run
+`expire` again and pick the same expiration. To select another subkey,
+deselect the current one first by running `key 1` again (the `*` toggles
+off), then `key 2`, etc.
+
+If `gpg --list-secret-keys` showed no `ssb` lines, skip this step — you only
+have a primary key.
+
+### Step 4: Save and exit
+
+```
+gpg> save
+```
+
+This writes the changes and exits. Verify with:
+
+```bash
+gpg --list-secret-keys --keyid-format=long
+```
+
+The `[expired: ...]` tag should now be `[expires: <new-date>]`.
+
+### Step 5: Re-publish the public key
+
+The updated expiration is part of the public key, so anywhere the old version
+is published needs the new one.
+
+```bash
+gpg --armor --export KEY_ID
+```
+
+- **GitHub**: [Settings → SSH and GPG keys](https://github.com/settings/keys).
+  GitHub accepts updates to existing keys — paste the new export to replace
+  the old one (no need to delete first).
+- **Keyservers**, if you publish there:
+  ```bash
+  gpg --send-keys KEY_ID
+  ```
+
+### Step 6: Verify signing works
+
+```bash
+git commit --allow-empty -m "Test signing after key extension"
+git log --show-signature -1
+```
+
+You should see `Good signature` and the new expiration date.
+
 ## Troubleshooting
 
 **GPG agent not starting:**
@@ -152,16 +248,9 @@ gpg-connect-agent reloadagent /bye
 - Check that your public key is added to GitHub
 - Verify the key ID is correct in your configuration
 
-**Key expiration:**
-```bash
-# Extend key expiration
-gpg --edit-key KEY_ID
-gpg> expire
-gpg> save
-
-# Re-export and update on GitHub
-gpg --armor --export KEY_ID
-```
+**Key expired (`Unusable secret key` when signing):**
+See [Extending an Expired Key](#extending-an-expired-key) above for the full
+flow, including subkey handling and re-publishing to GitHub.
 
 ## Security Best Practices
 

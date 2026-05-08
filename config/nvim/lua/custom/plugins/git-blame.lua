@@ -1,3 +1,5 @@
 return {
-  'f-person/git-blame.nvim'
+  'f-person/git-blame.nvim',
+  event = { "BufReadPre", "BufNewFile" },
+  opts = {},
 }
