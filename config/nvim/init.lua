@@ -109,6 +109,13 @@ vim.diagnostic.config({
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
+-- Toggle light/dark background. Only affects nvim (Ghostty keeps following
+-- the macOS appearance), and the next terminal appearance change overrides
+-- it — meant for previewing the other mode, not switching to it.
+vim.keymap.set("n", "<leader>tb", function()
+  vim.o.background = vim.o.background == "dark" and "light" or "dark"
+end, { desc = "[T]oggle [b]ackground" })
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -132,13 +139,9 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right win
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
--- Tabs.
--- vim.keymap.set('n', '<Leader>t', ':tabnew<CR>', { silent = true })
--- vim.keymap.set('n', '<Leader>w', ':tabclose<CR>', { silent = true })
-
 -- Map <Leader>[1-9] to switch between open tabs.
 for i = 1, 9, 1 do
-  vim.keymap.set("n", string.format("<Leader>%d", i), string.format("%dgt<CR>", i), { noremap = true, silent = true })
+  vim.keymap.set("n", string.format("<Leader>%d", i), string.format("%dgt", i), { noremap = true, silent = true })
 end
 
 -- Indentation configuration.
@@ -183,14 +186,15 @@ require("lazy").setup({
     "folke/lazydev.nvim",
     ft = "lua",
     opts = {
+      -- Entries match lazy.nvim plugin directory names (not owner/repo).
+      -- `words` triggers loading types in files that reference a global
+      -- without requiring the module (e.g. `Snacks` in lsp.lua).
+      -- Only globals referenced without `require` need explicit entries;
+      -- modules that are `require`d are resolved automatically by lazydev.
       library = {
         -- Load luvit types when the `vim.uv` word is found
         { path = "luvit-meta/library", words = { "vim%.uv" } },
-        { path = "nvim-lua/plenary.nvim" },
-        { path = "saghen/blink.cmp" },
-        { path = "MeanderingProgrammer/render-markdown.nvim" },
-        { path = "folke/snacks.nvim" },
-        { path = "folke/which-key.nvim" },
+        { path = "snacks.nvim", words = { "Snacks" } },
       },
     },
   },
@@ -198,44 +202,5 @@ require("lazy").setup({
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = "custom.plugins" },
 })
-
-
--- The functionality I want here is:
--- If I go to definition, and there is no split, create one and go to
--- definition.
--- If the split exists, open up the definition in the other split.
-
--- Should be gd<direction>, so gdl opens in right tab, gdh in left
-vim.keymap.set("n", "gd", "",
-  {
-    noremap = true,
-    silent = true,
-    callback = function()
-      vim.lsp.buf.definition()
-    end
-  }
-)
-
--- vim.api.nvim_set_keymap("n", "gdh", "",
---   {
---     noremap = true,
---     silent = true,
---     callback = function()
---       vim.lsp.buf.definition()
---     end
---   }
--- )
-
-
-vim.keymap.set("n", "gdl", "",
-  {
-    noremap = true,
-    silent = true,
-    callback = function()
-      vim.cmd('vsplit')
-      vim.lsp.buf.definition()
-    end
-  }
-)
 
 -- vim: ts=2 sts=2 sw=2 et

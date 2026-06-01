@@ -11,7 +11,7 @@
     description = "Switch AWS profiles";
     body = ''
       set -l profile $(aws configure list-profiles | fzf --height=30% --layout=reverse)
-      if set --query profile
+      if test -n "$profile"
         set -gx AWS_PROFILE $profile
         echo "Switched to AWS profile: $profile"
       end
@@ -32,6 +32,9 @@
 
       # Select repository name using fzf
       set name (aws ecr describe-repositories --output json --query "repositories[*].repositoryName" | jq -r '.[]' | fzf --height=30% --layout=reverse --border --margin=1 --padding=1)
+      if test -z "$name"
+        return
+      end
 
       # Get repository URI
       set uri (aws ecr describe-repositories --repository-names $name --output json --query "repositories[*].repositoryUri" | jq -r '.[]')

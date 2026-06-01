@@ -5,18 +5,24 @@ on:
     branches:
       - main
     paths:
+      - 'config/**'
       - 'home-manager/**'
       - 'nix-darwin/**'
+      - 'secrets/**'
       - 'flake.nix'
       - 'flake.lock'
+      - '.github/workflows/flake-tests.yml'
   pull_request:
     branches:
       - main
     paths:
+      - 'config/**'
       - 'home-manager/**'
       - 'nix-darwin/**'
+      - 'secrets/**'
       - 'flake.nix'
       - 'flake.lock'
+      - '.github/workflows/flake-tests.yml'
   workflow_dispatch:
 
 jobs:
@@ -36,8 +42,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # nix-quick-install-action is used instead of the Determinate installer
+      # because cache-nix-action can only snapshot a store owned by the runner
+      # user (single-user install).
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@v3
+        uses: nixbuild/nix-quick-install-action@v34
+        with:
+          nix_conf: |
+            experimental-features = nix-command flakes
+
+      - name: Restore and save Nix store
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('flake.lock') }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-${{ runner.arch }}-
+          gc-max-store-size-linux: 5G
 
       - name: Check Flake
         run: nix flake check
@@ -45,12 +64,14 @@ jobs:
       - name: Generate build artifacts info
         if: always()
         run: |
-          echo "## Flake Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "- **Machine**: ${{ matrix.machine }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## Flake Test Results"
+            echo "- **Machine**: ${{ matrix.machine }}"
+            echo "- **Status**: ${{ job.status }}"
 
-          if [[ "${{ job.status }}" == "success" ]]; then
-            echo "✅ Configuration builds successfully" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ Configuration failed to build" >> $GITHUB_STEP_SUMMARY
-          fi
+            if [[ "${{ job.status }}" == "success" ]]; then
+              echo "✅ Configuration builds successfully"
+            else
+              echo "❌ Configuration failed to build"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

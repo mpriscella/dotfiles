@@ -12,7 +12,11 @@
       {
         aliases = {
           chb = "checkout -b";
+          dft = "difftool --tool difftastic";
         };
+
+        difftool.difftastic.cmd = "${pkgs.difftastic}/bin/difft \"$LOCAL\" \"$REMOTE\"";
+        difftool.prompt = false;
 
         user = {
           name = userConfig.name;
@@ -24,14 +28,8 @@
         push.autoSetupRemote = true;
         core.editor = "nvim";
 
-        flake.warn-dirty = false;
-
         diff.tool = "vimdiff";
         merge.tool = "vimdiff";
-
-        core.preloadindex = true;
-        core.fscache = true;
-        gc.auto = 256;
 
         core.pager = "delta";
         interactive.diffFilter = "delta --color-only";

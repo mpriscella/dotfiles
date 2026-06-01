@@ -6,6 +6,10 @@ return {
     npairs.setup({})
 
     local original_cr = npairs.autopairs_cr
+    -- Deliberate monkey-patch of the plugin's <CR> handler: expand `/**<CR>`
+    -- into a docblock skeleton in PHP buffers (the closing ` */` is the part
+    -- native 'comments'/'formatoptions' continuation can't do).
+    ---@diagnostic disable-next-line: duplicate-set-field
     npairs.autopairs_cr = function()
       if vim.bo.filetype == 'php' then
         local line = vim.api.nvim_get_current_line()
