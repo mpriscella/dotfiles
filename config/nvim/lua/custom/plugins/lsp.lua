@@ -19,6 +19,24 @@ return {
       }
     })
 
+    vim.api.nvim_create_autocmd("LspAttach", {
+      group = vim.api.nvim_create_augroup("user-lsp-attach", { clear = true }),
+      callback = function(event)
+        local function map(mode, lhs, rhs, desc)
+          vim.keymap.set(mode, lhs, rhs, { buffer = event.buf, desc = "LSP: " .. desc })
+        end
+
+        -- K (hover), grn (rename), gra (code action), grr (references), gri
+        -- (implementation), gO (document symbols), ]d/[d (diagnostics) are
+        -- Neovim 0.11+ defaults — only adding what's missing or worth aliasing.
+        map("n", "gd", vim.lsp.buf.definition, "Goto definition")
+        map("n", "gD", vim.lsp.buf.declaration, "Goto declaration")
+        map("n", "gy", vim.lsp.buf.type_definition, "Goto type definition")
+        map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+        map({ "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
+      end,
+    })
+
     local language_servers = {
       -- https://github.com/bash-lsp/bash-language-server
       bashls = {},
