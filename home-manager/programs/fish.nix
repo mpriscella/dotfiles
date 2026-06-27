@@ -7,9 +7,9 @@
   programs.fish = {
     enable = true;
 
+    # cat is always bat, so an alias (the substitution shouldn't be visible).
     shellAliases = {
       cat = "bat";
-      lg = "lazygit";
     };
 
     interactiveShellInit = ''
@@ -22,9 +22,11 @@
     '';
   };
 
-  # macOS Homebrew paths
+  # macOS Homebrew paths, plus the Ghostty app bundle (the CLI lives inside
+  # the bundle and is not symlinked onto the PATH at install).
   home.sessionPath = lib.mkIf (lib.hasInfix "darwin" system) [
     "/opt/homebrew/bin"
     "/opt/homebrew/sbin"
+    "/Applications/Ghostty.app/Contents/MacOS"
   ];
 }

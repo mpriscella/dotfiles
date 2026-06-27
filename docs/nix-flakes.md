@@ -21,9 +21,7 @@ These configurations use `darwin-rebuild` and include both system-level (nix-dar
 
 | Configuration    | System         | Username         | Use Case        |
 | ---------------- | -------------- | ---------------- | --------------- |
-| `macbook-pro-m5` | aarch64-darwin | mpriscella       | Personal M5 Mac |
-| `macbook-pro-m3` | aarch64-darwin | michaelpriscella | Work M3 Mac     |
-| `macbook-air-m4` | aarch64-darwin | mpriscella       | Personal M4 Mac |
+| `macbook-pro-m5` | aarch64-darwin | mpriscella       |     Work M5 Mac |
 
 ### Home Manager (Linux)
 

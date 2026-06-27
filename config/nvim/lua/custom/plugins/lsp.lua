@@ -29,7 +29,14 @@ return {
         -- K (hover), grn (rename), gra (code action), grr (references), gri
         -- (implementation), gO (document symbols), ]d/[d (diagnostics) are
         -- Neovim 0.11+ defaults — only adding what's missing or worth aliasing.
-        map("n", "gd", vim.lsp.buf.definition, "Goto definition")
+        -- gd jumps in place (picker when there are multiple results); gdl opens
+        -- the definition in a vertical split (right, per splitright), gdj in a
+        -- horizontal split (below, per splitbelow).
+        map("n", "gd", function() Snacks.picker.lsp_definitions() end, "Goto definition")
+        map("n", "gdl", function() Snacks.picker.lsp_definitions({ confirm = "edit_vsplit" }) end,
+          "Goto definition in vertical split")
+        map("n", "gdj", function() Snacks.picker.lsp_definitions({ confirm = "edit_split" }) end,
+          "Goto definition in horizontal split")
         map("n", "gD", vim.lsp.buf.declaration, "Goto declaration")
         map("n", "gy", vim.lsp.buf.type_definition, "Goto type definition")
         map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
@@ -83,6 +90,10 @@ return {
         },
       },
       -- https://github.com/phpactor/phpactor
+      -- mago owns diagnostics (see lint.lua); phpactor's are disabled via
+      -- ~/.config/phpactor/phpactor.json (managed in home-manager/home.nix).
+      -- init_options don't work for this: phpactor outsources diagnostics to
+      -- a subprocess that only reads config files.
       phpactor = {},
       -- https://github.com/python-lsp/python-lsp-server
       pylsp = {},
@@ -98,12 +109,9 @@ return {
       zls = {},
     }
 
-    -- If the file `lua_ls.lua` exists in the root of the working directory, set
-    -- that as the configpath. This will completely override any other
-    -- configurations.
-    if vim.uv.fs_stat(vim.fn.getcwd() .. "/lua_ls.lua") then
-      language_servers.lua_ls.settings.Lua.cmd = { "lua-language-server", "--configpath=lua_ls.lua" }
-    end
+    -- Per-project overrides come from a `.luarc.json`/`.luarc.jsonc` in the
+    -- workspace root, which lua-language-server auto-discovers and merges over
+    -- the settings above. No editor-side detection needed.
 
     for server, config in pairs(language_servers) do
       vim.lsp.config(server, config)

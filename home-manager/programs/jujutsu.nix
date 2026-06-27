@@ -26,6 +26,7 @@
         };
         ui = {
           default-command = "log";
+          diff-formatter = ["${pkgs.difftastic}/bin/difft" "--color=always" "$left" "$right"];
           editor = "nvim";
           paginate = "never";
         };

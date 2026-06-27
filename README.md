@@ -5,7 +5,8 @@ macOS and Linux with host-specific configurations.
 
 ## Requirements
 
-- [Determinate Nix](https://determinate.systems/posts/determinate-nix-installer)
+- [Nix](https://nixos.org/download/) (multi-user/daemon install, with flakes
+  enabled — or just run `./install.sh`, which handles both)
 
 ## Quick Start
 
@@ -58,8 +59,6 @@ nix fmt
 | Configuration    | System         | Username         |
 | ---------------- | -------------- | ---------------- |
 | `macbook-pro-m5` | aarch64-darwin | mpriscella       |
-| `macbook-pro-m3` | aarch64-darwin | michaelpriscella |
-| `macbook-air-m4` | aarch64-darwin | mpriscella       |
 
 ### Home Manager (Linux)
 

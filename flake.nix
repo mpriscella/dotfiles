@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs = {
-      url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+      url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
     };
 
     nix-darwin = {
@@ -39,10 +39,14 @@
 
     mkDarwinUser = {username}: {
       environment.shells = ["/run/current-system/sw/bin/fish"];
+      # knownUsers (with a matching uid) is required for nix-darwin to actually
+      # enforce the shell via dscl — without it the shell setting is decorative.
+      users.knownUsers = [username];
       users.users.${username} = {
         name = username;
         home = "/Users/${username}";
         shell = "/run/current-system/sw/bin/fish";
+        uid = 501;
       };
       system.primaryUser = username;
     };
@@ -141,16 +145,6 @@
         username = "mpriscella";
         gpgSigningKey = "DD1E20A6B283BC4E";
       };
-
-      "macbook-pro-m3" = mkDarwinConfiguration {
-        username = "michaelpriscella";
-        gpgSigningKey = "799887D03FE96FD0";
-      };
-
-      "macbook-air-m4" = mkDarwinConfiguration {
-        username = "mpriscella";
-        gpgSigningKey = "27301C740482A8B1";
-      };
     };
 
     homeConfigurations = {
@@ -178,7 +172,15 @@
           [
             home-manager.packages.${system}.default
             (nixpkgs.legacyPackages.${system}.writeShellScriptBin "nvim-dev" ''
-              XDG_CONFIG_HOME="config/" nvim "$@"
+              # Isolate XDG_CONFIG_HOME in a temp dir holding only a symlink to
+              # the repo's nvim config. Pointing it at config/ directly lets
+              # child processes (fish, via :! and friends) scribble their own
+              # config files into the repo, and a relative XDG_CONFIG_HOME
+              # breaks if the working directory changes inside nvim.
+              tmp=$(mktemp -d)
+              trap 'rm -rf "$tmp"' EXIT
+              ln -s "$PWD/config/nvim" "$tmp/nvim"
+              XDG_CONFIG_HOME="$tmp" nvim "$@"
             '')
           ]
           ++ nixpkgs.lib.optionals (nixpkgs.lib.hasInfix "darwin" system) [
@@ -202,7 +204,7 @@
           echo "  nvim-dev [files]                                 # Neovim with isolated config"
           echo ""
           echo "Available Nix Darwin configurations:"
-          echo "  macbook-pro-m5, macbook-pro-m3, macbook-air-m4"
+          echo "  macbook-pro-m5"
           echo ""
           echo ""
           echo "Home Manager commands:"
@@ -218,10 +220,11 @@
           echo "  nix flake check                                  # Validate and test flake"
           echo "  nix flake update                                 # Update dependencies"
           echo "  nix fmt flake.nix home-manager nix-darwin        # Format code"
-          echo "  sudo determinate-nixd upgrade                    # Upgrade Nix"
           echo ""
           echo ""
           echo "Nix Helper (nh) commands:"
+          echo "  nh darwin switch -H <hostname>                   # Apply system config (shows package diff)"
+          echo "  nh home switch -c <configuration>                # Apply home-manager config (shows package diff)"
           echo "  nh clean all                                     # Clean Nix store"
           echo "  nh search <query> [--limit n]                    # Search packages"
         '';
@@ -232,11 +235,9 @@
 
     checks = forAllSystems (
       system: let
-        macosChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "darwin" system) {
-          macbook-pro-m5 = self.darwinConfigurations."macbook-pro-m5".system;
-          macbook-pro-m3 = self.darwinConfigurations."macbook-pro-m3".system;
-          macbook-air-m4 = self.darwinConfigurations."macbook-air-m4".system;
-        };
+        macosChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "darwin" system) (
+          nixpkgs.lib.mapAttrs (_: cfg: cfg.system) self.darwinConfigurations
+        );
         linuxChecks = nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasInfix "linux" system) {
           linux =
             (mkHomeConfiguration {

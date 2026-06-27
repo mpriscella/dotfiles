@@ -34,7 +34,7 @@ nvim-dev [files]
 
 ## Available Configurations
 
-**macOS (nix-darwin):** `macbook-pro-m5`, `macbook-pro-m3`, `macbook-air-m4`
+**macOS (nix-darwin):** `macbook-pro-m5`
 
 **Linux (home-manager):** `linux`, `linux-arm`
 

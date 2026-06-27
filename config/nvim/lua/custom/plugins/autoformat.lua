@@ -21,9 +21,31 @@ return {
       }
     end,
     formatters_by_ft = {
+      blade = { "blade-formatter" },
+      css = { "prettierd" },
+      html = { "prettierd" },
+      javascript = { "prettierd" },
+      javascriptreact = { "prettierd" },
+      json = { "prettierd" },
+      jsonc = { "prettierd" },
       lua = { "lua-language-server" },
+      markdown = { "prettierd" },
       nix = { "alejandra" },
-      php = { "mago_format" },
+      -- Pint and Mago disagree structurally (Mago re-prints chains,
+      -- ternaries, and argument lists; Pint preserves layout), so projects
+      -- that ship Pint format with it to avoid drift from the repo style.
+      php = function(bufnr)
+        local root = vim.fs.root(bufnr, "composer.json")
+        if root and vim.uv.fs_stat(root .. "/vendor/bin/pint") then
+          return { "pint" }
+        end
+        return { "mago_format" }
+      end,
+      scss = { "prettierd" },
+      typescript = { "prettierd" },
+      typescriptreact = { "prettierd" },
+      vue = { "prettierd" },
+      yaml = { "prettierd" },
     },
   },
 }

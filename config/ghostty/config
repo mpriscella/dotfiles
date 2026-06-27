@@ -4,7 +4,14 @@
 # Additionally, each config option is also explained in detail
 # on Ghostty's website, at https://ghostty.org/docs/config.
 
-theme = tokyonight
+# Follow the macOS appearance (auto light/dark switching is enabled in
+# nix-darwin via AppleInterfaceStyleSwitchesAutomatically).
+theme = dark:GitHub Dark Default,light:GitHub Light Default
+
+# Guard against unreadable text (e.g. white-on-white in TUIs) without
+# distorting the palette.
+minimum-contrast = 1.1
+
 # working-directory = home
 quit-after-last-window-closed = true
 # window-inherit-working-directory = false
@@ -15,3 +22,7 @@ keybind = super+k=goto_split:up
 keybind = super+j=goto_split:down
 
 keybind = global:cmd+backquote=toggle_quick_terminal
+
+# Custom command palette entries (cmd+shift+p). These append to the default
+# entries. The text action types the command without running it.
+command-palette-entry = title:"Rebuild nix-darwin",description:"Type the darwin-rebuild switch command for the dotfiles flake.",action:"text:sudo darwin-rebuild switch --flake ~/workspace/mpriscella/dotfiles"
