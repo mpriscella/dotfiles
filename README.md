@@ -40,8 +40,8 @@ nix flake update
 # Enter development shell
 nix develop
 
-# Format Nix code
-nix fmt
+# Format Nix code (scope paths to avoid recursing into nvim cache dirs)
+nix fmt flake.nix home-manager nix-darwin
 ```
 
 ## Documentation
@@ -77,6 +77,8 @@ nix fmt
 │   └── programs/          # Program-specific configs
 ├── nix-darwin/            # nix-darwin system configuration
 ├── config/                # Application configs (nvim, ghostty, etc.)
+├── agents/                # Claude Code subagent definitions
+├── skills/                # Claude Code skill definitions
 ├── secrets/               # Encrypted secrets (sops)
 └── docs/                  # Documentation
 ```

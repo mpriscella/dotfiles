@@ -50,6 +50,10 @@ nvim-dev [files]
   apps). Includes Home Manager as a module.
 - **config/nvim/** - Neovim IDE configuration (Lua-based with LSP, Telescope,
   Treesitter)
+- **agents/** - Claude Code subagent definitions, deployed via
+  `programs.claude-code.agentsDir` in `home-manager/programs/claude-code.nix`
+- **skills/** - Claude Code skill definitions, deployed via
+  `programs.claude-code.skills` in `home-manager/programs/claude-code.nix`
 - **secrets/** - Encrypted secrets using sops-nix with age encryption
 
 ## Key Conventions
