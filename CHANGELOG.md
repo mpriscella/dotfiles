@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/mpriscella/dotfiles/compare/v2.5.0...v3.0.0) (2026-06-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* Nix is now managed by upstream Nix + nix-darwin instead of Determinate Nix. Hosts running a Determinate install must uninstall it (and its determinate-nixd daemon) before applying this configuration; nix-darwin otherwise refuses to take over Nix management. Fresh installs are handled by the rewritten install.sh. The macbook-pro-m3 and macbook-air-m4 configurations have also been removed.
+
+### Features
+
+* June 2026 ([#101](https://github.com/mpriscella/dotfiles/issues/101)) ([e704b8f](https://github.com/mpriscella/dotfiles/commit/e704b8f95e1d545e59d0404cebc9ab3cf9cb9898))
+
 ## [2.5.0](https://github.com/mpriscella/dotfiles/compare/v2.4.0...v2.5.0) (2026-06-01)
 
 
