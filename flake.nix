@@ -6,6 +6,12 @@
       url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
     };
 
+    # Tracked separately from the weekly snapshot above so neovim can follow
+    # nixpkgs-unstable directly (see pkgs-unstable in home-manager/home.nix).
+    nixpkgs-unstable = {
+      url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    };
+
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,6 +31,7 @@
   outputs = {
     self,
     nixpkgs,
+    nixpkgs-unstable,
     nix-darwin,
     home-manager,
     sops-nix,
@@ -120,6 +127,7 @@
         inherit system;
         modules = [
           ./nix-darwin/base.nix
+          ./nix-darwin/karabiner.nix
           (mkDarwinUser {
             inherit username;
           })
@@ -131,6 +139,7 @@
               (mkHomeConfiguration {
                 inherit system username gpgSigningKey;
                 isDarwinModule = true;
+                modules = [./home-manager/darwin.nix];
               })
               {
                 home.stateVersion = "25.05";

@@ -16,8 +16,25 @@ return {
     vim.filetype.add({
       extension = {
         tf = "terraform"
+      },
+      -- `.blade.php` is a compound extension, so it must be matched as a
+      -- pattern (Lua pattern), not via `extension`/`filename`. This is the
+      -- linchpin for Blade support: without it these files match `*.php` and
+      -- open as `php`, never engaging the blade treesitter parser,
+      -- blade-formatter, or laravel.nvim.
+      pattern = {
+        [".*%.blade%.php"] = "blade"
       }
     })
+
+    -- Disable LSP document color (Neovim 0.12, on by default). Its request()
+    -- asserts the client still exists, but the buffer's on_lines callback can
+    -- fire while a server is shutting down (e.g. phpactor restart + delete a
+    -- line), hitting a stale client id and crashing with an assertion failure.
+    -- We don't use color swatches anyway. Guarded so older Neovim still loads.
+    if vim.lsp.document_color then
+      vim.lsp.document_color.enable(false)
+    end
 
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("user-lsp-attach", { clear = true }),
@@ -41,14 +58,81 @@ return {
         map("n", "gy", vim.lsp.buf.type_definition, "Goto type definition")
         map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
         map({ "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
+
+        -- Inlay hints (e.g. gopls parameter/type hints). Enable when the
+        -- attached server supports them; <leader>th toggles them per-buffer.
+        local client = vim.lsp.get_client_by_id(event.data.client_id)
+        if client and client:supports_method("textDocument/inlayHint") then
+          vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+          map("n", "<leader>th", function()
+            vim.lsp.inlay_hint.enable(
+              not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }),
+              { bufnr = event.buf }
+            )
+          end, "Toggle inlay hints")
+        end
       end,
     })
 
     local language_servers = {
       -- https://github.com/bash-lsp/bash-language-server
       bashls = {},
+      -- https://github.com/olrtg/emmet-language-server
+      -- HTML/Tailwind abbreviation expansion in blade templates (and the
+      -- usual web filetypes). Overriding `filetypes` replaces the server
+      -- default, so `blade` must be listed explicitly alongside the rest.
+      emmet_language_server = {
+        filetypes = { "blade", "html", "css", "scss", "javascriptreact", "typescriptreact", "vue" },
+      },
+      -- https://github.com/golang/tools/tree/master/gopls
+      -- Shells out to the `go` toolchain (packaged in home.nix).
+      -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md
+      gopls = {
+        settings = {
+          gopls = {
+            gofumpt = true,
+            staticcheck = true,
+            usePlaceholders = true,
+            completeUnimported = true,
+            analyses = {
+              unusedparams = true,
+              unusedwrite = true,
+              nilness = true,
+              shadow = true,
+              useany = true,
+            },
+            hints = {
+              assignVariableTypes = true,
+              compositeLiteralFields = true,
+              compositeLiteralTypes = true,
+              constantValues = true,
+              functionTypeParameters = true,
+              parameterNames = true,
+              rangeVariableTypes = true,
+            },
+          },
+        },
+      },
       -- https://github.com/mrjosh/helm-ls
       helm_ls = {},
+      -- https://github.com/laravel-ls/laravel-ls
+      -- Blade component completion (`<x-...>`), argument completion, hover, and
+      -- diagnostics for missing components. Attaches to php + blade by default;
+      -- the binary is packaged in home-manager/pkgs/laravel-ls.nix.
+      -- laravel-ls (v0.1.0) fails `initialize` with "unknown scheme" on a null
+      -- rootUri: validateURI("") -> uri.Parse("") sees an empty scheme. Native
+      -- vim.lsp.enable sends null when no root marker is found (the default
+      -- marker is `artisan` only, so Laravel *packages* without it, and loose
+      -- PHP files, trip it). Only start in a real Laravel app; skip otherwise
+      -- (not calling on_dir skips the client, 0.11+).
+      laravel_ls = {
+        root_dir = function(bufnr, on_dir)
+          local root = vim.fs.root(bufnr, { "artisan" })
+          if root then
+            on_dir(root)
+          end
+        end,
+      },
       -- https://github.com/luals/lua-language-server
       lua_ls = {
         -- https://luals.github.io/wiki/settings/

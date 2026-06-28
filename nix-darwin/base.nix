@@ -94,19 +94,19 @@
     };
 
     brews = [
-      "localstack/tap/localstack-cli"
+      "floci-io/floci/floci"
     ];
 
     casks = [
       "devtoys"
       "headlamp"
-      "lm-studio"
     ];
   };
 
   environment.systemPackages = [
     pkgs.bruno
     pkgs.dbeaver-bin
+    pkgs.drawio
     pkgs.shottr
     pkgs.vlc-bin
   ];
