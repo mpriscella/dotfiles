@@ -32,14 +32,19 @@
         };
       }
 
-      (lib.optionalAttrs (gpgSigningKey != null && gpgSigningKey != "") {
+      {
+        # See git.nix: prefer an explicit key ID, else let GPG resolve the key
+        # from the committer email so an install-time generated key is used.
         signing = {
           behavior = "own";
           backend = "gpg";
-          key = gpgSigningKey;
+          key =
+            if (gpgSigningKey != null && gpgSigningKey != "")
+            then gpgSigningKey
+            else userConfig.email;
           backends.gpg.program = "${pkgs.gnupg}/bin/gpg";
         };
-      })
+      }
     ];
   };
 }

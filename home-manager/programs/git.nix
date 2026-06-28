@@ -39,12 +39,19 @@
         merge.conflictstyle = "zdiff3";
       }
 
-      (lib.optionalAttrs (gpgSigningKey != null && gpgSigningKey != "") {
-        user.signingkey = gpgSigningKey;
+      {
+        # Prefer an explicit per-host key ID when provided; otherwise sign with
+        # the key GPG resolves from the committer email. This decouples signing
+        # from any hardcoded fingerprint, so a key generated at install time
+        # (see install.sh) is picked up without a rebuild.
+        user.signingkey =
+          if (gpgSigningKey != null && gpgSigningKey != "")
+          then gpgSigningKey
+          else userConfig.email;
         commit.gpgsign = true;
         tag.gpgsign = true;
         gpg.program = "${pkgs.gnupg}/bin/gpg";
-      })
+      }
     ];
 
     ignores = [

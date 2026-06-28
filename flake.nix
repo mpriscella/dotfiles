@@ -6,6 +6,12 @@
       url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
     };
 
+    # Tracked separately from the weekly snapshot above so neovim can follow
+    # nixpkgs-unstable directly (see pkgs-unstable in home-manager/home.nix).
+    nixpkgs-unstable = {
+      url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    };
+
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,6 +31,7 @@
   outputs = {
     self,
     nixpkgs,
+    nixpkgs-unstable,
     nix-darwin,
     home-manager,
     sops-nix,
@@ -114,12 +121,13 @@
     mkDarwinConfiguration = {
       system ? "aarch64-darwin",
       username,
-      gpgSigningKey,
+      gpgSigningKey ? null,
     }:
       nix-darwin.lib.darwinSystem {
         inherit system;
         modules = [
           ./nix-darwin/base.nix
+          ./nix-darwin/karabiner.nix
           (mkDarwinUser {
             inherit username;
           })
@@ -131,6 +139,7 @@
               (mkHomeConfiguration {
                 inherit system username gpgSigningKey;
                 isDarwinModule = true;
+                modules = [./home-manager/darwin.nix];
               })
               {
                 home.stateVersion = "25.05";
@@ -143,7 +152,10 @@
     darwinConfigurations = {
       "macbook-pro-m5" = mkDarwinConfiguration {
         username = "mpriscella";
-        gpgSigningKey = "DD1E20A6B283BC4E";
+      };
+
+      "macbook-pro-m3" = mkDarwinConfiguration {
+        username = "mpriscella";
       };
     };
 
@@ -158,19 +170,21 @@
       };
     };
 
-    templates = {
-      default = {
-        path = ./templates/default;
-        description = "A minimal Nix flake template
-        for reproducible multi-system builds and dev environments.";
-      };
-    };
+    # Custom packages not in nixpkgs. Exposing them here lets `nix build
+    # .#laravel-lsp` test them in isolation and `nix-update --flake <name>`
+    # automate version/hash bumps.
+    packages = forAllSystems (system: {
+      laravel-lsp = nixpkgs.legacyPackages.${system}.callPackage ./home-manager/pkgs/laravel-lsp.nix {};
+    });
 
     devShells = forAllSystems (system: {
       default = nixpkgs.legacyPackages.${system}.mkShell {
         buildInputs =
           [
             home-manager.packages.${system}.default
+            # For bumping packages defined in this flake:
+            # `nix-update --flake laravel-lsp`
+            nixpkgs.legacyPackages.${system}.nix-update
             (nixpkgs.legacyPackages.${system}.writeShellScriptBin "nvim-dev" ''
               # Isolate XDG_CONFIG_HOME in a temp dir holding only a symlink to
               # the repo's nvim config. Pointing it at config/ directly lets
@@ -204,7 +218,7 @@
           echo "  nvim-dev [files]                                 # Neovim with isolated config"
           echo ""
           echo "Available Nix Darwin configurations:"
-          echo "  macbook-pro-m5"
+          echo "  macbook-pro-m5, macbook-pro-m3"
           echo ""
           echo ""
           echo "Home Manager commands:"

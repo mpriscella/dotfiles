@@ -58,5 +58,27 @@ return {
         port = 9003,
       },
     }
+
+    -- lldb-dap ships with pkgs.lldb (see home.nix). Zig puts binaries in
+    -- zig-out/bin by default, hence the prompt's prefill. Debug info needs a
+    -- non-stripped build (zig build's default Debug mode is fine).
+    dap.adapters.lldb = {
+      type = "executable",
+      command = "lldb-dap",
+      name = "lldb",
+    }
+    dap.configurations.zig = {
+      {
+        name = "Launch binary",
+        type = "lldb",
+        request = "launch",
+        program = function()
+          return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/zig-out/bin/", "file")
+        end,
+        cwd = "${workspaceFolder}",
+        stopOnEntry = false,
+        args = {},
+      },
+    }
   end,
 }

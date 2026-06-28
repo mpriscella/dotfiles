@@ -131,7 +131,9 @@ vim.keymap.set("n", "<up>", '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set("n", "<down>", '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
+--  Use CTRL+<hjkl> to switch between windows. (Karabiner now maps the arrow
+--  keys onto Left Option+<hjkl> instead of Ctrl+<hjkl>, so Ctrl+<hjkl> reaches
+--  Neovim unmodified and is free for window navigation.)
 --
 --  See `:help wincmd` for a list of all window commands
 vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
@@ -194,7 +196,7 @@ require("lazy").setup({
       library = {
         -- Load luvit types when the `vim.uv` word is found
         { path = "luvit-meta/library", words = { "vim%.uv" } },
-        { path = "snacks.nvim", words = { "Snacks" } },
+        { path = "snacks.nvim",        words = { "Snacks" } },
       },
     },
   },
