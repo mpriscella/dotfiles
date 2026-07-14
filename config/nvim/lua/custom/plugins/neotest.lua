@@ -5,6 +5,7 @@ return {
     "nvim-lua/plenary.nvim",
     "V13Axel/neotest-pest",
     "olimorris/neotest-phpunit",
+    "lawrence-laz/neotest-zig",
   },
   keys = {
     {
@@ -38,6 +39,9 @@ return {
         -- phpunit covers the rest.
         require("neotest-pest"),
         require("neotest-phpunit"),
+        -- Runs `zig test` per test block; detection is by filetype, so it
+        -- doesn't overlap with the PHP adapters.
+        require("neotest-zig"),
       },
     })
   end,

@@ -82,6 +82,7 @@
           pkgs.terraform-ls
           pkgs.tree-sitter
           pkgs.typescript-language-server
+          pkgs.vue-language-server
           pkgs.zls
         ];
         packages = [
@@ -115,6 +116,8 @@
           pkgs.kubectl
           pkgs-unstable.kubernetes-helm
           pkgs.lazydocker
+          # Provides lldb-dap, the DAP adapter nvim-dap uses for Zig.
+          pkgs.lldb
           pkgs.lua51Packages.lua
           pkgs.luajitPackages.luarocks
           pkgs-unstable.neovim
@@ -138,6 +141,14 @@
         EDITOR = "nvim";
         PAGER = "less";
         LESS = "-R";
+      };
+
+      # `nix flake init -t templates#<name>` instead of spelling out the
+      # full github: URL. Templates live in mpriscella/nix-templates.
+      nix.registry.templates.to = {
+        type = "github";
+        owner = "mpriscella";
+        repo = "nix-templates";
       };
 
       programs.man.enable = true;

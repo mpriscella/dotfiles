@@ -1,4 +1,7 @@
-# TODO: How do I update this
+# Exposed as `packages.<system>.laravel-ls` in flake.nix. To update: run
+# `nix-update --flake laravel-ls` (available in the dev shell) — it finds the
+# latest GitHub release and refreshes version, src hash, and vendorHash.
+# Verify with `nix build .#laravel-ls`.
 {
   lib,
   buildGoModule,

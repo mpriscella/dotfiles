@@ -74,6 +74,24 @@ return {
       end,
     })
 
+    -- @vue/typescript-plugin ships inside the vue-language-server package;
+    -- nixpkgs installs the language-tools monorepo next to the binary
+    -- (bin/../lib/language-tools/packages/typescript-plugin), so resolve it
+    -- relative to the wrapper (through the profile symlink) rather than
+    -- hardcoding a store path. Nil when the layout doesn't match — ts_ls
+    -- then runs without Vue support instead of failing to start.
+    local vue_ts_plugin
+    do
+      local bin = vim.fn.exepath("vue-language-server")
+      local real = bin ~= "" and vim.uv.fs_realpath(bin) or nil
+      if real then
+        local path = vim.fs.normalize(
+          vim.fs.dirname(real) .. "/../lib/language-tools/packages/typescript-plugin"
+        )
+        vue_ts_plugin = vim.uv.fs_stat(path) and path or nil
+      end
+    end
+
     local language_servers = {
       -- https://github.com/bash-lsp/bash-language-server
       bashls = {},
@@ -188,9 +206,43 @@ return {
       -- https://github.com/hashicorp/terraform-ls
       terraformls = {},
       -- https://github.com/typescript-language-server/typescript-language-server
-      ts_ls = {},
+      -- Loads @vue/typescript-plugin so tsserver can type-check the script
+      -- blocks of .vue files (vue_ls hybrid mode only owns template/CSS and
+      -- forwards its tsserver requests here — see vue_ls below). `vue` must
+      -- be in filetypes so ts_ls attaches to SFCs; overriding filetypes
+      -- replaces the server default, so the standard ones are repeated.
+      ts_ls = {
+        filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+        init_options = {
+          plugins = vue_ts_plugin and {
+            {
+              name = "@vue/typescript-plugin",
+              location = vue_ts_plugin,
+              languages = { "vue" },
+            },
+          } or nil,
+        },
+      },
+      -- https://github.com/vuejs/language-tools
+      -- Hybrid mode (3.x): vue_ls only serves the template/style parts of
+      -- SFCs (and the Vue embedded in Slidev decks' components); TypeScript
+      -- inside .vue files is served by ts_ls via @vue/typescript-plugin
+      -- (see ts_ls above). nvim-lspconfig's bundled vue_ls config wires up
+      -- the tsserver/request forwarding between the two.
+      vue_ls = {},
       -- https://github.com/zigtools/zls
-      zls = {},
+      -- Build-on-save (off by default) runs `zig build` on save and surfaces
+      -- full compile errors as diagnostics — zls alone only reports
+      -- AST-level errors, so type errors stay invisible until a manual
+      -- build. Prefers a `check` step when build.zig defines one (see
+      -- docs/zig.md).
+      zls = {
+        settings = {
+          zls = {
+            enable_build_on_save = true,
+          },
+        },
+      },
     }
 
     -- Per-project overrides come from a `.luarc.json`/`.luarc.jsonc` in the

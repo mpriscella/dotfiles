@@ -167,19 +167,21 @@
       };
     };
 
-    templates = {
-      default = {
-        path = ./templates/default;
-        description = "A minimal Nix flake template
-        for reproducible multi-system builds and dev environments.";
-      };
-    };
+    # Custom packages not in nixpkgs. Exposing them here lets `nix build
+    # .#laravel-ls` test them in isolation and `nix-update --flake <name>`
+    # automate version/hash bumps.
+    packages = forAllSystems (system: {
+      laravel-ls = nixpkgs.legacyPackages.${system}.callPackage ./home-manager/pkgs/laravel-ls.nix {};
+    });
 
     devShells = forAllSystems (system: {
       default = nixpkgs.legacyPackages.${system}.mkShell {
         buildInputs =
           [
             home-manager.packages.${system}.default
+            # For bumping packages defined in this flake:
+            # `nix-update --flake laravel-ls`
+            nixpkgs.legacyPackages.${system}.nix-update
             (nixpkgs.legacyPackages.${system}.writeShellScriptBin "nvim-dev" ''
               # Isolate XDG_CONFIG_HOME in a temp dir holding only a symlink to
               # the repo's nvim config. Pointing it at config/ directly lets
