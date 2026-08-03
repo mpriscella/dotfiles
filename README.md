@@ -51,6 +51,24 @@ nix fmt flake.nix home-manager nix-darwin
 | [Nix Flakes](docs/nix-flakes.md)      | Flake structure, configurations, and switching between setups |
 | [Secrets Management](docs/secrets.md) | sops-nix setup, adding secrets, and token rotation            |
 | [GPG Signing](docs/gpg.md)            | GPG key generation and Git commit signing                     |
+| [Zig](docs/zig.md)                    | Toolchain management and pinning Zig per project (zig-overlay) |
+| [Slidev](docs/slidev.md)              | Per-deck markdownlint/prettier config for Slidev projects     |
+
+## Templates
+
+Flake templates live in [mpriscella/nix-templates](https://github.com/mpriscella/nix-templates).
+A flake registry alias (`nix.registry.templates` in `home-manager/home.nix`)
+shortens usage to:
+
+```bash
+nix flake init -t templates#<template>
+```
+
+To see the available templates:
+
+```bash
+nix flake show templates
+```
 
 ## Available Configurations
 

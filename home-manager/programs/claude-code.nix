@@ -46,6 +46,7 @@
         ];
         additionalDirectories = ["~/Library/Mobile\ Documents/iCloud~md~obsidian/Documents"];
       };
+      tui = "fullscreen";
     };
   };
 }
