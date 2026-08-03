@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/mpriscella/dotfiles/compare/v3.0.0...v3.1.0) (2026-08-03)
+
+
+### Features
+
+* July 2026 ([#104](https://github.com/mpriscella/dotfiles/issues/104)) ([a7d93e4](https://github.com/mpriscella/dotfiles/commit/a7d93e4ef71764731199e7b7e68ab8987998d990))
+
 ## [3.0.0](https://github.com/mpriscella/dotfiles/compare/v2.5.0...v3.0.0) (2026-06-27)
 
 
