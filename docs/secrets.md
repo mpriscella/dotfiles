@@ -69,6 +69,48 @@ sops secrets/secrets.yaml
 
 The file will be decrypted for editing and re-encrypted when you save.
 
+## Whole-File Secrets
+
+`secrets/secrets.yaml` holds short values like tokens. A whole document that
+happens to be private is stored as its own encrypted file instead, so it can
+be edited as normal text rather than as a YAML block scalar.
+
+`.sops.yaml` has a creation rule for `secrets/**.md`, so creating one is just:
+
+```bash
+cp some-private-doc.md secrets/my-voice/voice-samples.md
+sops encrypt --input-type binary --output-type binary -i secrets/my-voice/voice-samples.md
+```
+
+Note that sops matches creation rules against the path of the file being
+encrypted, so the file has to already be at its destination under `secrets/`
+before you encrypt it.
+
+Editing later needs no flags -- sops detects the format from the file itself:
+
+```bash
+sops secrets/my-voice/voice-samples.md
+```
+
+Reference it with `format = "binary"` and a `path`, and sops-nix writes the
+decrypted document straight to that path at activation:
+
+```nix
+sops.secrets.my_voice_samples = {
+  format = "binary";
+  sopsFile = ../../secrets/my-voice/voice-samples.md;
+  path = "${config.home.homeDirectory}/.claude/skills/my-voice/references/voice-samples.md";
+};
+```
+
+This is how the private `my-voice` Claude Code skill is deployed. It quotes
+real colleagues, clients, and business specifics verbatim, so it cannot live
+in plaintext in this public repo. `programs.claude-code.skills` links each
+public skill under `~/.claude/skills` individually, leaving the directory
+itself writable, so the decrypted skill lands alongside them and Claude Code
+loads it normally. The `sops-nix` activation step runs after `linkGeneration`,
+so it writes these files after Home Manager has finished its own linking.
+
 ## Using Secrets in Nix Configuration
 
 Secrets are defined in `home-manager/programs/sops.nix`:

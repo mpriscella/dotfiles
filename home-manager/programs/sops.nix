@@ -22,6 +22,17 @@ in {
 
     secrets = {
       github_mcp_token = {};
+
+      my_voice_skill = {
+        format = "binary";
+        sopsFile = ../../secrets/my-voice/SKILL.md;
+        path = "${config.home.homeDirectory}/.claude/skills/my-voice/SKILL.md";
+      };
+      my_voice_samples = {
+        format = "binary";
+        sopsFile = ../../secrets/my-voice/voice-samples.md;
+        path = "${config.home.homeDirectory}/.claude/skills/my-voice/references/voice-samples.md";
+      };
     };
   };
 }

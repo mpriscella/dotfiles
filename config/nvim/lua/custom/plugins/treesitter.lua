@@ -21,6 +21,14 @@ return {
         'go',
         'gomod',
         'gosum',
+        -- Go templates outside a chart (helmfile.gotmpl, `helm template`
+        -- scratch files). `helm` below is the chart dialect of the same
+        -- grammar and injects yaml between the actions.
+        'gotmpl',
+        -- Terragrunt/Packer/Nomad `.hcl`; `terraform` below only claims
+        -- .tf/.tfvars.
+        'hcl',
+        'helm',
         'html',
         'http',
         'javascript',
@@ -42,6 +50,10 @@ return {
         'vim',
         'vimdoc',
         'vue',
+        -- Kubernetes manifests, chart values.yaml, workflows. Neovim's
+        -- built-in ft→lang fallback maps the compound `yaml.helm-values`
+        -- filetype (set by helm-ls.nvim) onto this parser too.
+        'yaml',
       })
 
       vim.api.nvim_create_autocmd('FileType', {

@@ -6,3 +6,11 @@ creation_rules:
     key_groups:
       - age:
           - *macbook_pro_m5
+  # Whole-document secrets (encrypted as opaque binary blobs, not YAML values).
+  # Used for the private `my-voice` Claude Code skill, which quotes real
+  # colleagues, clients, and business specifics and must not land in this
+  # public repo in plaintext. Edit with `sops secrets/my-voice/<file>.md`.
+  - path_regex: secrets/.*\.md$
+    key_groups:
+      - age:
+          - *macbook_pro_m5

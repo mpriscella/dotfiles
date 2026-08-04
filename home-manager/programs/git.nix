@@ -57,6 +57,7 @@
     ignores = [
       ".DS_Store"
       ".direnv/"
+      ".norender-markdown"
       "*.log"
       ".env"
       ".env.local"
