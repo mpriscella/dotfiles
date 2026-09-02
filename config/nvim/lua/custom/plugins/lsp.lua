@@ -11,12 +11,13 @@ return {
         }
       }
     },
+    -- Catalog of JSON/YAML schemas from schemastore.org, consumed by yamlls
+    -- below. Ships the mappings for GitHub Actions, Chart.yaml, .gitlab-ci,
+    -- docker-compose, etc. so they don't have to be hand-maintained here.
+    "b0o/SchemaStore.nvim",
   },
   config = function()
     vim.filetype.add({
-      extension = {
-        tf = "terraform"
-      },
       -- `.blade.php` is a compound extension, so it must be matched as a
       -- pattern (Lua pattern), not via `extension`/`filename`. This is the
       -- linchpin for Blade support: without it these files match `*.php` and
@@ -92,6 +93,25 @@ return {
       end
     end
 
+    -- YAML schema map for yamlls: `{ [schema url] = file glob(s) }`.
+    -- SchemaStore.nvim supplies the schemastore.org catalog (GitHub Actions,
+    -- Chart.yaml, docker-compose, .gitlab-ci, ...); Kubernetes is layered on
+    -- top because yamlls special-cases it — the literal key "kubernetes"
+    -- selects the k8s API schema bundled with the server, so there's no URL
+    -- and no version to keep current by hand.
+    --
+    -- The globs are deliberately narrow. Mapping the k8s schema over `*.yaml`
+    -- (a common suggestion) makes yamlls reject every unrelated YAML in the
+    -- repo as an invalid manifest, since the schema requires apiVersion/kind.
+    -- Anything outside these paths can opt in per-file with a modeline.
+    local schemas = require("schemastore").yaml.schemas()
+    schemas["kubernetes"] = {
+      "**/k8s/**/*.{yml,yaml}",
+      "**/kubernetes/**/*.{yml,yaml}",
+      "**/manifests/**/*.{yml,yaml}",
+      "*.k8s.{yml,yaml}",
+    }
+
     local language_servers = {
       -- https://github.com/bash-lsp/bash-language-server
       bashls = {},
@@ -132,19 +152,37 @@ return {
         },
       },
       -- https://github.com/mrjosh/helm-ls
-      helm_ls = {},
+      -- Attaches to the `helm` and `yaml.helm-values` filetypes, neither of
+      -- which Neovim detects on its own — helm-ls.nvim supplies both (see
+      -- lua/custom/plugins/helm.lua). Rooted at Chart.yaml, so it stays out
+      -- of yaml that merely lives under a `templates/` directory.
+      --
+      -- helm-ls parses the go-template layer itself and hands the rendered
+      -- YAML to its own yaml-language-server child process for schema
+      -- validation, so `path` must resolve. Never enable yamlls on the `helm`
+      -- filetype directly: it would parse `{{ ... }}` as YAML and drown the
+      -- buffer in syntax errors.
+      helm_ls = {
+        settings = {
+          ["helm-ls"] = {
+            yamlls = {
+              enabled = true,
+              path = "yaml-language-server",
+            },
+          },
+        },
+      },
       -- https://github.com/laravel/lsp
-      -- Official Laravel language server: framework-aware completions, hover,
-      -- diagnostics, document links, go-to-definition, and quick fixes across
-      -- routes, views/Blade, config, env, translations, Inertia, Livewire,
-      -- policies, validation, etc. Speaks LSP over stdio; the `laravel-lsp`
-      -- binary is packaged in home-manager/pkgs/laravel-lsp.nix. nvim-lspconfig
-      -- has no bundled config for it yet, so cmd/filetypes/root_markers are
-      -- spelled out per upstream's README.
       laravel_lsp = {
         cmd = { "laravel-lsp" },
         filetypes = { "php", "blade" },
-        root_markers = { "artisan", "composer.json", ".git" },
+        root_dir = function(bufnr, on_dir)
+          local root = vim.fs.root(bufnr, "artisan")
+
+          if root then
+            on_dir(root)
+          end
+        end,
       },
       -- https://github.com/luals/lua-language-server
       lua_ls = {
@@ -199,7 +237,30 @@ return {
       -- https://github.com/tailwindlabs/tailwindcss-intellisense
       tailwindcss = {},
       -- https://github.com/hashicorp/terraform-ls
-      terraformls = {},
+      -- Covers `terraform` and `terraform-vars` (Neovim 0.12 detects both from
+      -- .tf/.tfvars natively). terraform-ls takes settings through
+      -- `init_options`, not `settings` — it doesn't implement
+      -- workspace/didChangeConfiguration.
+      terraformls = {
+        init_options = {
+          experimentalFeatures = {
+            -- Run `terraform validate` on write, surfacing the errors a parse
+            -- alone can't see (bad references, type mismatches). Needs the
+            -- module to have been `terraform init`-ed; stays quiet otherwise.
+            validateOnSave = true,
+            -- Completing a resource/data block stubs out its required
+            -- arguments instead of an empty body.
+            prefillRequiredFields = true,
+          },
+        },
+      },
+      -- https://github.com/terraform-linters/tflint
+      -- tflint in language-server mode, alongside terraformls: terraform-ls
+      -- checks syntax and schema, tflint checks provider-specific rules
+      -- (invalid instance types, deprecated syntax, naming conventions).
+      -- Runs plugin rules only where the project ships a `.tflint.hcl` and
+      -- has run `tflint --init`; otherwise it applies the built-in ruleset.
+      tflint = {},
       -- https://github.com/typescript-language-server/typescript-language-server
       -- Loads @vue/typescript-plugin so tsserver can type-check the script
       -- blocks of .vue files (vue_ls hybrid mode only owns template/CSS and
@@ -225,6 +286,33 @@ return {
       -- (see ts_ls above). nvim-lspconfig's bundled vue_ls config wires up
       -- the tsserver/request forwarding between the two.
       vue_ls = {},
+      -- https://github.com/redhat-developer/yaml-language-server
+      -- Schema-driven completion, hover, and validation for plain YAML.
+      -- Attaches to `yaml`, `yaml.docker-compose`, `yaml.gitlab`, and
+      -- `yaml.helm-values` — chart *templates* (filetype `helm`) are served by
+      -- helm_ls instead, which runs its own yamlls child.
+      yamlls = {
+        settings = {
+          redhat = { telemetry = { enabled = false } },
+          yaml = {
+            -- The built-in schema store is replaced by SchemaStore.nvim so the
+            -- catalog is versioned with the config rather than fetched at
+            -- runtime. `url = ""` is required alongside `enable = false`;
+            -- yamlls still reads the field and errors on a nil.
+            schemaStore = { enable = false, url = "" },
+            -- A `# yaml-language-server: $schema=<url>` modeline at the top of
+            -- a file overrides whatever this map resolves to. That's the
+            -- escape hatch for CRDs — point it at the matching entry in
+            -- https://github.com/datreeio/CRDs-catalog.
+            schemas = schemas,
+            format = { enable = true },
+            validate = true,
+            -- Don't demand alphabetically sorted keys. Kubernetes convention
+            -- is apiVersion/kind/metadata/spec, which is the opposite.
+            keyOrdering = false,
+          },
+        },
+      },
       -- https://github.com/zigtools/zls
       -- Build-on-save (off by default) runs `zig build` on save and surfaces
       -- full compile errors as diagnostics — zls alone only reports

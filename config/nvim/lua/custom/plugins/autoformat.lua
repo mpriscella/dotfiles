@@ -15,7 +15,12 @@ return {
       -- Disable "format_on_save lsp_fallback" for languages that don't
       -- have a well standardized coding style. You can add additional
       -- languages here or re-enable it for the disabled ones.
-      local disable_filetypes = { cpp = true }
+      --
+      -- `helm` is here for a different reason: helm_ls advertises formatting,
+      -- but it fulfils the request through its yaml-language-server child,
+      -- which reflows a chart template as if the go-template actions were
+      -- YAML values and wrecks the indentation that `nindent` depends on.
+      local disable_filetypes = { cpp = true, helm = true }
       local lsp_format_opt
       if disable_filetypes[vim.bo[bufnr].filetype] then
         lsp_format_opt = "never"
@@ -58,10 +63,20 @@ return {
         return { "mago_format" }
       end,
       scss = { "prettierd" },
+      -- `terraform fmt` reading stdin. terraform-ls would do the same over
+      -- LSP, but routing it through conform keeps one code path for
+      -- format-on-save (and the :FormatDisable escape hatch) across
+      -- filetypes. `terraform-vars` is Neovim's filetype for .tfvars.
+      terraform = { "terraform_fmt" },
+      ["terraform-vars"] = { "terraform_fmt" },
       typescript = { "prettierd" },
       typescriptreact = { "prettierd" },
       vue = { "prettierd" },
       yaml = { "prettierd" },
+      -- conform keys on the literal filetype, so the compound one that
+      -- helm-ls.nvim sets on a chart's values.yaml needs its own entry to get
+      -- the same treatment as any other YAML.
+      ["yaml.helm-values"] = { "prettierd" },
     },
   },
   config = function(_, opts)

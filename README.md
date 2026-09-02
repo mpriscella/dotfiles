@@ -46,13 +46,14 @@ nix fmt flake.nix home-manager nix-darwin
 
 ## Documentation
 
-| Topic                                 | Description                                                   |
-| ------------------------------------- | ------------------------------------------------------------- |
-| [Nix Flakes](docs/nix-flakes.md)      | Flake structure, configurations, and switching between setups |
-| [Secrets Management](docs/secrets.md) | sops-nix setup, adding secrets, and token rotation            |
-| [GPG Signing](docs/gpg.md)            | GPG key generation and Git commit signing                     |
-| [Zig](docs/zig.md)                    | Toolchain management and pinning Zig per project (zig-overlay) |
-| [Slidev](docs/slidev.md)              | Per-deck markdownlint/prettier config for Slidev projects     |
+| Topic                                    | Description                                                    |
+| ---------------------------------------- | -------------------------------------------------------------- |
+| [Nix Flakes](docs/nix-flakes.md)         | Flake structure, configurations, and switching between setups  |
+| [Secrets Management](docs/secrets.md)    | sops-nix setup, adding secrets, and token rotation             |
+| [GPG Signing](docs/gpg.md)               | GPG key generation and Git commit signing                      |
+| [Infrastructure](docs/infrastructure.md) | Terraform, Helm, and Kubernetes YAML in Neovim                 |
+| [Zig](docs/zig.md)                       | Toolchain management and pinning Zig per project (zig-overlay) |
+| [Slidev](docs/slidev.md)                 | Per-deck markdownlint/prettier config for Slidev projects      |
 
 ## Templates
 
@@ -74,9 +75,9 @@ nix flake show templates
 
 ### nix-darwin (macOS)
 
-| Configuration    | System         | Username         |
-| ---------------- | -------------- | ---------------- |
-| `macbook-pro-m5` | aarch64-darwin | mpriscella       |
+| Configuration    | System         | Username   |
+| ---------------- | -------------- | ---------- |
+| `macbook-pro-m5` | aarch64-darwin | mpriscella |
 
 ### Home Manager (Linux)
 

@@ -99,7 +99,11 @@
 
     casks = [
       "devtoys"
-      "headlamp"
+      {
+        name = "headlamp";
+        args.no_quarantine = true;
+      }
+      "sweet-home3d"
     ];
   };
 

@@ -79,9 +79,11 @@
           pkgs.shellcheck
           pkgs.tailwindcss-language-server
           pkgs.terraform-ls
+          pkgs.tflint
           pkgs.tree-sitter
           pkgs.typescript-language-server
           pkgs.vue-language-server
+          pkgs.yaml-language-server
           pkgs.zls
         ];
         packages = [
@@ -126,6 +128,12 @@
           pkgs.prettierd
           pkgs.ripgrep
           pkgs.sops
+          # terraform-ls shells out to the `terraform` binary for provider
+          # schemas (completion/hover on resource attributes) and implements
+          # textDocument/formatting as `terraform fmt`, so the CLI is a hard
+          # requirement for the editor experience, not just for applying.
+          # BUSL-1.1, hence unfree.
+          pkgs.terraform
           pkgs.typescript
           pkgs.uv
           pkgs.yarn
