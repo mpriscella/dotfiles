@@ -1,0 +1,108 @@
+name: Test install.sh
+
+# install.sh only runs for real when a new machine is provisioned, so exercise
+# the bootstrap on both platforms: the full run (Nix install -> local checkout
+# detection -> home-manager switch) in a bare Ubuntu container, followed by a
+# smoke test of the `nix run .#install` flake-app entrypoint, and a
+# build-only run (Nix install -> darwin-rebuild build) on a macOS runner —
+# activation is skipped there because the config hardcodes the mpriscella
+# user, which collides with the runner user's uid. Runs on install.sh changes
+# (flake.nix included, since it defines the app wrapper) plus a monthly
+# schedule to catch rot in the upstream Nix installer between edits.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'install.sh'
+      - 'flake.nix'
+      - '.github/workflows/install-test.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'install.sh'
+      - 'flake.nix'
+      - '.github/workflows/install-test.yml'
+  schedule:
+    - cron: '0 6 3 * *' # monthly; offset from release cadence
+  workflow_dispatch:
+
+jobs:
+  test-install:
+    name: Bootstrap on Ubuntu container
+    runs-on: ubuntu-latest
+    # Bounded because the container has no Nix store cache: unfree packages
+    # (e.g. terraform) build from source. Also guards against a headless gpg
+    # prompt ever hanging the ensure_gpg_key step.
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run install.sh in a bare Ubuntu container
+        run: |
+          docker run --rm -v "$PWD:/dotfiles:ro" ubuntu:24.04 bash -euo pipefail -c '
+            apt-get update -q
+            apt-get install -yq --no-install-recommends curl git xz-utils ca-certificates
+
+            # install.sh applies the flake for the real user, so run as them.
+            useradd -m -s /bin/bash mpriscella
+
+            # Single-user Nix install (the container path) expects /nix to be
+            # writable by the invoking user.
+            mkdir -m 0755 /nix
+            chown mpriscella:mpriscella /nix
+
+            # Copy instead of mounting rw so the installer cannot dirty the
+            # checkout and file ownership is unambiguous.
+            cp -r /dotfiles /home/mpriscella/dotfiles
+            chown -R mpriscella:mpriscella /home/mpriscella/dotfiles
+
+            # DEVCONTAINER forces the single-user install path regardless of
+            # how the runner surfaces container markers.
+            su - mpriscella -c "DEVCONTAINER=true /home/mpriscella/dotfiles/install.sh linux"
+
+            # Verify the applied configuration: home-manager and a managed
+            # package must be on the login PATH of a fresh shell.
+            su - mpriscella -c "
+              . /home/mpriscella/.nix-profile/etc/profile.d/nix.sh
+              home-manager --version
+              nvim --version | head -1
+              fish --version
+            "
+
+            # Smoke-test the flake-app entrypoint (nix run …#install). The
+            # writeShellApplication wrapper runs the script under set -euo
+            # pipefail — stricter than the bare script'\''s set -e — so this
+            # catches runtime differences the direct run above cannot. Cheap:
+            # the store is warm from the switch, and build-only skips
+            # activation. Flakes are enabled by the nix.conf the switch just
+            # deployed, which this also verifies. DOTFILES_DIR pins the script
+            # to this checkout — without it the app clones main from GitHub,
+            # which would test stale code on pull requests.
+            su - mpriscella -c "
+              . /home/mpriscella/.nix-profile/etc/profile.d/nix.sh
+              DOTFILES_DIR=/home/mpriscella/dotfiles \
+                nix run /home/mpriscella/dotfiles#install -- --build-only linux
+            "
+          '
+
+  test-install-macos:
+    name: Bootstrap on macOS (build-only)
+    runs-on: macos-26
+    # Uncached first run builds unfree packages (e.g. terraform) from source.
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run install.sh (build-only)
+        # Exercises the macOS path end to end minus activation: the upstream
+        # Nix daemon install, local checkout detection, the sudo
+        # git safe.directory handling, and a full darwin-rebuild build of the
+        # system closure. `switch` can't run here (see header comment).
+        run: ./install.sh --build-only macbook-pro-m5

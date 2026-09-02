@@ -12,7 +12,17 @@
       experimental-features = ["nix-command" "flakes"];
       trusted-users = ["@admin"];
     };
+
+    gc = {
+      automatic = true;
+      options = "--delete-older-than 14d";
+    };
+
+    optimise.automatic = true;
   };
+
+  # Allow Touch ID in place of a password for sudo (darwin-rebuild, nh, etc.).
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   nixpkgs = {
     config = {
@@ -99,10 +109,12 @@
 
     casks = [
       "devtoys"
+      "ghostty"
       {
         name = "headlamp";
         args.no_quarantine = true;
       }
+      "obsidian"
       "sweet-home3d"
     ];
   };

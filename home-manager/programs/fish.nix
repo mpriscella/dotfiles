@@ -12,14 +12,19 @@
       cat = "bat";
     };
 
-    interactiveShellInit = ''
-      set -g fish_key_bindings fish_vi_key_bindings
+    interactiveShellInit =
+      ''
+        set -g fish_key_bindings fish_vi_key_bindings
+      ''
+      # Profiles without sops (codespaces.nix) never define this secret, and
+      # reading .path off a secret that was never declared is an eval error.
+      + lib.optionalString (config.sops.secrets ? github_mcp_token) ''
 
-      # Load sops secrets as environment variables
-      if test -r ${config.sops.secrets.github_mcp_token.path}
-        set -gx GITHUB_MCP_TOKEN (cat ${config.sops.secrets.github_mcp_token.path})
-      end
-    '';
+        # Load sops secrets as environment variables
+        if test -r ${config.sops.secrets.github_mcp_token.path}
+          set -gx GITHUB_MCP_TOKEN (cat ${config.sops.secrets.github_mcp_token.path})
+        end
+      '';
 
     functions = {
       # Startup greeting: host + timestamp, laptop vitals, plus repo context

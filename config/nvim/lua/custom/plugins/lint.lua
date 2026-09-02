@@ -45,5 +45,26 @@ return {
 				end
 			end,
 		})
+
+		-- PHPStan/Larastan is the type checker (mago owns lint + guard).
+		-- Deliberately not in linters_by_ft: larastan boots the Laravel
+		-- container on every run, which is seconds rather than milliseconds,
+		-- so it is restricted to BufWritePost instead of also firing on
+		-- BufEnter/InsertLeave like mago does.
+		vim.api.nvim_create_autocmd("BufWritePost", {
+			group = lint_augroup,
+			pattern = "*.php",
+			callback = function(args)
+				local root = vim.fs.root(args.buf, { "phpstan.neon", "phpstan.neon.dist" })
+				if not root then
+					return
+				end
+
+				-- cwd makes the builtin linter resolve ./vendor/bin/phpstan and
+				-- lets phpstan discover phpstan.neon (and therefore larastan's
+				-- extension.neon) when nvim's cwd is not the project root.
+				lint.try_lint("phpstan", { cwd = root })
+			end,
+		})
 	end,
 }

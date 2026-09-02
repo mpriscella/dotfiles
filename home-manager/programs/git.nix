@@ -28,7 +28,8 @@
         push.autoSetupRemote = true;
         core.editor = "nvim";
 
-        diff.tool = "vimdiff";
+        # difftastic is the default diff view (matching jj); merges stay in vim.
+        diff.tool = "difftastic";
         merge.tool = "vimdiff";
 
         core.pager = "delta";

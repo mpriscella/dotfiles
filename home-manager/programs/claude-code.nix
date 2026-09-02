@@ -23,7 +23,7 @@
       or edit generated config files directly — many are read-only symlinks
       into the Nix store (e.g. ~/.claude/settings.json, ~/.config/**). Instead,
       modify the relevant Nix module in the dotfiles repo and rebuild with
-      `nh darwin switch -h <host>`.
+      `nh darwin switch -H <host>`.
 
       # Shell
 
@@ -43,6 +43,18 @@
       permissions = {
         allow = [
           "Edit(~/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/Obsidian/Daily Notes/**)"
+          # Read-only staples so common inspection commands don't prompt.
+          "Bash(jj status:*)"
+          "Bash(jj diff:*)"
+          "Bash(jj log:*)"
+          "Bash(jj show:*)"
+          "Bash(git log:*)"
+          "Bash(git diff:*)"
+          "Bash(git status:*)"
+          "Bash(nix flake check:*)"
+          "Bash(nix flake metadata:*)"
+          "Bash(gh pr view:*)"
+          "Bash(gh pr list:*)"
         ];
         additionalDirectories = ["~/Library/Mobile\ Documents/iCloud~md~obsidian/Documents"];
       };
