@@ -105,4 +105,12 @@ jobs:
         # Nix daemon install, local checkout detection, the sudo
         # git safe.directory handling, and a full darwin-rebuild build of the
         # system closure. `switch` can't run here (see header comment).
+        #
+        # NIX_CONFIG authenticates nix's flake fetches: `nix run
+        # github:nix-darwin/nix-darwin` resolves HEAD through api.github.com,
+        # whose anonymous limit is 60/hr per IP — routinely already spent by
+        # other jobs on the shared macOS runner addresses (HTTP 403).
+        # install.sh forwards this through the `sudo` that strips it.
+        env:
+          NIX_CONFIG: access-tokens = github.com=${{ github.token }}
         run: ./install.sh --build-only macbook-pro-m5
