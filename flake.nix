@@ -6,8 +6,6 @@
       url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
     };
 
-    # Tracked separately from the weekly snapshot above so neovim can follow
-    # nixpkgs-unstable directly (see pkgs-unstable in home-manager/home.nix).
     nixpkgs-unstable = {
       url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     };
@@ -26,6 +24,14 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Packages not in nixpkgs (laravel-lsp, laravel-cloud-cli), kept in their
+    # own flake so other repos can consume them without inheriting everything
+    # above. Applied below as an overlay.
+    nix-packages = {
+      url = "github:mpriscella/nix-packages";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -35,6 +41,7 @@
     nix-darwin,
     home-manager,
     sops-nix,
+    nix-packages,
   } @ inputs: let
     systems = [
       "x86_64-linux"
@@ -70,6 +77,10 @@
       gpgSigningKey ? null,
       isDarwinModule ? false,
       homeDirectory ? null,
+      # Top-level profile module. home.nix is the full workstation; the
+      # codespaces profile swaps in a much smaller one (see
+      # home-manager/codespaces.nix). They are alternatives, never combined.
+      homeModule ? ./home-manager/home.nix,
       modules ? [],
       extraSpecialArgs ? {},
     }: let
@@ -89,7 +100,7 @@
             home.stateVersion = "25.05";
           })
           sops-nix.homeManagerModules.sops
-          ./home-manager/home.nix
+          homeModule
         ]
         ++ modules;
 
@@ -113,7 +124,16 @@
       else
         # When used standalone, wrap in homeManagerConfiguration
         home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${system};
+          # Imported explicitly rather than taken from legacyPackages, because
+          # overlays can only be applied at import time. allowUnfree is set
+          # here too: home.nix requests it through home-manager's
+          # `nixpkgs.config` option, which home-manager ignores whenever a
+          # `pkgs` is handed to it like this.
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+            overlays = [nix-packages.overlays.default];
+          };
           modules = baseModules;
           extraSpecialArgs = baseExtraSpecialArgs;
         };
@@ -126,6 +146,10 @@
       nix-darwin.lib.darwinSystem {
         inherit system;
         modules = [
+          # Set here rather than in base.nix because darwinSystem is called
+          # without specialArgs, so the modules themselves cannot see `inputs`.
+          # home-manager.useGlobalPkgs below means Home Manager inherits it.
+          {nixpkgs.overlays = [nix-packages.overlays.default];}
           ./nix-darwin/base.nix
           ./nix-darwin/karabiner.nix
           (mkDarwinUser {
@@ -168,13 +192,42 @@
         system = "x86_64-linux";
         username = "mpriscella";
       };
+
+      # Codespaces / dev containers: neovim plus a familiar shell, nothing
+      # that needs a secret or a signing key. install.sh selects these
+      # automatically when $CODESPACES is set. The username must match the
+      # container's user — `codespace` in the GitHub-provided images; add
+      # another entry here for a devcontainer that runs as `vscode` or `node`.
+      "codespaces" = mkHomeConfiguration {
+        system = "x86_64-linux";
+        username = "codespace";
+        homeModule = ./home-manager/codespaces.nix;
+      };
+      "codespaces-arm" = mkHomeConfiguration {
+        system = "aarch64-linux";
+        username = "codespace";
+        homeModule = ./home-manager/codespaces.nix;
+      };
     };
 
-    # Custom packages not in nixpkgs. Exposing them here lets `nix build
-    # .#laravel-lsp` test them in isolation and `nix-update --flake <name>`
-    # automate version/hash bumps.
-    packages = forAllSystems (system: {
-      laravel-lsp = nixpkgs.legacyPackages.${system}.callPackage ./home-manager/pkgs/laravel-lsp.nix {};
+    # Bootstrap a machine that already has Nix:
+    #   nix run github:mpriscella/dotfiles#install [-- --build-only <config>]
+    # This is install.sh minus its Nix-install step (the script detects Nix is
+    # present and skips it). A truly bare machine still needs ./install.sh or
+    # the curl | bash bootstrap, since `nix run` can't run before Nix exists.
+    # Run from the flake ref there is no local checkout, so the script clones
+    # the repo to its default DOTFILES_DIR before applying.
+    apps = forAllSystems (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
+      install = {
+        type = "app";
+        program = nixpkgs.lib.getExe (pkgs.writeShellApplication {
+          name = "dotfiles-install";
+          runtimeInputs = [pkgs.git pkgs.curl];
+          text = builtins.readFile ./install.sh;
+        });
+      };
     });
 
     devShells = forAllSystems (system: {
@@ -182,9 +235,6 @@
         buildInputs =
           [
             home-manager.packages.${system}.default
-            # For bumping packages defined in this flake:
-            # `nix-update --flake laravel-lsp`
-            nixpkgs.legacyPackages.${system}.nix-update
             (nixpkgs.legacyPackages.${system}.writeShellScriptBin "nvim-dev" ''
               # Isolate XDG_CONFIG_HOME in a temp dir holding only a symlink to
               # the repo's nvim config. Pointing it at config/ directly lets
@@ -227,7 +277,7 @@
           echo "  home-manager switch --rollback                   # Rollback to previous config"
           echo ""
           echo "Available Home Manager configurations:"
-          echo "  linux, linux-arm"
+          echo "  linux, linux-arm, codespaces, codespaces-arm"
           echo ""
           echo ""
           echo "Nix commands:"
@@ -257,6 +307,12 @@
             (mkHomeConfiguration {
               system = system;
               username = "mpriscella";
+            }).activationPackage;
+          codespaces =
+            (mkHomeConfiguration {
+              system = system;
+              username = "codespace";
+              homeModule = ./home-manager/codespaces.nix;
             }).activationPackage;
         };
       in

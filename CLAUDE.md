@@ -15,7 +15,11 @@ host-specific overrides.
 # Enter development shell (required for darwin-rebuild, home-manager)
 nix develop
 
-# Apply configuration
+# Apply configuration (nh shows a package diff; preferred)
+nh darwin switch -H <hostname>                 # macOS
+nh home switch -c <config>                     # Linux
+
+# Apply configuration (without nh)
 darwin-rebuild switch --flake .#<hostname>     # macOS
 home-manager switch --flake .#<config>         # Linux
 
@@ -34,9 +38,11 @@ nvim-dev [files]
 
 ## Available Configurations
 
-**macOS (nix-darwin):** `macbook-pro-m5`
+**macOS (nix-darwin):** `macbook-pro-m5`, `macbook-pro-m3`
 
 **Linux (home-manager):** `linux`, `linux-arm`
+
+**Codespaces / dev containers (home-manager):** `codespaces`, `codespaces-arm`
 
 ## Architecture
 
@@ -44,6 +50,14 @@ nvim-dev [files]
   Contains `mkDarwinConfiguration` and `mkHomeConfiguration` helper functions.
 - **home-manager/home.nix** - Main Home Manager config importing all program
   modules
+- **home-manager/codespaces.nix** - Minimal alternative to `home.nix` (not
+  combined with it): Neovim, fish, starship, git, jj. No sops, GPG, or cloud
+  tooling. Selected via the `homeModule` argument to `mkHomeConfiguration`.
+- **home-manager/modules/neovim.nix** - Neovim, its language servers, and
+  `~/.config/nvim`, shared by both profiles. The nvim and ghostty configs are
+  linked in from the Nix store, so edits under `config/` need a rebuild to
+  take effect; use `nvim-dev` (from `nix develop`) to iterate against the
+  working tree instead.
 - **home-manager/programs/*.nix** - Modular program configurations (git, fish,
   claude-code, etc.)
 - **nix-darwin/base.nix** - macOS system-level config (keyboard, homebrew, GUI
@@ -55,6 +69,13 @@ nvim-dev [files]
 - **skills/** - Claude Code skill definitions, deployed via
   `programs.claude-code.skills` in `home-manager/programs/claude-code.nix`
 - **secrets/** - Encrypted secrets using sops-nix with age encryption
+
+Packages that aren't in nixpkgs live in
+[mpriscella/nix-packages](https://github.com/mpriscella/nix-packages), not in
+this repo. Its `overlays.default` is applied in both config paths in
+`flake.nix`, so they resolve as ordinary attributes (e.g. `pkgs.laravel-lsp`).
+Add a new custom package there rather than reintroducing a local `pkgs/`
+directory.
 
 ## Key Conventions
 

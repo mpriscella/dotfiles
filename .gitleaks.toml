@@ -1,0 +1,10 @@
+# Config for gitleaks (used by .github/workflows/secret-scan.yml; gitleaks
+# auto-loads this file from the repo root).
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "GPG signing key IDs (README/docs examples and per-host config) are public fingerprints, not secrets"
+regexTarget = "line"
+regexes = ['''gpgSigningKey\s*=\s*"[^"]*"''']

@@ -3,7 +3,7 @@
   # macOS uses ~/Library/Application Support (NOT ~/.config). Write actrc to
   # the platform's actual read path so it's picked up.
   actConfigDir =
-    if pkgs.stdenv.isDarwin
+    if pkgs.stdenv.hostPlatform.isDarwin
     then "Library/Application Support/act"
     else ".config/act";
 in {

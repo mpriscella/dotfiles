@@ -10,9 +10,25 @@ macOS and Linux with host-specific configurations.
 
 ## Quick Start
 
+On a bare machine (installs Nix, clones the repo, applies the configuration):
+
 ```bash
-git clone https://github.com/mpriscella/dotfiles.git ~/.config/dotfiles
-cd ~/.config/dotfiles
+curl -fsSL https://raw.githubusercontent.com/mpriscella/dotfiles/main/install.sh | bash
+```
+
+On a machine that already has Nix:
+
+```bash
+nix run github:mpriscella/dotfiles#install
+```
+
+Or manually (the clone path matters: `programs.nh` sets `NH_FLAKE` to
+`~/workspace/mpriscella/dotfiles`, so `nh` finds the flake from any directory
+only if the checkout is there):
+
+```bash
+git clone https://github.com/mpriscella/dotfiles.git ~/workspace/mpriscella/dotfiles
+cd ~/workspace/mpriscella/dotfiles
 
 nix develop
 
@@ -86,6 +102,21 @@ nix flake show templates
 | `linux`       | x86_64-linux  | mpriscella |
 | `linux-arm`   | aarch64-linux | mpriscella |
 
+### Home Manager (Codespaces / dev containers)
+
+A deliberately small profile: Neovim and its language servers, fish, starship,
+git, and jj — no secrets, no GPG signing, no cloud tooling. `install.sh` picks
+it automatically when `$CODESPACES` is set.
+
+| Configuration    | System        | Username  |
+| ---------------- | ------------- | --------- |
+| `codespaces`     | x86_64-linux  | codespace |
+| `codespaces-arm` | aarch64-linux | codespace |
+
+The username must match the container's user. The GitHub-provided Codespaces
+images run as `codespace`; a devcontainer that runs as `vscode` or `node` needs
+its own entry in `flake.nix`.
+
 ## Project Structure
 
 ```
@@ -93,6 +124,8 @@ nix flake show templates
 ├── flake.nix              # Flake definition and configurations
 ├── home-manager/          # Home Manager modules
 │   ├── home.nix           # Main home configuration
+│   ├── codespaces.nix     # Minimal profile for Codespaces / dev containers
+│   ├── modules/           # Cross-profile modules (neovim, php)
 │   └── programs/          # Program-specific configs
 ├── nix-darwin/            # nix-darwin system configuration
 ├── config/                # Application configs (nvim, ghostty, etc.)

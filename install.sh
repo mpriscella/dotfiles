@@ -1,18 +1,33 @@
 #!/bin/bash
+#
+# Usage: ./install.sh [--build-only] [configuration]
+#
+#   --build-only     Build the configuration instead of activating it. Useful
+#                    for previewing what a fresh install would build, and for
+#                    CI (see .github/workflows/install-test.yml).
+#   configuration    Flake configuration name; detected from the hostname
+#                    (macOS) or architecture (Linux) when omitted.
 
 set -e
 
 DOTFILES_REPO="https://github.com/mpriscella/dotfiles.git"
 # Track whether DOTFILES_DIR was set explicitly, so local-checkout detection
 # doesn't override a deliberate override.
+# The default matches what the configuration itself assumes: programs.nh sets
+# NH_FLAKE to ~/workspace/mpriscella/dotfiles, so `nh darwin switch` finds the
+# flake from any directory only if the checkout is there.
 DOTFILES_DIR_EXPLICIT="${DOTFILES_DIR:+true}"
-DOTFILES_DIR="${DOTFILES_DIR:-$HOME/.config/dotfiles}"
+DOTFILES_DIR="${DOTFILES_DIR:-$HOME/workspace/mpriscella/dotfiles}"
 
 # Identity used when generating a GPG signing key. Must match `userConfig` in
 # flake.nix — git/jujutsu resolve the signing key from this email, so a key
 # with this uid is what enables commit signing.
 GIT_NAME="Mike Priscella"
 GIT_EMAIL="mpriscella@gmail.com"
+
+# Set by parse_args (--build-only): build the configuration without
+# activating it.
+BUILD_ONLY=false
 
 #######################################
 # Logging Functions.
@@ -38,6 +53,33 @@ log_warning() {
 
 log_error() {
   echo -e "${RED}[ERROR]${NC} $1"
+}
+
+#######################################
+# Parse command-line arguments.
+# Arguments:
+#   Script arguments ("$@")
+# Globals:
+#   BUILD_ONLY, CONFIG_ARG
+#######################################
+parse_args() {
+  CONFIG_ARG=""
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+    --build-only)
+      BUILD_ONLY=true
+      ;;
+    -*)
+      log_error "Unknown option: $1"
+      exit 1
+      ;;
+    *)
+      CONFIG_ARG="$1"
+      ;;
+    esac
+    shift
+  done
 }
 
 #######################################
@@ -197,30 +239,57 @@ detect_configuration() {
     CONFIGURATION="$(scutil --get LocalHostName | tr '[:upper:]' '[:lower:]')"
     log_info "Detected configuration '$CONFIGURATION' from hostname."
     log_info "If this doesn't match a flake configuration, re-run with: ./install.sh <configuration>"
+    return
+  fi
+
+  # GitHub Codespaces clones this repo and runs install.sh unattended, so the
+  # minimal profile has to be selected without an argument. The codespaces
+  # configurations assume the `codespace` user from the GitHub-provided
+  # images; pass a configuration explicitly on a devcontainer that runs as
+  # someone else.
+  local suffix=""
+  case "$(uname -m)" in
+  aarch64 | arm64)
+    suffix="-arm"
+    ;;
+  esac
+
+  if [[ -n "${CODESPACES:-}" ]]; then
+    CONFIGURATION="codespaces$suffix"
+    log_info "Codespaces detected; using the '$CONFIGURATION' configuration."
   else
-    case "$(uname -m)" in
-    aarch64 | arm64)
-      CONFIGURATION="linux-arm"
-      ;;
-    *)
-      CONFIGURATION="linux"
-      ;;
-    esac
+    CONFIGURATION="linux$suffix"
   fi
 }
 
 #######################################
-# Apply the flake configuration with nix-darwin or Home Manager.
+# Apply (or, with --build-only, just build) the flake configuration with
+# nix-darwin or Home Manager.
 # Globals:
-#   OS, DOTFILES_DIR, CONFIGURATION
+#   OS, DOTFILES_DIR, CONFIGURATION, BUILD_ONLY
 #######################################
 apply_configuration() {
   cd "$DOTFILES_DIR"
 
-  # Pass experimental features as a flag rather than relying on NIX_CONFIG:
-  # `sudo` resets the environment by default, so an exported NIX_CONFIG would
-  # not reach the darwin-rebuild invocation below.
+  local action="switch"
+  if [[ "$BUILD_ONLY" == true ]]; then
+    action="build"
+  fi
+
+  # Upstream Nix doesn't enable flakes by default, and the nix.conf that does
+  # (home-manager/home.nix) is deployed *by* this very switch — so the
+  # bootstrap run has to supply the features itself.
+  #
+  # It takes both forms. A command-line --extra-experimental-features
+  # configures only the `nix run` process; home-manager and darwin-rebuild
+  # each shell out to their own `nix build`/`nix eval` children, and those
+  # read nix.conf and NIX_CONFIG but never inherit the parent's flags. So the
+  # flag covers `nix run` itself (reliable even where sudo is fussy about
+  # environment assignments) and NIX_CONFIG covers everything it spawns.
+  # `sudo` resets the environment, hence passing it as a sudo argument below
+  # rather than exporting it.
   local nix_features=(--extra-experimental-features "nix-command flakes")
+  local nix_config="extra-experimental-features = nix-command flakes"
 
   if [[ "$OS" == "macos" ]]; then
     # `sudo nix run` evaluates the flake as root, but the checkout is owned by
@@ -230,14 +299,18 @@ apply_configuration() {
       sudo git config --global --add safe.directory "$DOTFILES_DIR"
     fi
 
-    log_info "Applying nix-darwin configuration '$CONFIGURATION'..."
-    sudo nix run "${nix_features[@]}" github:nix-darwin/nix-darwin#darwin-rebuild -- switch --flake ".#$CONFIGURATION"
+    log_info "Running darwin-rebuild $action for configuration '$CONFIGURATION'..."
+    sudo NIX_CONFIG="$nix_config" nix run "${nix_features[@]}" github:nix-darwin/nix-darwin#darwin-rebuild -- "$action" --flake ".#$CONFIGURATION"
   else
-    log_info "Applying Home Manager configuration '$CONFIGURATION'..."
-    nix run "${nix_features[@]}" github:nix-community/home-manager -- switch --flake ".#$CONFIGURATION"
+    log_info "Running home-manager $action for configuration '$CONFIGURATION'..."
+    NIX_CONFIG="$nix_config" nix run "${nix_features[@]}" github:nix-community/home-manager -- "$action" --flake ".#$CONFIGURATION"
   fi
 
-  log_success "✓ Configuration '$CONFIGURATION' applied"
+  if [[ "$BUILD_ONLY" == true ]]; then
+    log_success "✓ Configuration '$CONFIGURATION' built (not activated)"
+  else
+    log_success "✓ Configuration '$CONFIGURATION' applied"
+  fi
 }
 
 #######################################
@@ -296,6 +369,8 @@ ensure_gpg_key() {
 }
 
 main() {
+  parse_args "$@"
+
   log_info "Starting dotfiles installation..."
 
   check_prerequisites
@@ -303,18 +378,23 @@ main() {
 
   install_nix
 
-  # Upstream Nix doesn't enable flakes by default. `apply_configuration` passes
-  # the experimental features directly to `nix run` (see the note there about
-  # why NIX_CONFIG can't be used with `sudo`).
+  # Upstream Nix doesn't enable flakes by default; `apply_configuration`
+  # supplies the experimental features for the bootstrap run (see the note
+  # there about why it takes both a flag and NIX_CONFIG).
 
   resolve_dotfiles_dir
   clone_dotfiles
-  detect_configuration "${1:-}"
+  detect_configuration "$CONFIG_ARG"
   apply_configuration
 
   # gpg/pinentry are provided by the configuration just applied, so this must
   # run afterward.
-  ensure_gpg_key
+  # Skipped for --build-only (nothing was activated, so the configuration's
+  # gpg isn't on any profile) and in Codespaces, where the profile disables
+  # commit signing and the prompt would block an unattended install.
+  if [[ "$BUILD_ONLY" != true && -z "${CODESPACES:-}" ]]; then
+    ensure_gpg_key
+  fi
 }
 
 main "$@"

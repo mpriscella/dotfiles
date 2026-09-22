@@ -9,6 +9,7 @@
 }: {
   imports = [
     # Modules
+    ./modules/neovim.nix
     ./modules/php.nix
 
     # Programs
@@ -48,6 +49,10 @@
           --pager=less -R
           --ignore-case
         '';
+        # From the store, not a symlink to the checkout — see the note in
+        # ./modules/neovim.nix. Applying this flake on a host with no clone (or
+        # a clone at an unexpected path) would otherwise leave a dangling
+        # symlink here and silently fall back to stock Ghostty defaults.
         ".config/ghostty".source = ../config/ghostty;
         ".config/nix/nix.conf".text = ''
           # On macOS nix-darwin also sets experimental-features system-wide;
@@ -56,95 +61,61 @@
           experimental-features = nix-command flakes
           warn-dirty = false
         '';
-        ".config/nvim".source = ../config/nvim;
       };
 
       home.packages = let
-        # neovim tracks nixpkgs-unstable directly rather than the pinned
-        # weekly nixpkgs snapshot used for everything else.
         pkgs-unstable = import inputs.nixpkgs-unstable {
           inherit system;
           config.allowUnfree = true;
         };
-        language_servers = [
-          pkgs.alejandra
-          pkgs.bash-language-server
-          pkgs.emmet-language-server
-          pkgs.gopls
-          pkgs.helm-ls
-          pkgs.lua-language-server
-          pkgs.markdownlint-cli
-          pkgs.nixd
-          pkgs.python313Packages.python-lsp-server
-          pkgs.shellcheck
-          pkgs.tailwindcss-language-server
-          pkgs.terraform-ls
-          pkgs.tflint
-          pkgs.tree-sitter
-          pkgs.typescript-language-server
-          pkgs.vue-language-server
-          pkgs.yaml-language-server
-          pkgs.zls
-        ];
-        packages = [
-          pkgs.ack
-          pkgs.age
-          pkgs.asciinema
-          pkgs.asciinema-agg
-          pkgs.bat
-          # pkgs.bazel_8
-          pkgs.cmake
-          pkgs.codex
-          pkgs.delta
-          pkgs.devcontainer
-          pkgs.difftastic
-          pkgs.dive
-          pkgs.duf
-          pkgs.dust
-          pkgs.exercism
-          pkgs.fd
-          pkgs.fzf
-          pkgs.go
-          pkgs.gping
-          pkgs.graphviz
-          pkgs.hyperfine
-          pkgs.imagemagick
-          pkgs.jjui
-          pkgs.jq
-          pkgs.just
-          pkgs.kind
-          pkgs.kubectl
-          pkgs-unstable.kubernetes-helm
-          pkgs.lazydocker
-          # Provides lldb-dap, the DAP adapter nvim-dap uses for Zig.
-          pkgs.lldb
-          pkgs.lua51Packages.lua
-          pkgs.luajitPackages.luarocks
-          pkgs-unstable.neovim
-          pkgs.ngrok
-          pkgs.nodejs_24
-          pkgs.ollama
-          pkgs.pnpm
-          pkgs.prettierd
-          pkgs.ripgrep
-          pkgs.sops
-          # terraform-ls shells out to the `terraform` binary for provider
-          # schemas (completion/hover on resource attributes) and implements
-          # textDocument/formatting as `terraform fmt`, so the CLI is a hard
-          # requirement for the editor experience, not just for applying.
-          # BUSL-1.1, hence unfree.
-          pkgs.terraform
-          pkgs.typescript
-          pkgs.uv
-          pkgs.yarn
-          pkgs.yq
-          pkgs.zig
-        ];
-      in
-        packages ++ language_servers;
+      in [
+        pkgs.ack
+        pkgs.age
+        pkgs.asciinema
+        pkgs.asciinema-agg
+        pkgs.bat
+        pkgs.cmake
+        pkgs-unstable.codex
+        pkgs.delta
+        pkgs.devcontainer
+        pkgs.difftastic
+        pkgs.dive
+        pkgs.duf
+        pkgs.dust
+        pkgs.exercism
+        pkgs.fd
+        pkgs.fzf
+        pkgs.go
+        pkgs.google-cloud-sdk
+        pkgs.gping
+        pkgs.hyperfine
+        pkgs.imagemagick
+        pkgs.jjui
+        pkgs.jq
+        pkgs.just
+        pkgs.kind
+        pkgs.kubectl
+        pkgs.kubernetes-helm
+        # Provides lldb-dap, the DAP adapter nvim-dap uses for Zig.
+        pkgs.lldb
+        pkgs.lua51Packages.lua
+        pkgs.luajitPackages.luarocks
+        pkgs.mermaid-cli
+        pkgs.ngrok
+        pkgs.nodejs_26
+        pkgs.pnpm
+        pkgs.prettierd
+        pkgs.ripgrep
+        pkgs.sops
+        pkgs.terraform
+        pkgs.typescript
+        pkgs.uv
+        pkgs.yarn
+        pkgs.yq
+        pkgs.zig
+      ];
 
       home.sessionVariables = {
-        EDITOR = "nvim";
         PAGER = "less";
         LESS = "-R";
       };

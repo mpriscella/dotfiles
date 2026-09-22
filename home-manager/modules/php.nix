@@ -12,12 +12,15 @@
     '';
   };
 
+  # laravel-cloud-cli and laravel-lsp below are not from nixpkgs — they come
+  # from github:mpriscella/nix-packages, applied as an overlay in flake.nix.
   home.packages = [
     # Runtimes and tooling
-    pkgs.php
-    pkgs.php84Packages.composer
+    pkgs.php85
+    pkgs.php85Packages.composer
     pkgs.frankenphp
     pkgs.laravel
+    pkgs.laravel-cloud-cli
     pkgs.blade-formatter
 
     # Xdebug DAP adapter under a stable name for nvim-dap (the store
@@ -29,6 +32,6 @@
     # Language servers
     pkgs.mago
     pkgs.phpactor
-    (pkgs.callPackage ../pkgs/laravel-lsp.nix {})
+    pkgs.laravel-lsp
   ];
 }
