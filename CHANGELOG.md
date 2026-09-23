@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.3.0](https://github.com/mpriscella/dotfiles/compare/v3.2.0...v3.3.0) (2026-09-23)
+
+
+### Features
+
+* September 2026 ([#108](https://github.com/mpriscella/dotfiles/issues/108)) ([5789c12](https://github.com/mpriscella/dotfiles/commit/5789c1231f577a9382dfa2d34d44665937c179ad))
+
+
+### Bug Fixes
+
+* Put the Nix profile on PATH and start fish in Codespaces ([#110](https://github.com/mpriscella/dotfiles/issues/110)) ([4ea993e](https://github.com/mpriscella/dotfiles/commit/4ea993ea0674b8a763a39617f1c336d0ba0912a8))
+
 ## [3.2.0](https://github.com/mpriscella/dotfiles/compare/v3.1.0...v3.2.0) (2026-09-02)
 
 
