@@ -291,6 +291,15 @@ apply_configuration() {
   local nix_features=(--extra-experimental-features "nix-command flakes")
   local nix_config="extra-experimental-features = nix-command flakes"
 
+  # Keep whatever the caller already put in NIX_CONFIG; `sudo` below would
+  # otherwise drop it along with the rest of the environment. CI passes an
+  # access-tokens line this way, because `nix run github:...` resolves the
+  # flake ref through api.github.com and the anonymous limit there is 60/hr
+  # per IP — which the shared macOS runners exhaust on their own.
+  if [[ -n "${NIX_CONFIG:-}" ]]; then
+    nix_config="$NIX_CONFIG"$'\n'"$nix_config"
+  fi
+
   if [[ "$OS" == "macos" ]]; then
     # `sudo nix run` evaluates the flake as root, but the checkout is owned by
     # the invoking user; mark it safe so git/nix don't reject it as "dubious
@@ -368,6 +377,74 @@ ensure_gpg_key() {
   fi
 }
 
+#######################################
+# Make the configuration reachable from bash, then hand interactive shells to
+# fish.
+#
+# The single-user Nix installer appends its profile hook to the first profile
+# file that already exists — ~/.profile in the GitHub images — and only a
+# *login* shell reads that. The VS Code terminal in a Codespace starts bash
+# interactive-but-not-login, so ~/.nix-profile/bin never reaches PATH and
+# nothing the profile installs (fish, nvim, rg, bat) is callable. ~/.bashrc is
+# read by every interactive bash, so the hook goes there instead.
+#
+# fish is exec'd rather than made the login shell with chsh: no sudo needed,
+# the image's own ~/.bashrc setup still runs first, and a generation that
+# somehow lacks fish leaves a working bash instead of an unusable account.
+# Globals:
+#   OS, BASHRC_MARKER
+#######################################
+BASHRC_MARKER='# >>> mpriscella/dotfiles >>>'
+
+configure_bash_handoff() {
+  [[ "$OS" == "linux" ]] || return 0
+
+  local bashrc="$HOME/.bashrc"
+  if [[ ! -f "$bashrc" ]]; then
+    log_info "No ~/.bashrc; skipping the fish hand-off."
+    return 0
+  fi
+
+  if grep -qF "$BASHRC_MARKER" "$bashrc"; then
+    log_info "Nix profile hook and fish hand-off already present in ~/.bashrc."
+    return 0
+  fi
+
+  log_info "Adding the Nix profile hook and fish hand-off to ~/.bashrc..."
+  cat >>"$bashrc" <<EOF
+
+$BASHRC_MARKER
+# Managed by install.sh. Delete this block for plain, unmodified bash.
+if [ -e "\$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+  . "\$HOME/.nix-profile/etc/profile.d/nix.sh"
+fi
+
+# nix.sh is what normally puts the profile on PATH, but it belongs to the
+# single-user install; a daemon install patches /etc instead and leaves no
+# such file. Add the directory outright so this block doesn't depend on which
+# installer ran.
+case ":\$PATH:" in
+*":\$HOME/.nix-profile/bin:"*) ;;
+*) PATH="\$HOME/.nix-profile/bin:\$PATH" ;;
+esac
+export PATH
+
+# Interactive shells continue in fish. INSIDE_FISH is exported into fish's
+# environment, so a bash started *from* fish stays bash.
+case "\$-" in
+*i*)
+  if [ -z "\${INSIDE_FISH:-}" ] && command -v fish >/dev/null 2>&1; then
+    INSIDE_FISH=1 exec fish
+  fi
+  ;;
+esac
+# <<< mpriscella/dotfiles <<<
+EOF
+
+  log_success "✓ Interactive bash will now continue in fish"
+  log_info "Open a new terminal (or run 'exec bash') to pick it up."
+}
+
 main() {
   parse_args "$@"
 
@@ -386,6 +463,13 @@ main() {
   clone_dotfiles
   detect_configuration "$CONFIG_ARG"
   apply_configuration
+
+  # Depends on the profile the switch just built, so it runs afterward.
+  # Nothing was activated under --build-only, so there is no profile to point
+  # bash at.
+  if [[ "$BUILD_ONLY" != true ]]; then
+    configure_bash_handoff
+  fi
 
   # gpg/pinentry are provided by the configuration just applied, so this must
   # run afterward.

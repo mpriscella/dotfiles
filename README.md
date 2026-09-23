@@ -117,6 +117,14 @@ The username must match the container's user. The GitHub-provided Codespaces
 images run as `codespace`; a devcontainer that runs as `vscode` or `node` needs
 its own entry in `flake.nix`.
 
+Nothing here changes the container's login shell — that stays bash. Instead
+`install.sh` appends a marked block to `~/.bashrc` that puts `~/.nix-profile/bin`
+on `PATH` and then `exec`s fish for interactive shells. Without it the VS Code
+terminal starts bash interactive-but-not-login, which never reads the profile
+hook the single-user Nix installer wrote to `~/.profile`, so nothing the
+configuration installs is callable. Delete the block for plain bash; `bash`
+started from fish stays bash.
+
 ## Project Structure
 
 ```
