@@ -116,6 +116,7 @@
       }
       "obsidian"
       "sweet-home3d"
+      "utm"
     ];
   };
 

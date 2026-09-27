@@ -33,7 +33,6 @@ return {
         'http',
         'javascript',
         'json',
-        'jsonc',
         'lua',
         'luadoc',
         'markdown',

@@ -12,6 +12,20 @@ theme = dark:GitHub Dark Default,light:GitHub Light Default
 # distorting the palette.
 minimum-contrast = 1.1
 
+# Translucent background, so whatever is blurring behind the window shows
+# through. The blur comes from two different places depending on the OS:
+# macOS uses background-blur below, which Ghostty implements natively. On
+# Linux that setting only works under KDE, so under niri the compositor does
+# it instead -- see the com.mitchellh.ghostty window-rule in nixos-config's
+# home/niri/config.kdl. Same result, two mechanisms.
+background-opacity = 0.85
+background-blur = true
+
+# Neovim and tmux repaint the background themselves, so by default they stay
+# opaque and the translucency only shows around them. Uncomment to extend it
+# to every cell, editor included.
+# background-opacity-cells = true
+
 # working-directory = home
 quit-after-last-window-closed = true
 # window-inherit-working-directory = false
