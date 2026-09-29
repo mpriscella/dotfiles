@@ -19,6 +19,7 @@
     ./programs/claude-code.nix
     ./programs/direnv.nix
     ./programs/eza.nix
+    ./programs/fireworks.nix
     ./programs/fish.nix
     ./programs/gh.nix
     ./programs/git.nix
