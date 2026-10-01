@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.3.0](https://github.com/mpriscella/dotfiles/compare/v3.2.0...v3.3.0) (2026-10-01)
+
+
+### Features
+
+* Fireworks gateway module for Claude Code and OpenCode ([#112](https://github.com/mpriscella/dotfiles/issues/112)) ([544679e](https://github.com/mpriscella/dotfiles/commit/544679ee2ec69d9ce5f141fd7c3d336fc12835a2))
+* PHP 8.5 across tooling, translucent Ghostty, UTM cask ([#111](https://github.com/mpriscella/dotfiles/issues/111)) ([3072620](https://github.com/mpriscella/dotfiles/commit/30726202921628d2035dc9918e0b0122d03e4655))
+* September 2026 ([#108](https://github.com/mpriscella/dotfiles/issues/108)) ([5789c12](https://github.com/mpriscella/dotfiles/commit/5789c1231f577a9382dfa2d34d44665937c179ad))
+* Share skills and MCP servers with OpenCode ([#113](https://github.com/mpriscella/dotfiles/issues/113)) ([a62fd2e](https://github.com/mpriscella/dotfiles/commit/a62fd2ebacdd64dbe417d72ba2189ec513b0b08e))
+
+
+### Bug Fixes
+
+* Put the Nix profile on PATH and start fish in Codespaces ([#110](https://github.com/mpriscella/dotfiles/issues/110)) ([4ea993e](https://github.com/mpriscella/dotfiles/commit/4ea993ea0674b8a763a39617f1c336d0ba0912a8))
+
 ## [3.2.0](https://github.com/mpriscella/dotfiles/compare/v3.1.0...v3.2.0) (2026-09-02)
 
 
