@@ -137,8 +137,6 @@ started from fish stays bash.
 │   └── programs/          # Program-specific configs
 ├── nix-darwin/            # nix-darwin system configuration
 ├── config/                # Application configs (nvim, ghostty, etc.)
-├── agents/                # Claude Code subagent definitions
-├── skills/                # Claude Code skill definitions
 ├── secrets/               # Encrypted secrets (sops)
 └── docs/                  # Documentation
 ```

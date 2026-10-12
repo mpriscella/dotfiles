@@ -108,11 +108,12 @@
     };
   };
 
-  # macOS Homebrew paths, plus the Ghostty app bundle (the CLI lives inside
-  # the bundle and is not symlinked onto the PATH at install).
+  # macOS Homebrew paths, plus the Ghostty and Rex app bundles (their CLIs
+  # live inside the bundles and are not symlinked onto the PATH at install).
   home.sessionPath = lib.mkIf (lib.hasInfix "darwin" system) [
     "/opt/homebrew/bin"
     "/opt/homebrew/sbin"
     "/Applications/Ghostty.app/Contents/MacOS"
+    "/Applications/Rex Beta.app/Contents/Helpers/Rex Server.rex/Contents/MacOS"
   ];
 }

@@ -1,12 +1,17 @@
 # https://github.com/nix-community/home-manager/blob/master/modules/programs/claude-code.nix
 {...}: {
+  # The executable comes from the native installer
+  # (curl -fsSL https://claude.ai/install.sh | bash), which installs to
+  # ~/.local/bin and auto-updates. Nix only manages config; skills and agents
+  # come from the toolbox plugin in the private mpriscella/ai-toolbox
+  # marketplace.
+  home.sessionPath = ["$HOME/.local/bin"];
+
   programs.claude-code = {
     enable = true;
+    package = null;
 
     enableMcpIntegration = true;
-
-    agentsDir = ./../../agents;
-    skills = ./../../skills;
 
     context = ''
       # Version Control
@@ -21,9 +26,17 @@
       home-manager) from ~/workspace/mpriscella/dotfiles. Do NOT install
       packages imperatively (brew install, npm install -g, pip install, etc.)
       or edit generated config files directly — many are read-only symlinks
-      into the Nix store (e.g. ~/.claude/settings.json, ~/.config/**). Instead,
+      into the Nix store (e.g. ~/.config/**). Instead,
       modify the relevant Nix module in the dotfiles repo and rebuild with
       `nh darwin switch -H <host>`.
+
+      The one exception is the Claude Code executable itself: it comes from
+      the native installer and auto-updates in ~/.local/bin. This CLAUDE.md
+      is still managed by Nix, but ~/.claude/settings.json is NOT: Claude
+      Code owns it, so edit it directly. My skills and agents are NOT in
+      dotfiles either: they're the `toolbox` plugin in the private
+      mpriscella/ai-toolbox marketplace, checked out at
+      ~/workspace/mpriscella/ai-toolbox.
 
       # Shell
 
@@ -37,28 +50,9 @@
       - Still show your reasoning and trade-offs before acting on non-trivial
         work — concise doesn't mean skipping the "why".
       - Ask before making large or hard-to-reverse changes.
+      - When spawning `general-purpose` or `Explore` subagents for search,
+        lookup, or summarization, pass `model: "sonnet"`; keep the default
+        only for work that needs deep reasoning.
     '';
-
-    settings = {
-      permissions = {
-        allow = [
-          "Edit(~/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/Obsidian/Daily Notes/**)"
-          # Read-only staples so common inspection commands don't prompt.
-          "Bash(jj status:*)"
-          "Bash(jj diff:*)"
-          "Bash(jj log:*)"
-          "Bash(jj show:*)"
-          "Bash(git log:*)"
-          "Bash(git diff:*)"
-          "Bash(git status:*)"
-          "Bash(nix flake check:*)"
-          "Bash(nix flake metadata:*)"
-          "Bash(gh pr view:*)"
-          "Bash(gh pr list:*)"
-        ];
-        additionalDirectories = ["~/Library/Mobile\ Documents/iCloud~md~obsidian/Documents"];
-      };
-      tui = "fullscreen";
-    };
   };
 }

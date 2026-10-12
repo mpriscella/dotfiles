@@ -14,6 +14,19 @@
           auto-track-bookmarks = "main";
           fetch-tags = true;
         };
+        # `jj review [REVSET]` opens tuicr on a revset (default `@`, like
+        # `jj diff`), e.g. `jj review 'trunk()..@'` for the whole stack.
+        # Kept separate from `jj diff`: aliases can't shadow built-ins, and
+        # an interactive diff-formatter would break piping and `jj log -p`.
+        aliases.review = [
+          "util"
+          "exec"
+          "--"
+          "sh"
+          "-c"
+          ''exec ${pkgs.tuicr}/bin/tuicr -r "''${1:-@}"''
+          "jj-review"
+        ];
         template-aliases = {
           "format_timestamp(timestamp)" = "timestamp.ago()";
         };

@@ -73,5 +73,12 @@
   };
 
   programs.man.enable = true;
+
+  # Install-time cost cuts. Both are local builds the binary cache can't
+  # serve: fish's generator runs a Python man-page parser once per package
+  # (~35 derivations, plus a whole python3 just to run it), and the HM manual
+  # evaluates every option to render home-configuration.nix(5).
+  programs.fish.generateCompletions = lib.mkForce false;
+  manual.manpages.enable = false;
   programs.home-manager.enable = true;
 }

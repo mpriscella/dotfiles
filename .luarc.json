@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "completion.callSnippet": "Replace",
-  "diagnostics.globals": ["vim"],
+  "diagnostics.globals": ["vim", "rex"],
   "runtime.version": "LuaJIT"
 }

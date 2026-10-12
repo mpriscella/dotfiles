@@ -13,12 +13,32 @@
       trusted-users = ["@admin"];
     };
 
-    gc = {
-      automatic = true;
-      options = "--delete-older-than 14d";
-    };
-
     optimise.automatic = true;
+  };
+
+  # Garbage collection by generation count rather than age. nix.gc only offers
+  # `--delete-older-than`, which can collect the generation whose files are
+  # actually linked into $HOME: the profile is bumped before activation runs,
+  # so a switch that fails to activate leaves the live links pointing at an
+  # older generation that then ages out, and they dangle.
+  #
+  # Runs as root so it covers the system profile (which carries Home Manager)
+  # as well as per-user ones. --no-gcroots leaves direnv/`result` roots alone,
+  # matching what nix-collect-garbage did. Same schedule nix.gc defaulted to.
+  launchd.daemons.nh-clean = {
+    command = "${pkgs.nh}/bin/nh clean all --keep 5 --no-gcroots --elevation-strategy none";
+    serviceConfig = {
+      RunAtLoad = false;
+      StartCalendarInterval = [
+        {
+          Weekday = 7;
+          Hour = 3;
+          Minute = 15;
+        }
+      ];
+      StandardOutPath = "/var/log/nh-clean.log";
+      StandardErrorPath = "/var/log/nh-clean.log";
+    };
   };
 
   # Allow Touch ID in place of a password for sudo (darwin-rebuild, nh, etc.).
