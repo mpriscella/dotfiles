@@ -124,8 +124,6 @@ The development shell includes:
 ├── nix-darwin/
 │   └── base.nix                 # macOS system configuration
 ├── config/                      # Application configs (nvim, ghostty)
-├── agents/                      # Claude Code subagent definitions
-├── skills/                      # Claude Code skill definitions
 ├── secrets/                     # Encrypted secrets (sops)
 └── templates/                   # Flake templates
 ```

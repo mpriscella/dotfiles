@@ -23,10 +23,6 @@ in {
 
     enableMcpIntegration = true;
 
-    # Same layout opencode expects: <name>/SKILL.md. Shared with claude-code,
-    # which deploys the same directory to ~/.claude/skills.
-    skills = ./../../skills;
-
     settings = {
       provider = {
         ollama = {

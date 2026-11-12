@@ -29,6 +29,7 @@
     ./programs/mcp.nix
     ./programs/nh.nix
     ./programs/opencode.nix
+    ./programs/rex.nix
     ./programs/sops.nix
     ./programs/starship.nix
     ./programs/tmux.nix
@@ -109,6 +110,7 @@
         pkgs.ripgrep
         pkgs.sops
         pkgs.terraform
+        pkgs.tuicr
         pkgs.typescript
         pkgs.uv
         pkgs.yarn

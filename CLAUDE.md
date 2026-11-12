@@ -64,10 +64,13 @@ nvim-dev [files]
   apps). Includes Home Manager as a module.
 - **config/nvim/** - Neovim IDE configuration (Lua-based with LSP, Telescope,
   Treesitter)
-- **agents/** - Claude Code subagent definitions, deployed via
-  `programs.claude-code.agentsDir` in `home-manager/programs/claude-code.nix`
-- **skills/** - Claude Code skill definitions, deployed via
-  `programs.claude-code.skills` in `home-manager/programs/claude-code.nix`
+- **config/rex/** - Rex terminal config (`init.lua`, custom actions) and
+  `scripts/watch.lua`, the event watcher a launchd agent runs. Wired up, with
+  the `rex-status` helper, in `home-manager/programs/rex.nix`. Check a change
+  with `rex config check config/rex/init.lua` before rebuilding.
+- Claude Code skills and agents are NOT here: they live in the private
+  [mpriscella/ai-toolbox](https://github.com/mpriscella/ai-toolbox) plugin
+  marketplace (`toolbox` plugin). OpenCode doesn't get these skills for now.
 - **secrets/** - Encrypted secrets using sops-nix with age encryption
 
 Packages that aren't in nixpkgs live in
