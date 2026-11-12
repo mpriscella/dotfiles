@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/mpriscella/dotfiles/compare/v3.3.0...v3.4.0) (2026-11-12)
+
+
+### Features
+
+* Rex terminal, toolbox plugin migration, and nh clean ([#114](https://github.com/mpriscella/dotfiles/issues/114)) ([cdc42f5](https://github.com/mpriscella/dotfiles/commit/cdc42f5160478728251679c13dd04eb097b60657))
+
 ## [3.3.0](https://github.com/mpriscella/dotfiles/compare/v3.2.0...v3.3.0) (2026-10-01)
 
 
