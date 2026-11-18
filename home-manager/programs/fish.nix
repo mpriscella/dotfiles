@@ -114,6 +114,8 @@
     "/opt/homebrew/bin"
     "/opt/homebrew/sbin"
     "/Applications/Ghostty.app/Contents/MacOS"
+    # Release app first; a host with only the beta falls through to it.
+    "/Applications/Rex.app/Contents/Helpers/Rex Server.rex/Contents/MacOS"
     "/Applications/Rex Beta.app/Contents/Helpers/Rex Server.rex/Contents/MacOS"
   ];
 }

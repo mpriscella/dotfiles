@@ -1,6 +1,6 @@
 # Rex (https://www.superlogical.com/rex): config, the rex-status helper, and
-# the event watcher. Rex itself is the Rex Beta app (not in nixpkgs); fish.nix
-# puts its CLI on PATH.
+# the event watcher. Rex itself is Rex.app or the Rex Beta app (not in
+# nixpkgs); fish.nix puts its CLI on PATH.
 {
   config,
   lib,
@@ -8,8 +8,17 @@
   ...
 }: let
   # Launchd and activation scripts don't get fish's PATH, so call the CLI
-  # inside the app bundle directly.
-  rexBin = "/Applications/Rex Beta.app/Contents/Helpers/Rex Server.rex/Contents/MacOS/rex";
+  # inside the app bundle. Hosts have either the release app or the beta, so
+  # resolve whichever is installed when it runs (exit 127 if neither: launchd
+  # retries, activation skips the reload).
+  rexBin = "${pkgs.writeShellScript "rex-app-cli" ''
+    for app in "Rex" "Rex Beta"; do
+      bin="/Applications/$app.app/Contents/Helpers/Rex Server.rex/Contents/MacOS/rex"
+      [ -x "$bin" ] && exec "$bin" "$@"
+    done
+    echo "rex: neither Rex.app nor Rex Beta.app is installed in /Applications" >&2
+    exit 127
+  ''}";
 
   # Reports a program's state to the terminal with the Program Status Protocol
   # (OSC 7501): Rex shows it as tab spinners and session-picker indicators, and
@@ -107,10 +116,8 @@ in {
       # Rex doesn't watch init.lua. Reloading fails harmlessly (exit 4) when
       # the app isn't running; it reads the file on its next start.
       home.activation.rexConfigReload = lib.hm.dag.entryAfter ["linkGeneration"] ''
-        if [ -x "${rexBin}" ]; then
-          "${rexBin}" config reload >/dev/null 2>&1 \
-            || echo "rex: config not reloaded (Rex not running, or init.lua has errors: run 'rex config check')"
-        fi
+        "${rexBin}" config reload >/dev/null 2>&1 \
+          || echo "rex: config not reloaded (Rex not installed or not running, or init.lua has errors: run 'rex config check')"
       '';
 
       # scripts/watch.lua: directory labels, crash notifications, and layout

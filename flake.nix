@@ -142,35 +142,39 @@
       system ? "aarch64-darwin",
       username,
       gpgSigningKey ? null,
+      # Host-specific nix-darwin modules, layered on top of base.nix.
+      extraModules ? [],
     }:
       nix-darwin.lib.darwinSystem {
         inherit system;
-        modules = [
-          # Set here rather than in base.nix because darwinSystem is called
-          # without specialArgs, so the modules themselves cannot see `inputs`.
-          # home-manager.useGlobalPkgs below means Home Manager inherits it.
-          {nixpkgs.overlays = [nix-packages.overlays.default];}
-          ./nix-darwin/base.nix
-          ./nix-darwin/karabiner.nix
-          (mkDarwinUser {
-            inherit username;
-          })
-          home-manager.darwinModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.${username} = nixpkgs.lib.mkMerge [
-              (mkHomeConfiguration {
-                inherit system username gpgSigningKey;
-                isDarwinModule = true;
-                modules = [./home-manager/darwin.nix];
-              })
-              {
-                home.stateVersion = "25.05";
-              }
-            ];
-          }
-        ];
+        modules =
+          extraModules
+          ++ [
+            # Set here rather than in base.nix because darwinSystem is called
+            # without specialArgs, so the modules themselves cannot see `inputs`.
+            # home-manager.useGlobalPkgs below means Home Manager inherits it.
+            {nixpkgs.overlays = [nix-packages.overlays.default];}
+            ./nix-darwin/base.nix
+            ./nix-darwin/karabiner.nix
+            (mkDarwinUser {
+              inherit username;
+            })
+            home-manager.darwinModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.${username} = nixpkgs.lib.mkMerge [
+                (mkHomeConfiguration {
+                  inherit system username gpgSigningKey;
+                  isDarwinModule = true;
+                  modules = [./home-manager/darwin.nix];
+                })
+                {
+                  home.stateVersion = "25.05";
+                }
+              ];
+            }
+          ];
       };
   in {
     darwinConfigurations = {
@@ -178,8 +182,10 @@
         username = "mpriscella";
       };
 
+      # Personal laptop, used as an unattended agent worker.
       "macbook-pro-m3" = mkDarwinConfiguration {
         username = "mpriscella";
+        extraModules = [./nix-darwin/agent-worker.nix];
       };
     };
 

@@ -38,7 +38,7 @@ nvim-dev [files]
 
 ## Available Configurations
 
-**macOS (nix-darwin):** `macbook-pro-m5`, `macbook-pro-m3`
+**macOS (nix-darwin):** `macbook-pro-m5`, `macbook-pro-m3` (agent worker; host overrides in `nix-darwin/agent-worker.nix`)
 
 **Linux (home-manager):** `linux`, `linux-arm`
 
@@ -70,7 +70,7 @@ nvim-dev [files]
   with `rex config check config/rex/init.lua` before rebuilding.
 - Claude Code skills and agents are NOT here: they live in the private
   [mpriscella/ai-toolbox](https://github.com/mpriscella/ai-toolbox) plugin
-  marketplace (`toolbox` plugin). OpenCode doesn't get these skills for now.
+  marketplace (`toolbox` plugin).
 - **secrets/** - Encrypted secrets using sops-nix with age encryption
 
 Packages that aren't in nixpkgs live in
