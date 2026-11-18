@@ -185,7 +185,6 @@
       # Personal laptop, used as an unattended agent worker.
       "macbook-pro-m3" = mkDarwinConfiguration {
         username = "mpriscella";
-        gpgSigningKey = "21F26AD3EE166EB1";
         extraModules = [./nix-darwin/agent-worker.nix];
       };
     };
