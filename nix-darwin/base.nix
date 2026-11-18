@@ -11,6 +11,9 @@
       # set them explicitly or flake commands break.
       experimental-features = ["nix-command" "flakes"];
       trusted-users = ["@admin"];
+      # Build independent derivations in parallel, one per core (the default
+      # is 1, which serialises every from-source build).
+      max-jobs = "auto";
     };
 
     optimise.automatic = true;
@@ -123,17 +126,12 @@
       extraFlags = ["--force-cleanup"];
     };
 
-    brews = [
-      "floci-io/floci/floci"
-    ];
-
     casks = [
       "devtoys"
       "ghostty"
-      {
-        name = "headlamp";
-        args.no_quarantine = true;
-      }
+      # Previously installed with args.no_quarantine; Homebrew dropped that
+      # option, and `brew bundle` now rejects it outright.
+      "headlamp"
       "obsidian"
       "sweet-home3d"
       "utm"

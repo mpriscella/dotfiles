@@ -1,11 +1,13 @@
 keys:
   - &macbook_pro_m5 age1nzsx242psud20dkle5qqfdnxkw899k9cnte07ljxch7yt5zmtc6sz9hmtl
+  - &macbook_pro_m3 age1ju7amfweqct5n5m9s7tq8qdfptce4hahce7c6jkwtr6qzqaczy9qcqswr6
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
     key_groups:
       - age:
           - *macbook_pro_m5
+          - *macbook_pro_m3
   # Whole-document secrets (encrypted as opaque binary blobs, not YAML values),
   # for private documents that must not land in this public repo in plaintext.
   # Edit with `sops secrets/<dir>/<file>.md`.
@@ -13,3 +15,4 @@ creation_rules:
     key_groups:
       - age:
           - *macbook_pro_m5
+          - *macbook_pro_m3

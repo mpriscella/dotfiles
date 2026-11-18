@@ -19,7 +19,6 @@
     ./programs/claude-code.nix
     ./programs/direnv.nix
     ./programs/eza.nix
-    ./programs/fireworks.nix
     ./programs/fish.nix
     ./programs/gh.nix
     ./programs/git.nix
@@ -28,7 +27,6 @@
     ./programs/k9s.nix
     ./programs/mcp.nix
     ./programs/nh.nix
-    ./programs/opencode.nix
     ./programs/rex.nix
     ./programs/sops.nix
     ./programs/starship.nix
