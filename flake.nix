@@ -51,6 +51,20 @@
 
     forAllSystems = nixpkgs.lib.genAttrs systems;
 
+    # Packages taken from nixpkgs-unstable because they're broken in the
+    # pinned nixpkgs: the Rust *-sys crates there now link system libraries
+    # (oniguruma, libgit2, zstd) the package doesn't declare, so the build
+    # panics. Unstable has the fixed packages, prebuilt in cache.nixos.org.
+    # Done as an overlay so every `pkgs.<name>` reference picks it up. Drop
+    # an entry once the pinned nixpkgs builds it again.
+    unstableOverlay = final: prev: let
+      unstable = nixpkgs-unstable.legacyPackages.${prev.stdenv.hostPlatform.system};
+    in {
+      inherit (unstable) mago tuicr;
+    };
+
+    overlays = [nix-packages.overlays.default unstableOverlay];
+
     mkDarwinUser = {username}: {
       environment.shells = ["/run/current-system/sw/bin/fish"];
       # knownUsers (with a matching uid) is required for nix-darwin to actually
@@ -132,7 +146,7 @@
           pkgs = import nixpkgs {
             inherit system;
             config.allowUnfree = true;
-            overlays = [nix-packages.overlays.default];
+            inherit overlays;
           };
           modules = baseModules;
           extraSpecialArgs = baseExtraSpecialArgs;
@@ -153,7 +167,7 @@
             # Set here rather than in base.nix because darwinSystem is called
             # without specialArgs, so the modules themselves cannot see `inputs`.
             # home-manager.useGlobalPkgs below means Home Manager inherits it.
-            {nixpkgs.overlays = [nix-packages.overlays.default];}
+            {nixpkgs.overlays = overlays;}
             ./nix-darwin/base.nix
             ./nix-darwin/karabiner.nix
             (mkDarwinUser {
