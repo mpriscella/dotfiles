@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.0](https://github.com/mpriscella/dotfiles/compare/v3.3.0...v3.4.0) (2026-11-19)
+
+
+### Features
+
+* Rex terminal, toolbox plugin migration, and nh clean ([#114](https://github.com/mpriscella/dotfiles/issues/114)) ([cdc42f5](https://github.com/mpriscella/dotfiles/commit/cdc42f5160478728251679c13dd04eb097b60657))
+* Set up macbook-pro-m3 as an agent worker ([#116](https://github.com/mpriscella/dotfiles/issues/116)) ([e9b3d98](https://github.com/mpriscella/dotfiles/commit/e9b3d98d26fe06689df5bf935c2222fe247666aa))
+
 ## [3.3.0](https://github.com/mpriscella/dotfiles/compare/v3.2.0...v3.3.0) (2026-10-01)
 
 
