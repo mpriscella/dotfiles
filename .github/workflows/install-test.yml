@@ -7,8 +7,11 @@ name: Test install.sh
 # build-only run (Nix install -> darwin-rebuild build) on a macOS runner —
 # activation is skipped there because the config hardcodes the mpriscella
 # user, which collides with the runner user's uid. Runs on install.sh changes
-# (flake.nix included, since it defines the app wrapper) plus a monthly
-# schedule to catch rot in the upstream Nix installer between edits.
+# plus a monthly schedule to catch rot in the upstream Nix installer between
+# edits. flake.nix (which defines the `install` app wrapper) is deliberately
+# not a trigger: everyday flake edits would otherwise pay for an uncached
+# macOS build. Wrapper changes are covered by the monthly run, or trigger it
+# by hand with workflow_dispatch.
 
 on:
   push:
@@ -16,14 +19,12 @@ on:
       - main
     paths:
       - 'install.sh'
-      - 'flake.nix'
       - '.github/workflows/install-test.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'install.sh'
-      - 'flake.nix'
       - '.github/workflows/install-test.yml'
   schedule:
     - cron: '0 6 3 * *' # monthly; offset from release cadence

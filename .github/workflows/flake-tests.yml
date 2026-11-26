@@ -1,22 +1,18 @@
-name: Test Nix Flake
+name: Evaluate Nix Flake
+
+# Eval-only check of every configuration (darwin included) from one Linux
+# runner: catches typos, removed options, and missing packages in ~1-2 minutes
+# without building anything. Full builds live in flake-build.yml and only run
+# when inputs change. The nvim plugin lockfile is excluded because it can't
+# affect evaluation.
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'config/**'
-      - 'home-manager/**'
-      - 'nix-darwin/**'
-      - 'secrets/**'
-      - 'flake.nix'
-      - 'flake.lock'
-      - '.github/workflows/flake-tests.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'config/**'
+      - '!config/nvim/lazy-lock.json'
       - 'home-manager/**'
       - 'nix-darwin/**'
       - 'secrets/**'
@@ -25,53 +21,26 @@ on:
       - '.github/workflows/flake-tests.yml'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test-flake:
-    name: Test ${{ matrix.machine }}
-    runs-on: ${{ matrix.machine }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - machine: macos-26
-          - machine: ubuntu-24.04-arm
-          - machine: ubuntu-latest
-
+  eval:
+    name: Evaluate all systems
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      # nix-quick-install-action is used instead of the Determinate installer
-      # because cache-nix-action can only snapshot a store owned by the runner
-      # user (single-user install).
       - name: Install Nix
-        uses: nixbuild/nix-quick-install-action@v34
+        uses: nixbuild/nix-quick-install-action@2c9db80fb984ceb1bcaa77cdda3fdf8cfba92035 # v34
         with:
+          # access-tokens avoids api.github.com's anonymous rate limit when
+          # resolving flake inputs.
           nix_conf: |
             experimental-features = nix-command flakes
+            access-tokens = github.com=${{ github.token }}
 
-      - name: Restore and save Nix store
-        uses: nix-community/cache-nix-action@v7
-        with:
-          primary-key: nix-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('flake.lock') }}
-          restore-prefixes-first-match: nix-${{ runner.os }}-${{ runner.arch }}-
-          gc-max-store-size-linux: 5G
-
-      - name: Check Flake
-        run: nix flake check
-
-      - name: Generate build artifacts info
-        if: always()
-        run: |
-          {
-            echo "## Flake Test Results"
-            echo "- **Machine**: ${{ matrix.machine }}"
-            echo "- **Status**: ${{ job.status }}"
-
-            if [[ "${{ job.status }}" == "success" ]]; then
-              echo "✅ Configuration builds successfully"
-            else
-              echo "❌ Configuration failed to build"
-            fi
-          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Check Flake (eval only)
+        run: nix flake check --all-systems --no-build
