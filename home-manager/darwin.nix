@@ -6,6 +6,8 @@
   # macOS-only Home Manager config. Imported solely on the nix-darwin build
   # (see mkDarwinConfiguration in flake.nix), so no `system` guard is needed.
 
+  imports = [./programs/ws.nix];
+
   # Packages that only make sense (or only build) on macOS live here rather
   # than in the cross-platform home.nix list:
   #   - container: Apple's container tool, aarch64-darwin only.
