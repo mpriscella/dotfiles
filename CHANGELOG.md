@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.0](https://github.com/mpriscella/dotfiles/compare/v3.4.0...v3.5.0) (2026-11-26)
+
+
+### Features
+
+* Add the ws fish function and a launchd agent that sweeps merged workspaces ([#121](https://github.com/mpriscella/dotfiles/issues/121)) ([2037d60](https://github.com/mpriscella/dotfiles/commit/2037d60639b4802d5a8d7f8ce9e27dd1abca05ad))
+
 ## [3.4.0](https://github.com/mpriscella/dotfiles/compare/v3.3.0...v3.4.0) (2026-11-19)
 
 
