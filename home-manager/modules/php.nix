@@ -1,29 +1,12 @@
 {pkgs, ...}: let
-  # One interpreter, named once, for everything in this module.
-  #
-  # nixpkgs' default `php` is still 8.4, so any package taking `php` as an
-  # argument builds against 8.4 unless told otherwise — even while php85
-  # below is what lands on PATH. That split is not cosmetic: nixpkgs wraps
-  # PHP applications with PHP_INI_SCAN_DIR pointing at their own
-  # interpreter's ini directory, and the variable is inherited by child
-  # processes. So `laravel new` exported 8.4's ini directory, shelled out to
-  # `php` from PATH (8.5), and the 8.5 binary tried to load 8.4's modules:
-  #
-  #   Warning: PHP Startup: zip: Unable to initialize module
-  #   Module compiled with module API=20240924   <- 8.4
-  #   PHP    compiled with module API=20250925   <- 8.5
-  #
-  # Every extension failed that check, which left iconv and mbstring
-  # missing, and Composer aborted before writing a single file.
-  #
-  # laravel and phpactor are buildComposerProject2 packages, so overriding
-  # them costs a vendor fetch and a rewrap. frankenphp is the expensive one:
-  # it does `php.override { embedSupport = true; ztsSupport = true; }`, and
-  # pointing that at 8.5 means compiling PHP itself rather than substituting
-  # it. Worth it — otherwise the app server runs 8.4 while `php artisan`
-  # runs 8.5 — but drop `frankenphp` back to `pkgs.frankenphp` if you would
-  # rather not pay for that build today.
-  php = pkgs.php85;
+  # One interpreter, named once, so composer, frankenphp, laravel and phpactor
+  # all follow nixpkgs' default PHP together. Pinning a version here (e.g.
+  # php85) and overriding the PHP apps to match is only worth it to stay behind
+  # a newer default: frankenphp then rebuilds PHP from source (it needs an
+  # embed+ZTS variant), and mismatched apps break, because their wrappers
+  # export PHP_INI_SCAN_DIR for their own interpreter and child `php`
+  # processes inherit it.
+  php = pkgs.php;
 in {
   home.file = {
     # mago owns PHP diagnostics (see nvim lint.lua); phpactor's overlap
@@ -44,8 +27,8 @@ in {
     # Runtimes and tooling
     php
     php.packages.composer
-    (pkgs.frankenphp.override {inherit php;})
-    (pkgs.laravel.override {inherit php;})
+    pkgs.frankenphp
+    pkgs.laravel
     pkgs.laravel-cloud-cli
     pkgs.blade-formatter
 
@@ -57,7 +40,7 @@ in {
 
     # Language servers
     pkgs.mago
-    (pkgs.phpactor.override {inherit php;})
+    pkgs.phpactor
     pkgs.laravel-lsp
   ];
 }
